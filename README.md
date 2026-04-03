@@ -382,9 +382,7 @@ The `InferenceRequest` dataclass accepts:
 | OmniGen2(7B)  |   84.51   |  78.53  | 0.4029 |
 | BLIP3-o(3B)   |   61.47   |  81.36  | 0.4138 |
 | TokenFlow |   71.29   |  52.21  | 0.3056 |
-| MMaDA     |     —     |    —    | 0.6560 |
-| Show-o    |     —     |    —    |   —    |
-| Show-o2 1.5B |  —     |    —    |   —    |
+| MMaDA     |    64.55    |   46.12   | 0.6560 |
 
 > **DeepGen evaluation parameters** follow the [official DeepGen repository](https://github.com/deepgenteam/DeepGen) (`EVAL.md`): all benchmarks use 512×512 resolution, 50 inference steps, guidance scale 4.0 (7.5 for DPG-Bench), seed 42.
 >
