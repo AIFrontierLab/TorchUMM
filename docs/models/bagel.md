@@ -2,7 +2,7 @@
 
 Mixture-of-Transformer multimodal model supporting understanding, generation, and editing.
 
-- **Original repository:** <[https://github.com/jpthu17/Bagel>](https://github.com/bytedance-seed/BAGEL)
+- **Original repository:** [https://github.com/jpthu17/Bagel](https://github.com/bytedance-seed/BAGEL)
 - **Backbone key:** `bagel`
 - **Model weights:** `BAGEL-7B-MoT` (HuggingFace)
 - **Capabilities:** Understanding, Generation, Editing
