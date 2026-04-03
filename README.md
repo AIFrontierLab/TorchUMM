@@ -22,7 +22,6 @@
 - [Supported Models](#supported-models)
 - [Repository Structure](#repository-structure)
 - [Installation](#installation)
-  - [Bridges-2 Environment Setup](#bridges-2-environment-setup)
 - [Data Preparation](#data-preparation)
   - [Understanding Benchmarks Data](#understanding-benchmarks-data)
   - [Generation Benchmarks Data](#generation-benchmarks-data)
@@ -156,53 +155,7 @@ pip install -r model/Bagel/requirements.txt
 
 > **Note:** Each backbone model has its own dependencies and may require different Python/PyTorch versions. Install only the requirements for the model(s) you plan to use. For cloud execution via [Modal](https://modal.com), each model runs in an isolated container image with the correct environment — see [modal/README.md](modal/README.md) for details.
 
-### Bridges-2 Environment Setup
-
-On Bridges-2, each backbone runs in its own conda environment. Setup scripts are in `scripts/bridges/setup/`:
-
-```bash
-# Example: set up the Show-o environment
-bash scripts/bridges/setup/setup_show_o.sh
-```
-
-**Extra dependencies beyond model requirements.txt** — some packages are needed by the UMM evaluation harness or scoring tools but are not listed in the original model repos. These must be included in both the Bridges setup scripts (`scripts/bridges/setup/`) and the Modal image definitions (`modal/images.py`) to keep environments reproducible:
-
-| Environment | Extra Package | Required By | Notes |
-|:---|:---|:---|:---|
-| `umm_show_o` | `jaxtyping==0.2.28` | `model/Show-o/models/misc.py` | Listed in Show-o's requirements.txt but was missing from setup script |
-| `umm_show_o` | `typeguard==2.13.3` | `model/Show-o/models/misc.py` | Listed in Show-o's requirements.txt but was missing from setup script |
-| `umm_mmada` | `modelscope` | `eval/generation/dpg_bench/compute_dpg_bench.py` (MPLUG scorer) | DPG-Bench evaluation requires mPLUG VQA via modelscope |
-| `umm_mmada` | `addict` | `modelscope` (transitive dependency) | modelscope imports addict internally |
-| `umm_emu3` | `flash-attn` | Emu3 model (`flash_attention_2`) | Install pre-built wheel (see below) |
-
-**flash-attn for `umm_emu3`** (Python 3.10, PyTorch 2.2.1, CUDA 12.1, CXX11 ABI=FALSE):
-
-```bash
-/ocean/projects/cis220039p/zzhou16/miniconda3/envs/umm_emu3/bin/pip install \
-  https://github.com/Dao-AILab/flash-attention/releases/download/v2.7.4.post1/flash_attn-2.7.4.post1%2Bcu12torch2.2cxx11abiFALSE-cp310-cp310-linux_x86_64.whl
-```
-
-> **When adding a new backbone or benchmark scorer:** if you hit a `ModuleNotFoundError` at runtime, add the missing package to **both** the corresponding `scripts/bridges/setup/setup_<model>.sh` and the image definition in `modal/images.py` so the fix is reproducible.
-
 ---
-
-## Data Preparation
-
-Each benchmark requires specific data. Generation benchmarks (DPG Bench, GenEval, WISE) include their data in the repository; understanding benchmarks follow the [InternVL data preparation](https://internvl.readthedocs.io/en/latest/get_started/eval_data_preparation.html) pipeline. All data is stored under `data/` at the repository root.
-
-| Benchmark                                                               | Evaluates                                      | Capabilities                 | Data Source                                                                 | Data Prep                                   |
-| :---------------------------------------------------------------------- | :--------------------------------------------- | :--------------------------- | :-------------------------------------------------------------------------- | :------------------------------------------ |
-| [DPG Bench](https://github.com/TencentQQGYLab/ELLA)                        | Text-to-image detail preservation              | Generation                   | Included in repo                                                            | [Details](eval/generation/dpg_bench/README.md) |
-| [GenEval](https://github.com/djghosh13/geneval)                            | Compositional text-to-image generation         | Generation                   | Included in repo                                                            | [Details](eval/generation/geneval/README.md)   |
-| [WISE](https://github.com/PKU-YuanGroup/WISE)                              | World knowledge in image generation            | Generation                   | Included in repo                                                            | [Details](eval/generation/wise/README.md)      |
-| [UEval](https://github.com/mdl-ueval/UEval)                                | Unified understanding + generation             | Understanding + Generation   | [HuggingFace](https://huggingface.co/datasets/primerL/UEval-all)               | [Guide](eval/generation/ueval/README.md)       |
-| [Uni-MMMU](https://github.com/Vchitect/Uni-MMMU)                           | Multimodal understanding, generation & editing | Understand + Generate + Edit | [HuggingFace](https://huggingface.co/datasets/Vchitect/Uni-MMMU-Eval)          | [Guide](eval/generation/uni_mmmu/README.md)    |
-| [MMMU](https://mmmu-benchmark.github.io/)                                  | Massive multimodal understanding               | Understanding                | HuggingFace (auto)                                                          | [Guide](eval/vlm/README.md#mmmu)               |
-| [MMBench](https://opencompass.org.cn/leaderboard-multimodal)               | VLM systematic evaluation                      | Understanding                | [OpenMMLab](https://download.openmmlab.com/mmclassification/datasets/mmbench/) | [Guide](eval/vlm/README.md#mmbench)            |
-| [MME](https://github.com/BradyFU/Awesome-Multimodal-Large-Language-Models) | Multimodal perception & cognition              | Understanding                | [HuggingFace](https://huggingface.co/OpenGVLab/InternVL)                       | [Guide](eval/vlm/README.md#mme)                |
-| [MM-Vet](https://github.com/yuweihao/MM-Vet)                               | Integrated vision-language capabilities        | Understanding                | [GitHub](https://github.com/yuweihao/MM-Vet)                                   | [Guide](eval/vlm/README.md#mm-vet)             |
-| [MathVista](https://mathvista.github.io/)                                  | Mathematical reasoning with visuals            | Understanding                | [HuggingFace](https://huggingface.co/datasets/AI4Math/MathVista)               | [Guide](eval/vlm/README.md#mathvista)          |
-| [GEdit-Bench](https://github.com/stepfun-ai/Step1X-Edit)                  | Image editing quality (VIEScore)               | Editing                      | [HuggingFace](https://huggingface.co/datasets/stepfun-ai/GEdit-Bench)          | [Guide](eval/edit/gedit/README.md)             |
 
 ### Understanding Benchmarks Data
 
