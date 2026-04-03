@@ -1,0 +1,38 @@
+eval:
+  benchmark: geneval
+
+geneval:
+  geneval_root: ${UMM_CODEBASE}/model/geneval
+  metadata_path: ${UMM_CODEBASE}/model/geneval/prompts/evaluation_metadata.jsonl
+  out_dir: output/geneval/janus_pro
+  images_per_prompt: 4
+  max_samples: 0
+  resume: true
+  score_output_path: output/geneval/janus_pro/summary.json
+  mode: full  # full | generate | score
+  vlm_eval:
+    enabled: false
+    max_new_tokens: 512
+    max_retries: 2
+  detection_eval:
+    enabled: true
+    model_path: ${UMM_MODEL_CACHE}/evaluator
+  run_scoring: true
+
+inference:
+  backbone: janus_pro
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/janus_pro/Janus-Pro-7B
+    janus_root: ${UMM_CODEBASE}/src/umm/backbones/janus_pro/Janus
+    seed: 42
+    torch_dtype: bfloat16
+    generation_cfg:
+      temperature: 1.0
+      parallel_size: 4
+      cfg_weight: 5.0
+      image_token_num_per_image: 576
+      img_size: 384
+      patch_size: 16
+  request:
+    params:
+      parallel_size: 4

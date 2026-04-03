@@ -1,0 +1,90 @@
+site_name: TorchUMM
+site_description: Unified Multimodal Model Toolkit for inference, evaluation, and post-training
+site_url: https://ApiaoSamaa.github.io/umm_codebase/
+repo_url: https://github.com/ApiaoSamaa/umm_codebase
+repo_name: ApiaoSamaa/umm_codebase
+
+theme:
+  name: material
+  logo: assets/pure_logo.png
+  favicon: assets/pure_logo.png
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.tabs.link
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+plugins:
+  - search
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ApiaoSamaa/umm_codebase
+
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Models:
+    - Overview: models/index.md
+    - Bagel: models/bagel.md
+    - OmniGen2: models/omnigen2.md
+    - Emu3: models/emu3.md
+    - Emu3.5: models/emu3_5.md
+    - Janus: models/janus.md
+    - Janus-Pro: models/janus_pro.md
+    - JanusFlow: models/janus_flow.md
+    - Show-o: models/show_o.md
+    - Show-o2: models/show_o2.md
+    - BLIP3-o: models/blip3o.md
+    - TokenFlow: models/tokenflow.md
+    - Add a Model: extending.md
+  - Data Preparation: data-preparation.md
+  - Evaluation:
+    - Benchmarks: evaluation/benchmarks.md
+    - Results: evaluation/results.md
+    - Reproducing: evaluation/reproducing.md
+  - Post-Training: post-training.md
+  - Architecture: architecture.md
+  - Cloud (Modal): cloud.md

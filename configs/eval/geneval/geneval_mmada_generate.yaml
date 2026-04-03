@@ -1,0 +1,33 @@
+eval:
+  benchmark: geneval
+
+geneval:
+  mode: generate  # full | generate | score
+  metadata_path: ${UMM_CODEBASE}/model/geneval/prompts/evaluation_metadata.jsonl
+  out_dir: output/geneval/mmada
+  geneval_root: ${UMM_CODEBASE}/model/geneval
+  images_per_prompt: 4
+  max_samples: 0
+  resume: true
+  score_output_path: output/geneval/mmada/summary.json
+  vlm_eval:
+    enabled: false
+    max_new_tokens: 512
+    max_retries: 2
+  detection_eval:
+    enabled: true
+    model_path: ${UMM_MODEL_CACHE}/evaluator
+  run_scoring: true
+
+inference:
+  backbone: mmada
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/mmada/MMaDA-8B-Base
+    mmada_root: ${UMM_CODEBASE}/model/MMaDA
+    vq_model_path: ${UMM_MODEL_CACHE}/mmada/magvitv2
+    seed: 42
+  request:
+    params:
+      guidance_scale: 1.5
+      temperature: 1.0
+      timesteps: 12

@@ -1,0 +1,32 @@
+eval:
+  benchmark: uni_mmmu
+
+inference:
+  backbone: bagel
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+    bagel_root: ${UMM_CODEBASE}/model/Bagel
+    offload_folder: ./tmp/offload_bagel2
+    max_mem_per_gpu: "80GiB"
+    seed: 42
+    generation_cfg:
+      cfg_text_scale: 4.0
+      cfg_img_scale: 1.0
+      num_timesteps: 50
+    editing_cfg:
+      cfg_text_scale: 4.0
+      cfg_img_scale: 2.0
+      num_timesteps: 50
+    understanding_cfg:
+      max_think_token_n: 1000
+      do_sample: false
+  request:
+    params: {}
+
+uni_mmmu:
+  data_root: ${UMM_DATASETS}/uni_mmmu/Uni-MMMU-Eval/data
+  tasks: [math_geo]
+  out_dir: output/uni_mmmu/bagel
+  max_samples: 0
+  resume: true
+  score_output_path: output/uni_mmmu/bagel/overall_summary.json

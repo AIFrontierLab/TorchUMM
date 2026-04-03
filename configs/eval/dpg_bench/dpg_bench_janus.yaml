@@ -1,0 +1,28 @@
+inference:
+  backbone: janus_pro
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/janus_pro/Janus-1.3B
+    janus_root: ${UMM_CODEBASE}/src/umm/backbones/janus_pro/Janus
+    seed: 42
+    torch_dtype: bfloat16
+    generation_cfg:
+      parallel_size: 4
+      cfg_weight: 5.0
+      temperature: 1.0
+      image_token_num_per_image: 576
+      img_size: 384
+      patch_size: 16
+  request:
+    task: generation
+    params:
+      parallel_size: 4
+
+dpg_bench:
+  prompts_dir: eval/generation/dpg_bench/prompts
+  image_output_dir: output/dpg_bench/janus
+  resolution: 384
+  score_output_path: output/dpg_bench/janus/final_score.json
+  images_per_prompt: 4
+  gpus: 1
+  overwrite: false
+  skip_eval: false

@@ -1,0 +1,39 @@
+eval:
+  benchmark: ueval
+
+inference:
+  backbone: janus_pro
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/janus_pro/Janus-Pro-7B
+    janus_root: ${UMM_CODEBASE}/src/umm/backbones/janus_pro/Janus
+    seed: 42
+    torch_dtype: bfloat16
+    generation_cfg:
+      temperature: 1.0
+      parallel_size: 4
+      cfg_weight: 5.0
+      image_token_num_per_image: 576
+      img_size: 384
+      patch_size: 16
+    understanding_cfg:
+      max_new_tokens: 512
+      do_sample: false
+      use_cache: true
+  request:
+    params:
+      max_new_tokens: 512
+      parallel_size: 4
+
+ueval:
+  mode: full
+  hf_dataset: primerL/UEval-all
+  domains: all
+  out_dir: output/ueval/janus_pro
+  max_samples: 0
+  resume: true
+  score_output_path: output/ueval/janus_pro/eval_results.json
+  scoring:
+    text_model: Qwen/Qwen3-32B
+    vl_model: Qwen/Qwen2.5-VL-72B-Instruct
+    text_field: text_answer
+    image_field: image_answer

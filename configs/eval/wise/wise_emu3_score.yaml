@@ -1,0 +1,24 @@
+eval:
+  benchmark: wise
+
+wise:
+  data_root: eval/generation/wise/data
+  out_dir: output/wise/emu3
+  max_samples: 0
+  resume: true
+  score_output_path: output/wise/emu3/summary.json
+  mode: score  # full | generate | score
+  vlm_eval:
+    enabled: true
+    model_name: ${UMM_MODEL_CACHE}/evaluator/Qwen2.5-VL-72B-Instruct
+    max_new_tokens: 512
+    max_retries: 2
+  run_calculate: true
+
+inference:
+  backbone: emu3
+  backbone_cfg: {}
+  request:
+    params:
+      max_new_tokens: 40960
+      classifier_free_guidance: 3.0

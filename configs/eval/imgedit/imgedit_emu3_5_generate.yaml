@@ -1,0 +1,32 @@
+eval:
+  benchmark: imgedit
+
+imgedit:
+  origin_img_root: ${UMM_DATASETS}/imgedit/Benchmark
+  out_dir: output/imgedit/emu3_5
+  mode: generate
+  resume: true
+  model_name: emu3_5
+  edit_type: all
+  suite: all
+  run_calculate: true
+  score_output_path: output/imgedit/emu3_5/summary.json
+  vlm_eval:
+    backbone: qwen25vl
+    model_path: ${UMM_MODEL_CACHE}/evaluator/Qwen2.5-VL-72B-Instruct
+
+inference:
+  backbone: emu3_5
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/emu3_5/Emu3.5-Image
+    vq_path: ${UMM_MODEL_CACHE}/emu3_5/Emu3.5-VisionTokenizer
+    emu3_5_root: ${UMM_CODEBASE}/model/Emu3.5
+    use_vllm: true
+    tensor_parallel_size: 2
+    gpu_memory_utilization: 0.7
+    classifier_free_guidance: 5.0
+    image_area: 1048576
+  request:
+    params:
+      max_new_tokens: 5120
+      classifier_free_guidance: 5.0

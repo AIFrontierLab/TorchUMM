@@ -1,0 +1,34 @@
+eval:
+  benchmark: geneval
+
+geneval:
+  mode: generate  # full | generate | score
+  geneval_root: ${UMM_CODEBASE}/model/geneval
+  metadata_path: ${UMM_CODEBASE}/model/geneval/prompts/evaluation_metadata.jsonl
+  out_dir: output/geneval/blip3o
+  images_per_prompt: 4
+  max_samples: 0
+  resume: true
+  score_output_path: output/geneval/blip3o/summary.json
+  vlm_eval:
+    enabled: false
+    max_new_tokens: 512
+    max_retries: 2
+  detection_eval:
+    enabled: true
+    model_path: ${UMM_MODEL_CACHE}/evaluator
+  run_scoring: true
+
+inference:
+  backbone: blip3o
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/blip3o/BLIP3o-NEXT-SFT-3B
+    blip3o_root: ${UMM_CODEBASE}/model/BLIP3o
+    device: "cuda:0"
+    torch_dtype: bfloat16
+    scale: 0
+    seq_len: 729
+    top_p: 0.95
+    top_k: 1200
+  request:
+    params: {}

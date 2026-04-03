@@ -1,0 +1,33 @@
+eval:
+  benchmark: uni_mmmu
+
+inference:
+  backbone: janus_pro
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/janus_pro/Janus-Pro-7B
+    janus_root: ${UMM_CODEBASE}/src/umm/backbones/janus_pro/Janus
+    seed: 42
+    torch_dtype: bfloat16
+    generation_cfg:
+      temperature: 1.0
+      parallel_size: 4
+      cfg_weight: 5.0
+      image_token_num_per_image: 576
+      img_size: 384
+      patch_size: 16
+    understanding_cfg:
+      max_new_tokens: 512
+      do_sample: false
+      use_cache: true
+  request:
+    params:
+      max_new_tokens: 512
+
+uni_mmmu:
+  data_root: ${UMM_DATASETS}/uni_mmmu/Uni-MMMU-Eval/data
+  tasks: [code_rendering]  # no editing support; science/math_geo need initial image (editing)
+  out_dir: output/uni_mmmu/janus_pro
+  max_samples: 0
+  resume: true
+  mode: full  # full | generate | score
+  score_output_path: output/uni_mmmu/janus_pro/overall_summary.json

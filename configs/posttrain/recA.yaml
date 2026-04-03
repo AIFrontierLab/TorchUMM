@@ -1,0 +1,31 @@
+train:
+  pipeline: recA
+  cwd: src/umm/post_training/recA/BAGEL
+  env:
+    PYTHONPATH: .
+  torchrun:
+    nnodes: 1
+    node_rank: 0
+    nproc_per_node: 4
+    master_addr: localhost
+    master_port: 12345
+  script: train/pretrain_unified_navit.py
+  args:
+    model_path: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+    dataset_config_file: data/configs/example.yaml
+    layer_module: Qwen2MoTDecoderLayer
+    max_latent_size: 64
+    freeze_vae: True
+    freeze_vit: True
+    freeze_und: True
+    finetune_from_ema: True
+    resume_from: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+    results_dir: ./
+    checkpoint_dir: ./checkpoints
+    log_every: 1
+    wandb_runid: 1
+    use_flex: True
+    num_replicate: 1
+    num_shard: 4
+    lr: 0.00004
+    total_steps: 1000

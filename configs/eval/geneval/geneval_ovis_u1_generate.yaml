@@ -1,0 +1,32 @@
+eval:
+  benchmark: geneval
+
+geneval:
+  mode: generate  # full | generate | score
+  metadata_path: ${UMM_CODEBASE}/model/geneval/prompts/evaluation_metadata.jsonl
+  out_dir: output/geneval/ovis_u1
+  geneval_root: ${UMM_CODEBASE}/model/geneval
+  images_per_prompt: 4
+  max_samples: 0
+  resume: true
+  score_output_path: output/geneval/ovis_u1/summary.json
+  vlm_eval:
+    enabled: false
+    max_new_tokens: 512
+    max_retries: 2
+  detection_eval:
+    enabled: true
+    model_path: ${UMM_MODEL_CACHE}/evaluator
+  run_scoring: true
+
+inference:
+  backbone: ovis_u1
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/ovis_u1/Ovis-U1-3B
+    generation_cfg:
+      height: 1024
+      width: 1024
+      num_steps: 50
+      txt_cfg: 5.0
+  request:
+    params: {}

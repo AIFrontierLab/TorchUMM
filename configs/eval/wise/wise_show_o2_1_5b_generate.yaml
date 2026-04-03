@@ -1,0 +1,30 @@
+eval:
+  benchmark: wise
+
+wise:
+  data_root: eval/generation/wise/data
+  out_dir: output/wise/show_o2_1_5b
+  max_samples: 0
+  resume: true
+  score_output_path: output/wise/show_o2_1_5b/summary.json
+  mode: generate
+  vlm_eval:
+    enabled: true
+    model_name: ${UMM_MODEL_CACHE}/evaluator/Qwen2.5-VL-72B-Instruct
+    max_new_tokens: 512
+    max_retries: 2
+  run_calculate: true
+
+inference:
+  backbone: show_o2
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/show_o2/show-o2-1.5B
+    show_o_root: ${UMM_CODEBASE}/model/Show-o
+    vae_path: ${UMM_MODEL_CACHE}/show_o2/Wan2.1_VAE.pth
+    seed: 42
+    torch_dtype: bfloat16
+  request:
+    params:
+      guidance_scale: 3.0
+      generation_timesteps: 50
+      batch_size: 1

@@ -1,0 +1,26 @@
+inference:
+  backbone: emu3_5
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/emu3_5/Emu3.5-Image
+    vq_path: ${UMM_MODEL_CACHE}/emu3_5/Emu3.5-VisionTokenizer
+    emu3_5_root: ${UMM_CODEBASE}/model/Emu3.5
+    use_vllm: true
+    tensor_parallel_size: 2
+    gpu_memory_utilization: 0.7
+    classifier_free_guidance: 5.0
+    image_area: 1048576
+  request:
+    task: generation
+    params:
+      max_new_tokens: 5120
+      classifier_free_guidance: 5.0
+
+dpg_bench:
+  prompts_dir: eval/generation/dpg_bench/prompts
+  image_output_dir: output/dpg_bench/emu3_5
+  resolution: 512
+  score_output_path: output/dpg_bench/emu3_5/final_score.json
+  images_per_prompt: 4
+  gpus: 1
+  overwrite: false
+  skip_eval: false

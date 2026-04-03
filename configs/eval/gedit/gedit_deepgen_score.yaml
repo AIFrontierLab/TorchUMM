@@ -1,0 +1,21 @@
+eval:
+  benchmark: gedit
+
+gedit:
+  data_root: /datasets/gedit/GEdit-Bench
+  out_dir: /outputs/gedit/deepgen
+  mode: score
+  model_name: deepgen
+  instruction_language: all
+  task_type: all
+  run_calculate: true
+  score_output_path: /outputs/gedit/deepgen/summary.json
+  vlm_eval:
+    backbone: qwen25vl
+    model_path: /model_cache/evaluator/Qwen2.5-VL-72B-Instruct
+
+inference:
+  backbone: deepgen
+  backbone_cfg: {}
+  request:
+    params: {}

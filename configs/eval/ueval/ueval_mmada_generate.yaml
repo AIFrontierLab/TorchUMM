@@ -1,0 +1,25 @@
+eval:
+  benchmark: ueval
+
+inference:
+  backbone: mmada
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/mmada/MMaDA-8B-Base
+    mmada_root: ${UMM_CODEBASE}/model/MMaDA
+    vq_model_path: ${UMM_MODEL_CACHE}/mmada/magvitv2
+    seed: 42
+  request:
+    params:
+      max_new_tokens: 512
+      steps: 256
+      block_length: 128
+
+ueval:
+  mode: generate
+  hf_dataset: primerL/UEval-all
+  local_cache: ${UMM_DATASETS}/ueval/UEval
+  domains: all
+  out_dir: output/ueval/mmada
+  max_samples: 0
+  resume: true
+  score_output_path: output/ueval/mmada/eval_results.json

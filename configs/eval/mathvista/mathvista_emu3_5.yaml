@@ -1,0 +1,33 @@
+eval:
+  benchmark: mathvista
+
+inference:
+  backbone: emu3_5
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/emu3_5/Emu3.5
+    vq_path: ${UMM_MODEL_CACHE}/emu3_5/Emu3.5-VisionTokenizer
+    emu3_5_root: ${UMM_CODEBASE}/model/Emu3.5
+    use_vllm: true
+    tensor_parallel_size: 2
+    gpu_memory_utilization: 0.7
+    classifier_free_guidance: 2.0
+    image_area: 518400
+  request:
+    task: understanding
+    params:
+      classifier_free_guidance: 2.0
+      image_area: 518400
+      max_new_tokens: 512
+
+mathvista:
+  mode: generate
+  resume: true
+  gt_file: data/MathVista/annot_testmini.json
+  root: AI4Math/MathVista
+  cache_dir: data/MathVista
+  datasets: [MathVista_testmini]
+  out_dir: output/mathvista/emu3_5
+  score_output_path: output/mathvista/emu3_5/summary.json
+  llm_extract:
+    model_path: ${UMM_MODEL_CACHE}/evaluator/Qwen3-32B
+    max_new_tokens: 256

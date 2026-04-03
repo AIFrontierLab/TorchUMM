@@ -1,0 +1,29 @@
+eval:
+  benchmark: imgedit
+
+imgedit:
+  origin_img_root: ${UMM_DATASETS}/imgedit/Benchmark
+  out_dir: output/imgedit/omnigen2
+  mode: generate
+  resume: true
+  model_name: omnigen2
+  edit_type: all
+  suite: all
+  run_calculate: true
+  score_output_path: output/imgedit/omnigen2/summary.json
+  vlm_eval:
+    backbone: qwen25vl
+    model_path: ${UMM_MODEL_CACHE}/evaluator/Qwen2.5-VL-72B-Instruct
+
+inference:
+  backbone: omnigen2
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/omnigen2/OmniGen2
+    omnigen2_root: ${UMM_CODEBASE}/model/OmniGen2
+    device: "cuda:0"
+    torch_dtype: bfloat16
+  request:
+    params:
+      num_inference_steps: 50
+      text_guidance_scale: 4.0
+      seed: 42

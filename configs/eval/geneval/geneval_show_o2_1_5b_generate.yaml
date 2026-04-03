@@ -1,0 +1,34 @@
+eval:
+  benchmark: geneval
+
+geneval:
+  mode: generate
+  metadata_path: ${UMM_CODEBASE}/model/geneval/prompts/evaluation_metadata.jsonl
+  out_dir: output/geneval/show_o2_1_5b
+  geneval_root: ${UMM_CODEBASE}/model/geneval
+  images_per_prompt: 4
+  max_samples: 0
+  resume: true
+  score_output_path: output/geneval/show_o2_1_5b/summary.json
+  vlm_eval:
+    enabled: false
+    max_new_tokens: 512
+    max_retries: 2
+  detection_eval:
+    enabled: true
+    model_path: ${UMM_MODEL_CACHE}/evaluator
+  run_scoring: true
+
+inference:
+  backbone: show_o2
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/show_o2/show-o2-1.5B
+    show_o_root: ${UMM_CODEBASE}/model/Show-o
+    vae_path: ${UMM_MODEL_CACHE}/show_o2/Wan2.1_VAE.pth
+    seed: 42
+    torch_dtype: bfloat16
+  request:
+    params:
+      guidance_scale: 3.0
+      generation_timesteps: 50
+      batch_size: 1

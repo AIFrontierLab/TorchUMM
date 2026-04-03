@@ -1,0 +1,48 @@
+eval:
+  benchmark: uni_mmmu
+
+inference:
+  backbone: show_o
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/show_o/show-o-w-clip-vit-512x512
+    show_o_root: ${UMM_CODEBASE}/model/Show-o
+    vq_model_path: ${UMM_MODEL_CACHE}/show_o/magvitv2
+    version: 1
+    seed: 42
+    torch_dtype: bfloat16
+    understanding_cfg:
+      max_new_tokens: 100
+      top_k: 1
+      temperature: 0.8
+      use_clip_vit: true
+  request:
+    params:
+      max_new_tokens: 512
+      guidance_scale: 3.0
+      generation_timesteps: 50
+
+uni_mmmu:
+  data_root: ${UMM_DATASETS}/uni_mmmu/Uni-MMMU-Eval/data
+  tasks: [science, math_geo, code_rendering]
+  out_dir: output/uni_mmmu/show_o
+  max_samples: 0
+  resume: true
+  mode: generate  # generate | score | full
+  score_output_path: output/uni_mmmu/show_o/overall_summary.json
+  scoring:
+    eval_dir: output/uni_mmmu/show_o/eval
+    vl_model: ${UMM_MODEL_CACHE}/evaluator/Qwen2.5-VL-72B-Instruct
+    text_lm_model: ${UMM_MODEL_CACHE}/evaluator/Qwen3-32B
+    dreamsim_cache: ${UMM_MODEL_CACHE}/dreamsim
+    max_retries: 2
+    max_eval_items: 0  # 0 = all
+    evaluate_images: true
+    maze_parser:
+      grid_h: 6
+      grid_w: 6
+      tolerance: 0.75
+    sliding_parser:
+      grid_h: 3
+      grid_w: 3
+      num_categories: 9
+      tolerance: 0.80

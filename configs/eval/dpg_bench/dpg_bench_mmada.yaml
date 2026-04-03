@@ -1,0 +1,23 @@
+inference:
+  backbone: mmada
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/mmada/MMaDA-8B-Base
+    mmada_root: ${UMM_CODEBASE}/model/MMaDA
+    vq_model_path: ${UMM_MODEL_CACHE}/mmada/magvitv2
+    seed: 42
+  request:
+    task: generation
+    params:
+      guidance_scale: 1.5
+      temperature: 1.0
+      timesteps: 12
+
+dpg_bench:
+  prompts_dir: eval/generation/dpg_bench/prompts
+  image_output_dir: output/dpg_bench/mmada
+  resolution: 512
+  score_output_path: output/dpg_bench/mmada/final_score.json
+  images_per_prompt: 4
+  gpus: 1
+  overwrite: false
+  skip_eval: false

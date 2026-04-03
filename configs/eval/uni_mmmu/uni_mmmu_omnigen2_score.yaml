@@ -1,0 +1,28 @@
+eval:
+  benchmark: uni_mmmu
+
+inference:
+  backbone: omnigen2
+  backbone_cfg: {}
+  request:
+    params:
+      max_new_tokens: 512
+      num_inference_steps: 50
+      text_guidance_scale: 4.0
+
+uni_mmmu:
+  data_root: ${UMM_DATASETS}/uni_mmmu/Uni-MMMU-Eval/data
+  tasks: all
+  out_dir: output/uni_mmmu/omnigen2
+  max_samples: 0
+  resume: true
+  mode: score  # full | generate | score
+  score_output_path: output/uni_mmmu/omnigen2/overall_summary.json
+  scoring:
+    eval_dir: output/uni_mmmu/omnigen2/eval
+    vl_model: ${UMM_MODEL_CACHE}/evaluator/Qwen2.5-VL-72B-Instruct
+    text_lm_model: ${UMM_MODEL_CACHE}/evaluator/Qwen3-32B
+    dreamsim_cache: ${UMM_MODEL_CACHE}/dreamsim
+    max_retries: 2
+    max_eval_items: 0
+    evaluate_images: true

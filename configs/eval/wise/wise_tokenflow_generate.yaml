@@ -1,0 +1,29 @@
+eval:
+  benchmark: wise
+
+wise:
+  data_root: eval/generation/wise/data
+  out_dir: output/wise/tokenflow
+  max_samples: 0
+  resume: true
+  score_output_path: output/wise/tokenflow/summary.json
+  mode: generate  # full | generate | score
+  vlm_eval:
+    enabled: true
+    model_name: ${UMM_MODEL_CACHE}/evaluator/Qwen2.5-VL-72B-Instruct
+    max_new_tokens: 512
+    max_retries: 2
+  run_calculate: true
+
+inference:
+  backbone: tokenflow
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/tokenflow/TokenFlow-t2i
+    tokenizer_path: ${UMM_MODEL_CACHE}/tokenflow/TokenFlow/tokenflow_clipb_32k_enhanced.pt
+    tokenflow_root: ${UMM_CODEBASE}/model/TokenFlow
+    cfg: 7.5
+    loop: 1
+    mixed_precision: bf16
+    batch_size: 1
+  request:
+    params: {}

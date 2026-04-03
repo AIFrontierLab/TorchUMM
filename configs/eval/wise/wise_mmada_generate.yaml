@@ -1,0 +1,29 @@
+eval:
+  benchmark: wise
+
+wise:
+  data_root: eval/generation/wise/data
+  out_dir: output/wise/mmada
+  max_samples: 0
+  resume: true
+  score_output_path: output/wise/mmada/summary.json
+  mode: generate  # full | generate | score
+  vlm_eval:
+    enabled: true
+    model_name: ${UMM_MODEL_CACHE}/evaluator/Qwen2.5-VL-72B-Instruct
+    max_new_tokens: 512
+    max_retries: 2
+  run_calculate: true
+
+inference:
+  backbone: mmada
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/mmada/MMaDA-8B-Base
+    mmada_root: ${UMM_CODEBASE}/model/MMaDA
+    vq_model_path: ${UMM_MODEL_CACHE}/mmada/magvitv2
+    seed: 42
+  request:
+    params:
+      guidance_scale: 1.5
+      temperature: 1.0
+      timesteps: 12

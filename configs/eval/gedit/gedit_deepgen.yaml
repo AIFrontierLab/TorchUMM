@@ -1,0 +1,29 @@
+eval:
+  benchmark: gedit
+
+gedit:
+  data_root: /datasets/gedit/GEdit-Bench
+  out_dir: /outputs/gedit/deepgen
+  mode: full  # full | generate | score
+  resume: true
+  model_name: deepgen
+  score_model: wise  # VLM scoring runs in wise image (has transformers + qwen_vl_utils)
+  instruction_language: all  # all | en | cn
+  task_type: all
+  run_calculate: true
+  score_output_path: /outputs/gedit/deepgen/summary.json
+  vlm_eval:
+    backbone: qwen25vl
+    model_path: /model_cache/evaluator/Qwen2.5-VL-72B-Instruct
+
+inference:
+  backbone: deepgen
+  backbone_cfg:
+    model_path: /model_cache/deepgen/DeepGen-1.0-diffusers
+    device: "cuda:0"
+    torch_dtype: bfloat16
+    seed: 42
+  request:
+    params:
+      num_inference_steps: 50
+      guidance_scale: 4.0

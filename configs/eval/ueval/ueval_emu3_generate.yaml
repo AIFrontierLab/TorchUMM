@@ -1,0 +1,32 @@
+eval:
+  benchmark: ueval
+
+inference:
+  backbone: emu3
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/emu3/Emu3-Gen
+    vq_hub: ${UMM_MODEL_CACHE}/emu3/Emu3-VisionTokenizer
+    emu_root: ${UMM_CODEBASE}/model/Emu3
+    device: "cuda:0"
+    device_map: "cuda:0"
+    torch_dtype: bfloat16
+    attn_implementation: flash_attention_2
+  request:
+    params:
+      max_new_tokens: 40960
+      classifier_free_guidance: 3.0
+
+ueval:
+  mode: generate
+  hf_dataset: primerL/UEval-all
+  local_cache: ${UMM_DATASETS}/ueval/UEval
+  domains: all
+  out_dir: output/ueval/emu3
+  max_samples: 0
+  resume: true
+  score_output_path: output/ueval/emu3/eval_results.json
+  scoring:
+    text_model: Qwen/Qwen3-32B
+    vl_model: Qwen/Qwen2.5-VL-72B-Instruct
+    text_field: text_answer
+    image_field: image_answer

@@ -1,0 +1,27 @@
+eval:
+  benchmark: geneval
+
+geneval:
+  mode: score  # full | generate | score
+  metadata_path: ${UMM_CODEBASE}/model/geneval/prompts/evaluation_metadata.jsonl
+  out_dir: output/geneval/bagel
+  geneval_root: ${UMM_CODEBASE}/model/geneval
+  images_per_prompt: 4
+  max_samples: 0
+  resume: true
+  score_output_path: output/geneval/bagel/summary.json
+  vlm_eval:
+    enabled: false
+    max_new_tokens: 512
+    max_retries: 2
+  detection_eval:
+    enabled: true
+    eval_python: /ocean/projects/cis220039p/zzhou16/miniconda3/envs/umm_geneval/bin/python
+    model_path: ${UMM_MODEL_CACHE}/evaluator
+  run_scoring: true
+
+inference:
+  backbone: bagel
+  backbone_cfg: {}
+  request:
+    params: {}

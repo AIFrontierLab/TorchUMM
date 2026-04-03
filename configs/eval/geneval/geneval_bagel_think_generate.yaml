@@ -1,0 +1,38 @@
+eval:
+  benchmark: geneval
+
+geneval:
+  geneval_root: ${UMM_CODEBASE}/model/geneval
+  metadata_path: ${UMM_CODEBASE}/model/geneval/prompts/evaluation_metadata.jsonl
+  out_dir: output/geneval/bagel_think
+  images_per_prompt: 4
+  max_samples: 0
+  resume: true
+  score_output_path: output/geneval/bagel_think/summary.json
+  mode: generate  # full | generate | score
+  vlm_eval:
+    enabled: false
+    max_new_tokens: 512
+    max_retries: 2
+  detection_eval:
+    enabled: true
+    model_path: ${UMM_MODEL_CACHE}/evaluator
+  run_scoring: true
+
+inference:
+  backbone: bagel
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+    bagel_root: ${UMM_CODEBASE}/model/Bagel
+    max_mem_per_gpu: "80GiB"
+    offload_folder: ./tmp/offload
+    seed: 42
+    generation_cfg:
+      think: true
+      do_sample: true
+      text_temperature: 0.3
+      cfg_text_scale: 4.0
+      cfg_img_scale: 1.0
+      num_timesteps: 50
+  request:
+    params: {}

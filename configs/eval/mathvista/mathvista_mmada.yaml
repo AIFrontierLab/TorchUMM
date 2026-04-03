@@ -1,0 +1,29 @@
+eval:
+  benchmark: mathvista
+
+inference:
+  backbone: mmada
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/mmada/MMaDA-8B-Base
+    mmada_root: ${UMM_CODEBASE}/model/MMaDA
+    vq_model_path: ${UMM_MODEL_CACHE}/mmada/magvitv2
+    seed: 42
+  request:
+    task: understanding
+    params:
+      max_new_tokens: 512
+      steps: 256
+      block_length: 128
+
+mathvista:
+  mode: generate
+  resume: true
+  gt_file: data/MathVista/annot_testmini.json
+  root: AI4Math/MathVista
+  cache_dir: data/MathVista
+  datasets: [MathVista_testmini]
+  out_dir: output/mathvista/mmada
+  score_output_path: output/mathvista/mmada/summary.json
+  llm_extract:
+    model_path: ${UMM_MODEL_CACHE}/evaluator/Qwen3-32B
+    max_new_tokens: 256

@@ -1,0 +1,30 @@
+eval:
+  benchmark: geneval
+
+geneval:
+  geneval_root: ${UMM_CODEBASE}/model/geneval
+  metadata_path: ${UMM_CODEBASE}/model/geneval/prompts/evaluation_metadata.jsonl
+  out_dir: output/geneval/omnigen2
+  images_per_prompt: 4
+  max_samples: 0
+  resume: true
+  score_output_path: output/geneval/omnigen2/summary.json
+  mode: score  # full | generate | score
+  vlm_eval:
+    enabled: false
+    max_new_tokens: 512
+    max_retries: 2
+  detection_eval:
+    enabled: true
+    eval_python: /ocean/projects/cis220039p/zzhou16/miniconda3/envs/umm_geneval/bin/python
+    model_path: ${UMM_MODEL_CACHE}/evaluator
+  run_scoring: true
+
+inference:
+  backbone: omnigen2
+  backbone_cfg: {}
+  request:
+    params:
+      num_inference_steps: 50
+      text_guidance_scale: 4.0
+      seed: 42

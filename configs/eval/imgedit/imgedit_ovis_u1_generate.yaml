@@ -1,0 +1,27 @@
+eval:
+  benchmark: imgedit
+
+imgedit:
+  origin_img_root: ${UMM_DATASETS}/imgedit/Benchmark
+  out_dir: output/imgedit/ovis_u1
+  mode: generate
+  resume: true
+  model_name: ovis_u1
+  edit_type: all
+  suite: all
+  run_calculate: true
+  score_output_path: output/imgedit/ovis_u1/summary.json
+  vlm_eval:
+    backbone: qwen25vl
+    model_path: ${UMM_MODEL_CACHE}/evaluator/Qwen2.5-VL-72B-Instruct
+
+inference:
+  backbone: ovis_u1
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/ovis_u1/Ovis-U1-3B
+    editing_cfg:
+      num_steps: 50
+      txt_cfg: 6.0
+      img_cfg: 1.5
+  request:
+    params: {}

@@ -1,0 +1,32 @@
+eval:
+  benchmark: uni_mmmu
+
+inference:
+  backbone: emu3
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/emu3/Emu3-Gen
+    vq_hub: ${UMM_MODEL_CACHE}/emu3/Emu3-VisionTokenizer
+    emu_root: ${UMM_CODEBASE}/model/Emu3
+    device: "cuda:0"
+    device_map: "cuda:0"
+    torch_dtype: bfloat16
+    attn_implementation: flash_attention_2
+  request:
+    params:
+      classifier_free_guidance: 3.0
+      image_area: 262144            # gen: 512x512; default 518400 (720x720) OOMs on 40GB
+      max_new_tokens: 20480         # gen: proportional to image_area reduction
+      max_understand_pixels: 262144 # resize input images before understanding to avoid OOM
+
+uni_mmmu:
+  data_root: ${UMM_DATASETS}/uni_mmmu/Uni-MMMU-Eval/data
+  tasks: [science, math_geo, code_rendering]  # no editing support; jigsaw/maze/sliding excluded
+  out_dir: output/uni_mmmu/emu3
+  max_samples: 0
+  resume: true
+  mode: generate              # generate | score | full
+  score_output_path: output/uni_mmmu/emu3/overall_summary.json
+  scoring:
+    python_executable: null   # optional: path to scoring env python
+    vl_model: Qwen/Qwen2.5-VL-72B-Instruct
+    text_lm_model: Qwen/Qwen3-32B

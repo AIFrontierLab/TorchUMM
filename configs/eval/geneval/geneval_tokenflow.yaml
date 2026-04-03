@@ -1,0 +1,33 @@
+eval:
+  benchmark: geneval
+
+geneval:
+  geneval_root: ${UMM_CODEBASE}/model/geneval
+  metadata_path: ${UMM_CODEBASE}/model/geneval/prompts/evaluation_metadata.jsonl
+  out_dir: output/geneval/tokenflow
+  images_per_prompt: 4
+  max_samples: 0
+  resume: true
+  score_output_path: output/geneval/tokenflow/summary.json
+  mode: full  # full | generate | score
+  vlm_eval:
+    enabled: false
+    max_new_tokens: 512
+    max_retries: 2
+  detection_eval:
+    enabled: true
+    model_path: ${UMM_MODEL_CACHE}/evaluator
+  run_scoring: true
+
+inference:
+  backbone: tokenflow
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/tokenflow/TokenFlow-t2i
+    tokenizer_path: ${UMM_MODEL_CACHE}/tokenflow/TokenFlow/tokenflow_clipb_32k_enhanced.pt
+    tokenflow_root: ${UMM_CODEBASE}/model/TokenFlow
+    cfg: 7.5
+    loop: 1
+    mixed_precision: bf16
+    batch_size: 1
+  request:
+    params: {}

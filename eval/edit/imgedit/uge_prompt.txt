@@ -1,0 +1,21 @@
+Task: Evaluation of Image Editing Process
+
+The task is to evaluate the editing process with a focus on precision and naturalness. Pay special attention to the following criteria:
+Adherence to Instructions: The edited image should strictly reflect the instructions, with no additional or missing objects. Any deviation from the specified number of elements, colors, or other detailed instructions should be clearly noted. Any unintended changes or misplacement of objects would result in a lower score.
+Naturalness: The editing should appear seamless and realistic. Avoid any appearance of artificial manipulation, such as abrupt color transitions, distorted objects, or overly sharp contrasts that would make the image appear unnatural. Editing should not be glaring or distracting to the viewer.
+Editing Scope: The editing should be focused on the areas specified in the instructions. If the editing is too extensive or intrudes into other regions not specified, this should be noted. Similarly, editing should not appear excessive in areas where minimal changes were requested.
+Non-Edited Areas: No changes should occur in the regions of the image that were not specified for editing. If the non-edited areas are altered in any way, the final score cannot exceed 3, regardless of the quality of the editing itself.
+Scoring Criteria:
+1 (Poor): Major errors, instructions ignored, objects added/removed incorrectly, unnatural, poorly executed.
+2 (Fair): Significant deviations from instructions, unnatural edits, unappealing result.
+3 (Acceptable): Minor deviations, some unnatural elements, editing is noticeable but not distracting.
+4 (Good): Mostly follows instructions, minor naturalness issues, aesthetically acceptable.
+5 (Excellent): Perfect adherence to instructions, no unnatural elements, aesthetically pleasing and precise edits.
+
+Editing Instruction: <edit_prompt>.
+
+Below are the images before and after editing:
+
+Example Response Format:
+Brief reasoning: A short explanation of the score based on the criteria above, no more than 20 words.
+Score: A number from 1 to 5.

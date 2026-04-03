@@ -1,0 +1,21 @@
+eval:
+  benchmark: imgedit
+
+imgedit:
+  origin_img_root: ${UMM_DATASETS}/imgedit/Benchmark
+  out_dir: output/imgedit/bagel
+  mode: score
+  model_name: bagel
+  edit_type: all
+  suite: all
+  run_calculate: true
+  score_output_path: output/imgedit/bagel/summary.json
+  vlm_eval:
+    backbone: qwen25vl
+    model_path: ${UMM_MODEL_CACHE}/evaluator/Qwen2.5-VL-72B-Instruct
+
+inference:
+  backbone: bagel
+  backbone_cfg: {}
+  request:
+    params: {}
