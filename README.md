@@ -409,13 +409,13 @@ The `InferenceRequest` dataclass accepts:
 | OmniGen2  |     1562.63     |     596.79     | 0.460 | 0.782 |  42.3  |   0.0†   |  5.8   |
 | Show-o    |     1188.53     |     244.64     | 0.261 | 0.469 |  23.3  |   0.0†   |   —    |
 
-> **MathVista evaluator note:** All MathVista scores use **Qwen3-32B** for answer extraction from model responses, with rule-based normalization for scoring. Answer extraction is performed locally (no OpenAI API). † OmniGen2 and Show-o produce empty responses on MathVista understanding tasks, resulting in 0.0% accuracy.
+> **MathVista evaluator note:** All MathVista scores use **Qwen3-32B** for answer extraction from model responses, with rule-based normalization for scoring. Answer extraction is performed locally (no OpenAI API required). † OmniGen2 and Show-o produce empty responses on MathVista benchmark.
 >
 > **UEval notes:** Emu3 uses separate models for understanding and generation, making it incompatible with UEval's unified evaluation protocol.
 >
 > **Emu3.5 MMBench note ‡:** Emu3.5's MMBench score (18.3%) is far below its naive accuracy (43.7%) due to **severe option position bias** under MMBench's CircularEval protocol. CircularEval shuffles option order across variants and requires the model to answer correctly on *all* variants — Emu3.5 picks the same letter regardless of content 23.5% of the time (vs. Emu3's 7.1%), indicating it selects by position rather than understanding. This is an inherent limitation of the unified model architecture, not a code bug.
 >
-> **Emu3.5 MME note:** Emu3.5 uses `temperature=1.0` sampling for understanding, making scores hardware-dependent. Values above are from Bridges-2 2×H100; Modal 2×A100-80GB yields P:781.08 / C:324.64.
+> **Emu3.5 MME note:** Emu3.5 uses `temperature=1.0` sampling for understanding, making scores hardware-dependent.
 
 ### Editing Benchmarks
 
@@ -469,15 +469,15 @@ The `InferenceRequest` dataclass accepts:
 
 | Model | DPG | GenEval | WISE | UEval | MME (P) | MME (C) | MMMU | MMBench | MM-Vet |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| Bagel + recA | *running* | 83.05 | 0.4225 | 31.0 | 1689.09 | 695.36 | 0.523 | 0.8419 | 66.1 |
+| Bagel + recA |  | 83.05 | 0.4225 | 31.0 | 1689.09 | 695.36 | 0.523 | 0.8419 | 66.1 |
 | Bagel + recA-ema | — | 78.87 | 0.4056 | 31.0 | — | — | — | — | — |
-| Bagel + IRG | *running* | 72.06 | 0.3842 | 9.1 | 1647.47 | 650.36 | 0.480 | 0.7783 | 40.7 |
-| Bagel + UniCot | 65.22(?) | 0.02(*rerun*) | *rerun* | — | 1690.67 | 678.21 | 0.531 | 0.8445 | 64.5 |
-| Bagel + SFT | *running* | 78.03 | *running* | — | 1680.73 | 678.93 | 0.526 | 0.8204 | 61.2 |
+| Bagel + IRG |  | 72.06 | 0.3842 | 9.1 | 1647.47 | 650.36 | 0.480 | 0.7783 | 40.7 |
+| Bagel + UniCot | 83.61 |  |  | — | 1690.67 | 678.21 | 0.531 | 0.8445 | 64.5 |
+| Bagel + SFT |  | 78.03 |  | — | 1680.73 | 678.93 | 0.526 | 0.8204 | 61.2 |
 | Janus-Pro + SFT | 83.93 | — | — | — | 1549.87 | 292.86 | 0.400 | 0.700 | 33.0 |
 | OmniGen2 + SFT | 84.78 | — | — | — | — | — | 0.223 | — | 10.0 |
-| BLIP3-o + SFT | *running* | — | — | — | — | — | — | — | — |
-| TokenFlow + SFT | 22.16(?) | — | — | — | — | — | — | — | — |
+| BLIP3-o + SFT | 61.01 | — | — | — | — | — | — | — | — |
+| TokenFlow + SFT | 22.16 | — | — | — | — | — | — | — | — |
 
 > More results will be added as evaluations complete.
 
