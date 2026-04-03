@@ -1,0 +1,25 @@
+eval:
+  benchmark: mmmu
+
+inference:
+  backbone: bagel
+  backbone_cfg:
+    bagel_root: ${UMM_CODEBASE}/src/umm/backbones/bagel/Bagel
+    model_path: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+    max_mem_per_gpu: 80GiB
+    offload_folder: ./tmp/offload
+    seed: 42
+  request:
+    task: understanding
+    params:
+      max_think_token_n: 1000
+      do_sample: false
+
+mmmu:
+  root: MMMU/MMMU
+  cache_dir: data/MMMU
+  datasets: [MMMU_validation]
+  out_dir: output/mmmu/bagel
+  score_output_path: output/mmmu/bagel/summary.json
+  run_calculation: true
+  max_images: 1

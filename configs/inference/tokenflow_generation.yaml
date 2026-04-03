@@ -1,0 +1,22 @@
+inference:
+  backbone: tokenflow
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/tokenflow/TokenFlow-t2i
+    tokenizer_path: ${UMM_MODEL_CACHE}/tokenflow/TokenFlow/tokenflow_clipb_32k_enhanced.pt
+    cfg: 7.5
+    loop: 1
+    mixed_precision: bf16
+    batch_size: 1
+    output_dir: output/tokenflow_images
+
+  request:
+    task: generation
+    prompt: "A realistic landscape shot of the Northern Lights dancing over a snowy mountain range in Iceland."
+    output_path: output/tokenflow_images/tokenflow_custom.png
+    params:
+      cfg: 7.5
+      loop: 1
+      mixed_precision: bf16
+      batch_size: 1
+
+  output_json: output/tokenflow_generation_results.json

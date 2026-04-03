@@ -1,0 +1,19 @@
+inference:
+  backbone: show_o
+  output_json: ${UMM_OUTPUTS}/show_o2_understanding.json
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/show_o2/show-o2-7B
+    show_o_root: ${UMM_CODEBASE}/model/show_o/Show-o
+    vae_path: ${UMM_MODEL_CACHE}/show_o2/Wan2.1_VAE.pth
+    seed: 42
+    torch_dtype: bfloat16
+    understanding_cfg:
+      max_new_tokens: 100
+      top_k: 1
+      temperature: 0.8
+      use_clip_vit: true
+  request:
+    task: understanding
+    prompt: "Please describe this image in detail."
+    images:
+      - ${UMM_OUTPUTS}/out.png

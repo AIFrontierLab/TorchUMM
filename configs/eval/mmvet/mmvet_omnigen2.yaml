@@ -1,0 +1,28 @@
+eval:
+  benchmark: mmvet
+
+inference:
+  backbone: omnigen2
+  backbone_cfg:
+    omnigen2_root: ${UMM_CODEBASE}/model/OmniGen2
+    model_path: ${UMM_MODEL_CACHE}/omnigen2/OmniGen2
+    device: cuda:0
+    device_map: cuda:0
+    torch_dtype: bfloat16
+    enable_cpu_offload: false
+    enable_sequential_cpu_offload: false
+    output_dir_understanding: output/omnigen2_understanding
+  request:
+    task: understanding
+    params:
+      num_inference_steps: 50
+      seed: 42
+      max_new_tokens: 20
+
+mmvet:
+  datasets: [mmvet]
+  out_dir: output/mmvet/omnigen2
+  score_output_path: output/mmvet/omnigen2/summary.json
+  dataset_paths:
+    image_root: data/mm-vet/mm-vet/images
+    question: data/mm-vet/llava-mm-vet.jsonl

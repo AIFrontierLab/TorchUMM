@@ -1,0 +1,29 @@
+eval:
+  benchmark: mmmu
+
+inference:
+  backbone: emu3_5
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/emu3_5/Emu3.5
+    vq_path: ${UMM_MODEL_CACHE}/emu3_5/Emu3.5-VisionTokenizer
+    emu3_5_root: ${UMM_CODEBASE}/model/Emu3.5
+    use_vllm: true
+    tensor_parallel_size: 2
+    gpu_memory_utilization: 0.7
+    classifier_free_guidance: 2.0
+    image_area: 518400
+  request:
+    task: understanding
+    params:
+      classifier_free_guidance: 2.0
+      image_area: 518400
+      max_new_tokens: 64
+
+mmmu:
+  root: MMMU/MMMU
+  cache_dir: data/MMMU
+  datasets: [MMMU_validation]
+  out_dir: output/mmmu/emu3_5
+  score_output_path: output/mmmu/emu3_5/summary.json
+  run_calculation: true
+  max_images: 1

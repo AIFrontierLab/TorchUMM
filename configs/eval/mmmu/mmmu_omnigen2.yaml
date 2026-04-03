@@ -1,0 +1,29 @@
+eval:
+  benchmark: mmmu
+
+inference:
+  backbone: omnigen2
+  backbone_cfg:
+    omnigen2_root: ${UMM_CODEBASE}/model/OmniGen2
+    model_path: ${UMM_MODEL_CACHE}/omnigen2/OmniGen2
+    device: cuda:0
+    device_map: cuda:0
+    torch_dtype: bfloat16
+    enable_cpu_offload: false
+    enable_sequential_cpu_offload: false
+    output_dir_understanding: output/omnigen2_understanding
+  request:
+    task: understanding
+    params:
+      num_inference_steps: 50
+      seed: 42
+      max_new_tokens: 20
+
+mmmu:
+  root: MMMU/MMMU
+  cache_dir: data/MMMU
+  datasets: [MMMU_validation]
+  out_dir: output/mmmu/omnigen2
+  score_output_path: output/mmmu/omnigen2/summary.json
+  run_calculation: true
+  max_images: 1

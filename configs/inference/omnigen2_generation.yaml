@@ -1,0 +1,23 @@
+inference:
+  backbone: omnigen2
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/omnigen2/OmniGen2
+    device: cuda:0
+    device_map: cuda:0
+    torch_dtype: bfloat16
+    enable_cpu_offload: false
+    enable_sequential_cpu_offload: false
+    output_dir_t2i: output/omnigen2_images
+
+  request:
+    task: generation
+    prompt: "A beautiful landscape with mountains and a lake at sunset"
+    params:
+      height: 1024
+      width: 1024
+      num_inference_steps: 50
+      text_guidance_scale: 4.0
+      num_images_per_prompt: 1
+      seed: 42
+
+  output_json: output/omnigen2_generation_results.json

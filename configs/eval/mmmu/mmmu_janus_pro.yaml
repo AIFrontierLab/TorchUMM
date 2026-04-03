@@ -1,0 +1,28 @@
+eval:
+  benchmark: mmmu
+
+inference:
+  backbone: janus_pro
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/janus_pro/Janus-Pro-7B
+    janus_root: ${UMM_CODEBASE}/model/janus_pro/Janus
+    seed: 42
+    torch_dtype: bfloat16
+    understanding_cfg:
+      max_new_tokens: 64
+      do_sample: false
+      use_cache: true
+  request:
+    task: understanding
+    params:
+      max_new_tokens: 64
+      do_sample: false
+
+mmmu:
+  root: MMMU/MMMU
+  cache_dir: data/MMMU
+  datasets: [MMMU_validation]
+  out_dir: output/mmmu/janus_pro
+  score_output_path: output/mmmu/janus_pro/summary.json
+  run_calculation: true
+  max_images: 1

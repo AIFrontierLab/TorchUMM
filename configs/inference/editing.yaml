@@ -1,0 +1,10 @@
+inference:
+  backbone: bagel
+  request:
+    task: editing
+    prompt: "Remove the mountain"
+    images:
+      - ${UMM_OUTPUTS}/out.png
+    output_path: ${UMM_OUTPUTS}/output.png
+    params:
+      num_timesteps: 50

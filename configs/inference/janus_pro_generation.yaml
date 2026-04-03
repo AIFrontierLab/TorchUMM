@@ -1,0 +1,21 @@
+inference:
+  backbone: janus_pro
+  output_json: ${UMM_OUTPUTS}/janus_pro_generation.json
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/janus_pro/Janus-Pro-7B
+    janus_root: ${UMM_CODEBASE}/model/janus_pro/Janus
+    seed: 42
+    torch_dtype: bfloat16
+    generation_cfg:
+      parallel_size: 4
+      cfg_weight: 5.0
+      temperature: 1.0
+      image_token_num_per_image: 576
+      img_size: 384
+      patch_size: 16
+  request:
+    task: generation
+    prompt: "A stunning princess from kabul in red, white traditional clothing, blue eyes, brown hair."
+    output_path: ${UMM_OUTPUTS}/janus_pro/sample.png
+    params:
+      parallel_size: 4

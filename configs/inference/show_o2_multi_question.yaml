@@ -1,0 +1,25 @@
+# Show-O Understanding with Multiple Questions
+# This config demonstrates how to ask multiple questions about the same image
+
+inference:
+  backbone: show_o
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/show_o2/show-o2-7B
+    show_o_root: ${UMM_CODEBASE}/model/show_o/Show-o
+    vae_path: ${UMM_MODEL_CACHE}/show_o2/Wan2.1_VAE.pth
+    seed: 42
+    torch_dtype: bfloat16
+    understanding_cfg:
+      max_new_tokens: 100
+      top_k: 1
+      temperature: 0.8
+      use_clip_vit: true
+
+  # Single request with question splitting (using separator ***)
+  request:
+    task: understanding
+    prompt: "Please describe this image in detail. *** Do you think the image is unusual or not?"
+    images:
+      - ${UMM_OUTPUTS}/out.png
+
+  output_json: output/show_o2_understanding_results.json

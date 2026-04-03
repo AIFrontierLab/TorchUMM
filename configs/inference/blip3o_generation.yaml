@@ -1,0 +1,22 @@
+inference:
+  backbone: blip3o
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/blip3o/BLIP3o-NEXT-SFT-3B
+    device: cuda:0
+    torch_dtype: bfloat16
+    scale: 0
+    seq_len: 729
+    top_p: 0.95
+    top_k: 1200
+    output_dir: output/blip3o_images
+
+  request:
+    task: generation
+    prompt: "A cinematic portrait of an astronaut riding a horse on the moon, ultra detailed."
+    output_path: output/blip3o_images/blip3o_custom.png
+    params:
+      top_p: 0.95
+      top_k: 1200
+      seq_len: 729
+
+  output_json: output/blip3o_generation_results.json

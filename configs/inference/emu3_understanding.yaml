@@ -1,0 +1,20 @@
+inference:
+  backbone: emu3
+  backbone_cfg:
+    model_path: BAAI/Emu3-Chat
+    vq_hub: BAAI/Emu3-VisionTokenizer
+    device_map: cuda:0
+    device: cuda:0
+    torch_dtype: bfloat16
+    attn_implementation: flash_attention_2
+    # optional: revision: <commit-or-tag>
+
+  request:
+    task: understanding
+    prompt: "Please describe the image"
+    images:
+      - assets/demo.png
+    params:
+      max_new_tokens: 1024
+
+  output_json: output/emu3_understanding_results.json

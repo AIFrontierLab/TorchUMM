@@ -1,0 +1,14 @@
+inference:
+  infer_config: configs/inference/blip3o_dpg_generation.yaml
+
+dpg_bench:
+  prompts_dir: eval/generation/dpg_bench/prompts
+  image_output_dir: output/dpg_bench/blip3o
+  resolution: 512
+  # eval_python: <set to local dpg env python>  # TODO: configure for your environment
+  # eval_env_bin: <set to local dpg env bin>  # TODO: configure for your environment
+  score_output_path: output/dpg_bench/blip3o/final_score.json
+  images_per_prompt: 4
+  gpus: 1
+  overwrite: false
+  skip_eval: false

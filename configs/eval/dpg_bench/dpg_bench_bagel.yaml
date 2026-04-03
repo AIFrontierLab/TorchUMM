@@ -1,0 +1,28 @@
+inference:
+  backbone: bagel
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+    bagel_root: ${UMM_CODEBASE}/model/Bagel
+    max_mem_per_gpu: 80GiB
+    offload_folder: ./tmp/offload
+    seed: 42
+    distributed_single_gpu: true
+    generation_cfg:
+      num_timesteps: 50
+  request:
+    task: generation
+    params:
+      num_timesteps: 50
+
+dpg_bench:
+  prompts_dir: eval/generation/dpg_bench/prompts
+  image_output_dir: output/dpg_bench/bagel
+  resolution: 512
+  # eval_python: <set to local dpg env python>  # TODO: configure for your environment
+  # eval_env_bin: <set to local dpg env bin>  # TODO: configure for your environment
+  score_output_path: output/dpg_bench/bagel/final_score.json
+  images_per_prompt: 4
+  gpus: 1
+  bagel_multiprocess: true
+  overwrite: false
+  skip_eval: false

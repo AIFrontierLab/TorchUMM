@@ -1,0 +1,26 @@
+eval:
+  benchmark: mmmu
+
+inference:
+  backbone: emu3
+  backbone_cfg:
+    emu_root: ${UMM_CODEBASE}/model/Emu3
+    model_path: BAAI/Emu3-Chat
+    vq_hub: BAAI/Emu3-VisionTokenizer
+    device_map: cuda:0
+    device: cuda:0
+    torch_dtype: bfloat16
+    attn_implementation: flash_attention_2
+  request:
+    task: understanding
+    params:
+      max_new_tokens: 1024
+
+mmmu:
+  root: MMMU/MMMU
+  cache_dir: data/MMMU
+  datasets: [MMMU_validation]
+  out_dir: output/mmmu/emu3
+  score_output_path: output/mmmu/emu3/summary.json
+  run_calculation: true
+  max_images: 1

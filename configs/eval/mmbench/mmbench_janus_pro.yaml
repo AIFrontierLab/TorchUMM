@@ -1,0 +1,25 @@
+eval:
+  benchmark: mmbench
+
+inference:
+  backbone: janus_pro
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/janus_pro/Janus-Pro-7B
+    janus_root: ${UMM_CODEBASE}/model/janus_pro/Janus
+    seed: 42
+    torch_dtype: bfloat16
+    understanding_cfg:
+      max_new_tokens: 512
+      do_sample: false
+      use_cache: true
+  request:
+    task: understanding
+    params:
+      max_new_tokens: 20
+      do_sample: false
+
+mmbench:
+  datasets: [mmbench_dev_20230712]
+  out_dir: output/mmbench/janus_pro
+  score_output_path: output/mmbench/janus_pro/summary.json
+  resume: true

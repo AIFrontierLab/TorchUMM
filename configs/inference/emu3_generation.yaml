@@ -1,0 +1,24 @@
+inference:
+  backbone: emu3
+  backbone_cfg:
+    model_path: BAAI/Emu3-Gen
+    vq_hub: BAAI/Emu3-VisionTokenizer
+    device_map: cuda:0
+    device: cuda:0
+    torch_dtype: bfloat16
+    attn_implementation: flash_attention_2
+
+  request:
+    task: generation
+    prompt: "A fantasy landscape painting of a floating island above clouds, vivid colors"
+    params:
+      max_new_tokens: 40960
+      do_sample: true
+      top_k: 2048
+      classifier_free_guidance: 3.0
+      positive_prompt: " masterpiece, film grained, best quality."
+      negative_prompt: "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry."
+      ratio: "1:1"
+
+  output_json: output/emu3_generation_results.json
+

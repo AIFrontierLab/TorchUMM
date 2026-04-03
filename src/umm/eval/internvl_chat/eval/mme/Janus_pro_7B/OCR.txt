@@ -1,0 +1,40 @@
+0001.jpg	Is the word in the logo "angie's"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0001.jpg	Is the word in the logo "angle's"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0002.jpg	Is the word in the logo "c'est cheese"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0002.jpg	Is the word in the logo "crest cheese"? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.
+0003.jpg	Is the word in the logo "beavertails pastry"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0003.jpg	Is the word in the logo "beavertalls pastry"? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.
+0004.jpg	Is the word in the logo "old market sundries"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0004.jpg	Is the word in the logo "old market hundreds"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0005.jpg	Is the word in the logo "kress"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0005.jpg	Is the word in the logo "dress"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0006.jpg	Is the word in the logo "the beatles story liver pool"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0006.jpg	Is the word in the logo "the beats story liver pool"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0007.jpg	Is the phone number in the picture "0131 555 6363"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0007.jpg	Is the phone number in the picture "0137 556 6363"? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.
+0008.jpg	Is the word in the logo "phil's market"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0008.jpg	Is the word in the logo "phll's market"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0009.jpg	Is the word in the logo "fenders diner"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0009.jpg	Is the word in the logo "finders diner"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0010.jpg	Is the word in the logo "high time coffee shop"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0010.jpg	Is the word in the logo "high tite cofeee shop"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0011.jpg	Is the word in the logo "ihop restaurant"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0011.jpg	Is the word in the logo "lhop restaurant"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0012.jpg	Is the word in the logo "casa grecque restaurants"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0012.jpg	Is the word in the logo "case grecque restaurants"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0013.jpg	Is the word in the picture "seabreeze motel"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0013.jpg	Is the word in the picture "seebreeze model"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0014.jpg	Is the word in the logo "penarth pier built 1894"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0014.jpg	Is the word in the logo "penarth pies buid 1894"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0015.jpg	Is the text in the picture "hollywood"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0015.jpg	Is the text in the picture "holly word"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0016.jpg	Is the word in the logo "shop rite"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0016.jpg	Is the word in the logo "stop rite"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0017.jpg	Is the word in the logo "hardco industrial construction"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0017.jpg	Is the word in the logo "hardto industal construction"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0018.jpg	Is the word in the logo "oldsmobile service"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0018.jpg	Is the word in the logo "old mobile service"? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.
+0019.jpg	Is the word in the logo "exchange hotel"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0019.jpg	Is the word in the logo "excharge hotel"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0020.jpg	Is the word in the logo "cold drinks"? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0020.jpg	Is the word in the logo "cold rinks"? Please answer yes or no. Answer the question using a single word or phrase.	No	no.

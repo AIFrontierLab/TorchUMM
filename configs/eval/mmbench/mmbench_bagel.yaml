@@ -1,0 +1,21 @@
+eval:
+  benchmark: mmbench
+
+inference:
+  backbone: bagel
+  backbone_cfg:
+    bagel_root: ${UMM_CODEBASE}/src/umm/backbones/bagel/Bagel
+    model_path: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+    max_mem_per_gpu: 80GiB
+    offload_folder: ./tmp/offload
+    seed: 42
+  request:
+    task: understanding
+    params:
+      max_think_token_n: 1000
+      do_sample: false
+
+mmbench:
+  datasets: [mmbench_dev_20230712]
+  out_dir: output/mmbench/bagel
+  score_output_path: output/mmbench/bagel/summary.json

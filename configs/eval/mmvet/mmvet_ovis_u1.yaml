@@ -1,0 +1,20 @@
+eval:
+  benchmark: mmvet
+
+inference:
+  backbone: ovis_u1
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/ovis_u1/Ovis-U1-3B
+  request:
+    task: understanding
+    params:
+      max_new_tokens: 4096
+      do_sample: false
+
+mmvet:
+  datasets: [mmvet]
+  out_dir: output/mmvet/ovis_u1
+  score_output_path: output/mmvet/ovis_u1/summary.json
+  dataset_paths:
+    image_root: data/mm-vet/mm-vet/images
+    question: data/mm-vet/llava-mm-vet.jsonl

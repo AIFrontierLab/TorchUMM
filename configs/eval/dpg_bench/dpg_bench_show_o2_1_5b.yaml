@@ -1,0 +1,23 @@
+inference:
+  backbone: show_o2
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/show_o2/show-o2-1.5B
+    show_o_root: ${UMM_CODEBASE}/model/Show-o
+    vae_path: ${UMM_MODEL_CACHE}/show_o2/Wan2.1_VAE.pth
+    seed: 42
+    torch_dtype: bfloat16
+  request:
+    params:
+      guidance_scale: 3.0
+      generation_timesteps: 50
+      batch_size: 1
+
+dpg_bench:
+  prompts_dir: eval/generation/dpg_bench/prompts
+  image_output_dir: output/dpg_bench/show_o2_1_5b
+  resolution: 384
+  score_output_path: output/dpg_bench/show_o2_1_5b/final_score.json
+  images_per_prompt: 4
+  gpus: 1
+  overwrite: false
+  skip_eval: false

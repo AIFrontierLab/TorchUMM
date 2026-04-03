@@ -1,0 +1,53 @@
+train:
+  pipeline: irg
+  cwd: src/umm/post_training/IRG/Interleaving-Reasoning-Generation/SFT
+  entrypoint: torchrun
+  script: train/pretrain_unified_navit.py
+  env:
+    PYTHONPATH: .
+    TORCH_NCCL_ASYNC_ERROR_HANDLING: "1"
+    TORCH_NCCL_WAIT_TIMEOUT_DUMP_MILSEC: "3600000"
+    TORCH_NCCL_HEARTBEAT_TIMEOUT_SEC: "3600"
+    TORCH_NCCL_BLOCKING_WAIT: "1"
+    NCCL_TIMEOUT: "3600"
+    NCCL_IB_TIMEOUT: "22"
+    NCCL_IB_RETRY_CNT: "7"
+    NCCL_SOCKET_IFNAME: "eth0"
+    NCCL_NET_GDR_LEVEL: "2"
+    TMPDIR: ${UMM_OUTPUTS}/tmp
+    TORCH_SHM_MANAGER: "1"
+  torchrun:
+    nnodes: 1
+    node_rank: 0
+    nproc_per_node: 4
+    master_addr: 127.0.0.1
+    master_port: 29501
+  args:
+    results_dir: results/train_toy_dataset_stage1
+    checkpoint_dir: results/train_toy_dataset_stage1/checkpoints
+    wandb_project: IRG-training
+    wandb_name: train_toy_dataset_stage1
+    wandb_runid: null
+    wandb_resume: allow
+    auto_resume: True
+    resume_from: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+    finetune_from_ema: True
+    finetune_from_hf: True
+    log_every: 1
+    save_every: 1000
+    warmup_steps: 500
+    lr: 2e-05
+    ema: 0.995
+    timestep_shift: 4.0
+    expected_num_tokens: 40000
+    max_num_tokens: 40000
+    max_num_tokens_per_sample: 32768
+    num_replicate: 1
+    num_shard: 4
+    dataset_config_file: data/configs/train_toy_dataset_stage1.yaml
+    num_workers: 2
+    model_path: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+    max_latent_size: 64
+    vit_cond_dropout_prob: 0
+    text_cond_dropout_prob: 0
+    resume_model_only: True

@@ -1,0 +1,22 @@
+eval:
+  benchmark: mmbench
+
+inference:
+  backbone: emu3
+  backbone_cfg:
+    emu_root: ${UMM_CODEBASE}/model/Emu3
+    model_path: ${UMM_MODEL_CACHE}/emu3/Emu3-Chat
+    vq_hub: ${UMM_MODEL_CACHE}/emu3/Emu3-VisionTokenizer
+    device_map: cuda:0
+    device: cuda:0
+    torch_dtype: bfloat16
+    attn_implementation: flash_attention_2
+  request:
+    task: understanding
+    params:
+      max_new_tokens: 1024
+
+mmbench:
+  datasets: [mmbench_dev_20230712]
+  out_dir: output/mmbench/emu3
+  score_output_path: output/mmbench/emu3/summary.json

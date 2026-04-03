@@ -1,0 +1,20 @@
+eval:
+  benchmark: mmbench
+
+inference:
+  backbone: ovis_u1
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/ovis_u1/Ovis-U1-3B
+  request:
+    task: understanding
+    params:
+      max_new_tokens: 4096
+      do_sample: false
+
+mmbench:
+  datasets: [mmbench_dev_20230712]
+  dataset_paths:
+    mmbench_dev_20230712: data/mmbench/mmbench_dev_20230712.tsv
+  out_dir: output/mmbench/ovis_u1
+  score_output_path: output/mmbench/ovis_u1/summary.json
+  resume: true

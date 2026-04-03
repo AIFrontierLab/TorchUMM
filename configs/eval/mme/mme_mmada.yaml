@@ -1,0 +1,23 @@
+eval:
+  benchmark: mme
+
+inference:
+  backbone: mmada
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/mmada/MMaDA-8B-Base
+    mmada_root: ${UMM_CODEBASE}/model/MMaDA
+    vq_model_path: ${UMM_MODEL_CACHE}/mmada/magvitv2
+    seed: 42
+  request:
+    task: understanding
+    params:
+      max_new_tokens: 512
+      steps: 256
+      block_length: 128
+
+mme:
+  root: src/umm/eval/internvl_chat/eval/mme/Your_Results
+  image_root: data/mme/MME_Benchmark_release_version
+  out_dir: output/mme/mmada
+  score_output_path: output/mme/mmada/summary.json
+  run_calculation: true

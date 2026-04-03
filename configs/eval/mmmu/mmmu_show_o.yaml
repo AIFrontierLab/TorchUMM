@@ -1,0 +1,30 @@
+eval:
+  benchmark: mmmu
+
+inference:
+  backbone: show_o
+  backbone_cfg:
+    version: 1
+    model_path: ${UMM_MODEL_CACHE}/show_o/show-o-w-clip-vit-512x512
+    show_o_root: ${UMM_CODEBASE}/model/Show-o
+    vq_model_path: ${UMM_MODEL_CACHE}/show_o/magvitv2
+    seed: 42
+    torch_dtype: bfloat16
+    understanding_cfg:
+      max_new_tokens: 100
+      top_k: 1
+      temperature: 0.8
+      use_clip_vit: true
+  request:
+    task: understanding
+    params:
+      max_new_tokens: 20
+
+mmmu:
+  root: MMMU/MMMU
+  cache_dir: data/MMMU
+  datasets: [MMMU_validation]
+  out_dir: output/mmmu/show_o
+  score_output_path: output/mmmu/show_o/summary.json
+  run_calculation: true
+  max_images: 1

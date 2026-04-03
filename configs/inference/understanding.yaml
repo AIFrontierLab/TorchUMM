@@ -1,0 +1,16 @@
+inference:
+  backbone: bagel
+  output_json: output/understanding.json
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+    max_mem_per_gpu: 80GiB
+    offload_folder: ./tmp/offload
+    seed: 42
+  request:
+    task: understanding
+    prompt: "What is happening in this image?"
+    images:
+      - ${UMM_OUTPUTS}/out.png
+    params:
+      max_think_token_n: 1000
+      do_sample: false

@@ -1,0 +1,20 @@
+inference:
+  backbone: tokenflow
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/tokenflow/TokenFlow-t2i
+    tokenizer_path: ${UMM_MODEL_CACHE}/tokenflow/TokenFlow/tokenflow_clipb_32k_enhanced.pt
+    cfg: 7.5
+    loop: 1
+    mixed_precision: bf16
+    batch_size: 1
+    output_dir: output/tokenflow_images
+
+  request:
+    task: generation
+    params:
+      cfg: 7.5
+      loop: 1
+      mixed_precision: bf16
+      batch_size: 1
+
+  output_json: output/tokenflow_dpg_generation_results.json

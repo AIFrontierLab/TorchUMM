@@ -1,0 +1,16 @@
+eval:
+  benchmark: mathvista
+
+inference:
+  backbone: emu3
+
+mathvista:
+  mode: score
+  resume: true
+  gt_file: data/MathVista/annot_testmini.json
+  datasets: [MathVista_testmini]
+  out_dir: output/mathvista/emu3
+  score_output_path: output/mathvista/emu3/summary.json
+  llm_extract:
+    model_path: ${UMM_MODEL_CACHE}/evaluator/Qwen3-32B
+    max_new_tokens: 256

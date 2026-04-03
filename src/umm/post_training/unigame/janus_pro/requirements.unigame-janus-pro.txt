@@ -1,0 +1,25 @@
+# UniGame Janus-Pro training runtime dependencies
+# Install with:
+#   pip install -r requirements.unigame-janus-pro.txt
+
+# Core DL stack
+torch==2.0.1
+torchvision==0.15.2
+
+# Janus backbone runtime
+transformers>=4.38.2
+accelerate
+sentencepiece
+timm>=0.9.16
+einops
+attrdict
+peft
+safetensors
+
+# UniGame training/eval pipeline
+datasets
+tqdm
+numpy
+Pillow
+open_clip_torch
+PyYAML

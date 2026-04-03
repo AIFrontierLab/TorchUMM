@@ -1,0 +1,20 @@
+inference:
+  backbone: omnigen2
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/omnigen2/OmniGen2
+    device: cuda:0
+    device_map: cuda:0
+    torch_dtype: bfloat16
+    enable_cpu_offload: false
+    enable_sequential_cpu_offload: false
+    output_dir_understanding: output/omnigen2_understanding
+
+  request:
+    task: understanding
+    params:
+      num_inference_steps: 50
+      seed: 42
+      image_path: ${UMM_OUTPUTS}/out.png
+      instruction: "Please describe this image briefly."
+
+  output_json: output/omnigen2_understanding_results.json

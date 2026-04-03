@@ -1,0 +1,113 @@
+train:
+  pipeline: unigame
+  backbone: janus_pro
+  ddp_backend: nccl
+  ddp_timeout_s: 1800
+  ddp_find_unused_parameters: true
+  ddp_broadcast_buffers: false
+  ddp_gradient_as_bucket_view: true
+
+  # HuggingFace auto download/cache settings
+  auto_download: true
+  hf_model_id: deepseek-ai/Janus-Pro-7B
+  hf_home: ${UMM_MODEL_CACHE}/hf_cache
+  transformers_cache: ${UMM_MODEL_CACHE}/transformers_cache
+  datasets_cache: ${UMM_DATASETS}
+
+  # ── Training data: text-to-image-2M 10K subset (webdataset tar) ──
+  dataset_name: text_to_image
+  dataset_path: webdataset
+  hf_data_files:
+    train: ${UMM_DATASETS}/text-to-image-2M/data_1024_10K/data_000000.tar
+  dataset_cache_dir: ${UMM_DATASETS}
+  train_split: train
+  val_split: train
+  train_split_keep: 0.95
+  val_split_keep: 0.05
+  split_seed: 42
+  t2i_question_prompt: "Write a detailed and faithful caption for this image."
+
+  # ── Checkpoint evaluation ──
+  ckpt_eval_enabled: false
+  ckpt_eval_on_val: true
+  ckpt_eval_max_batches: 50
+
+  # resume training
+  resume_from_ckpt: ""
+  resume_load_optim: true
+  resume_strict: false
+
+  # evaluation (train-time val set)
+  run_eval_before_train: false
+  run_eval_after_train: false
+  enable_test_eval: false
+  eval_max_batches: 0
+  eval_max_new_tokens: 96
+  eval_temperature: 0.0
+  eval_use_official_prompt: false
+  eval_prompt_suffix: ""
+
+  # dataloader (4 GPU)
+  num_answers: 3129
+  image_size: 384
+  batch_size: 1
+  val_batch_size: 4
+  num_workers: 3
+
+  # model / lora
+  model_path: deepseek-ai/Janus-Pro-7B
+  low_cpu_mem_usage: false
+  gradient_checkpointing: true
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  finetune_last_k: 0
+
+  # optimization
+  disc_lr: 5.0e-6
+  gen_lr: 1.0e-2
+  weight_decay: 0.01
+  use_amp: true
+  num_epochs: 100
+  disc_clip_norm: 1.0
+  gen_clip_norm: 1.0
+
+  # game / perturbation
+  eps_max: 0.02
+  cfg_weight: 5.0
+  gen_temperature: 1.0
+  img_gen_size: 256
+  img_patch_size: 16
+  gen_lambda: 80.0
+
+  # hard mining / clip
+  clip_name: ViT-B-16
+  clip_ckpt: laion2b_s34b_b88k
+  clip_tau: 0.35
+  clip_lambda: 0.1
+  cand_K: 4
+  hard_topk: 2
+  buffer_size: 4096
+  hard_thresh_mode: quantile
+  hard_thresh_q: 0.70
+  buffer_temp: 1.5
+  hard_bs: 6
+  decoded_micro_bs: 2
+  hard_push_max_per_step: 0
+  mine_stride: 2
+  d_clean_weight: 1.5
+
+  # regularization
+  reg_enable: true
+  reg_l2: 1.0e-4
+  reg_tv: 1.0e-5
+  reg_eps: 0.0
+
+  # logs and save
+  logdir: ${UMM_OUTPUTS}/logs_januspro_4gpu_t2i10k
+  debug_log_file: ${UMM_OUTPUTS}/logs_januspro_4gpu_t2i10k/metrics/debug.log
+  pre_step_log_stride: 20
+  log_stride: 20
+  step_debug_log_stride: 20
+  csv_log_stride: 200
+  save_interval: 500

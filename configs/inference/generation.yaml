@@ -1,0 +1,13 @@
+inference:
+  backbone: bagel
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+    max_mem_per_gpu: 80GiB
+    offload_folder: ./tmp/offload
+    seed: 42
+  request:
+    task: generation
+    prompt: "A cinematic mountain landscape at sunrise."
+    output_path: out.png
+    params:
+      num_timesteps: 50

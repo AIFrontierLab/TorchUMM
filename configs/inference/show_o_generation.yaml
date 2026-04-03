@@ -1,0 +1,20 @@
+inference:
+  backbone: show_o
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/show_o/show-o-w-clip-vit-512x512
+    show_o_root: ${UMM_CODEBASE}/model/Show-o
+    vq_model_path: ${UMM_MODEL_CACHE}/show_o/magvitv2
+    version: 1
+    seed: 42
+    torch_dtype: bfloat16
+    understanding_cfg: {}
+  request:
+    task: generation
+    prompt: "A scenic landscape with mountains, a lake, and a colorful sunset."
+    params:
+      batch_size: 1
+      guidance_scale: 3.0
+      generation_timesteps: 50
+      output_dir: output/show_o_generation_images
+
+  output_json: output/show_o_generation_results.json

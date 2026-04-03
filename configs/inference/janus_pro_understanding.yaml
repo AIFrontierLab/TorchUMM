@@ -1,0 +1,17 @@
+inference:
+  backbone: janus_pro
+  output_json: ${UMM_OUTPUTS}/janus_pro_understanding.json
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/janus_pro/Janus-Pro-7B
+    janus_root: ${UMM_CODEBASE}/model/janus_pro/Janus
+    seed: 42
+    torch_dtype: bfloat16
+    understanding_cfg:
+      max_new_tokens: 512
+      do_sample: false
+      use_cache: true
+  request:
+    task: understanding
+    prompt: "What is happening in this image?"
+    images:
+      - ${UMM_OUTPUTS}/out.png

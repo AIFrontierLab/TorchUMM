@@ -1,0 +1,34 @@
+eval:
+  benchmark: mathvista
+
+inference:
+  backbone: show_o2
+  backbone_cfg:
+    version: 2
+    model_path: ${UMM_MODEL_CACHE}/show_o2/show-o2-1.5B
+    show_o_root: ${UMM_CODEBASE}/model/Show-o
+    vae_path: ${UMM_MODEL_CACHE}/show_o2/Wan2.1_VAE.pth
+    seed: 42
+    torch_dtype: bfloat16
+    understanding_cfg:
+      max_new_tokens: 100
+      top_k: 1
+      temperature: 0.8
+      use_clip_vit: true
+  request:
+    task: understanding
+    params:
+      max_new_tokens: 20
+
+mathvista:
+  mode: generate
+  resume: true
+  gt_file: data/MathVista/annot_testmini.json
+  root: AI4Math/MathVista
+  cache_dir: data/MathVista
+  datasets: [MathVista_testmini]
+  out_dir: output/mathvista/show_o2_1_5b
+  score_output_path: output/mathvista/show_o2_1_5b/summary.json
+  llm_extract:
+    model_path: ${UMM_MODEL_CACHE}/evaluator/Qwen3-32B
+    max_new_tokens: 256

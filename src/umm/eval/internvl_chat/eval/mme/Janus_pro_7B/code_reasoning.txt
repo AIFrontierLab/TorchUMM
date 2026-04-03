@@ -1,0 +1,40 @@
+0001.png	The image shows a python code. Is the output of the code 'Hello'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0001.png	The image shows a python code. Is the output of the code 'World'? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0002.png	The image shows a python code. Is the output of the code 'a cat'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0002.png	The image shows a python code. Is the output of the code 'a dog'? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0003.png	The image shows a python code. Is the output of the code '12'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0003.png	The image shows a python code. Is the output of the code '5'? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.
+0004.png	The image shows a python code. Is the output of the code '3'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0004.png	The image shows a python code. Is the output of the code '2'? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.
+0005.png	The image shows a python code. Is the output of the code '12'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0005.png	The image shows a python code. Is the output of the code '5'? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.
+0006.png	The image shows a python code. Is the output of the code '0'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0006.png	The image shows a python code. Is the output of the code '1'? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0007.png	Is a c++ code shown in the picture? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0007.png	Is a python code shown in the picture? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0008.png	The image shows a python code. Is the output of the code '1234'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0008.png	The image shows a python code. Is the output of the code '12345'? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.
+0009.png	The image shows a python code. Is the output of the code '36'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0009.png	The image shows a python code. Is the output of the code '6'? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0010.png	The image shows a python code. Is the output of the code '1'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0010.png	The image shows a python code. Is the output of the code '5'? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.
+0011.png	The image shows a python code. Is the output of the code '0'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0011.png	The image shows a python code. Is the output of the code '1'? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.
+0012.png	The image shows a python code. Is the output of the code 'working hard'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0012.png	The image shows a python code. Is the output of the code 'playing hard'? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.
+0013.png	The image shows a python code. Is the output of the code 'a cat'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	yes.
+0013.png	The image shows a python code. Is the output of the code 'a dog'? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0014.png	The image shows a python code. Is the output of the code '7'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0014.png	The image shows a python code. Is the output of the code '1'? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0015.png	The image shows a python code. Is the output of the code '11'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0015.png	The image shows a python code. Is the output of the code '9'? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.
+0016.png	The image shows a python code. Is the output of the code 'x is smaller than 10'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0016.png	The image shows a python code. Is the output of the code 'x is larger than 10'? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0017.png	The image shows a python code. Will the number 3 appear in the output of the code? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0017.png	The image shows a python code. Will the number 6 appear in the output of the code? Please answer yes or no. Answer the question using a single word or phrase.	No	no.
+0018.png	The image shows a python code. Is the output of the code '11'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0018.png	The image shows a python code. Is the output of the code '12'? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.
+0019.png	The image shows a python code. Is the output of the code 'the list has more than 2 numbers'? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0019.png	The image shows a python code. Is the output of the code 'the list has less than 2 numbers'? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.
+0020.png	Is a python code shown in the picture? Please answer yes or no. Answer the question using a single word or phrase.	Yes	no.
+0020.png	Is a c++ code shown in the picture? Please answer yes or no. Answer the question using a single word or phrase.	No	yes.

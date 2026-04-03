@@ -1,0 +1,25 @@
+inference:
+  backbone: omnigen2
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/omnigen2/OmniGen2
+    device: cuda:0
+    device_map: cuda:0
+    torch_dtype: bfloat16
+    enable_cpu_offload: false
+    enable_sequential_cpu_offload: false
+    output_dir_editing: output/omnigen2_editing
+
+  request:
+    task: editing
+    params:
+      height: 1024
+      width: 1024
+      num_inference_steps: 50
+      text_guidance_scale: 5.0
+      image_guidance_scale: 2.0
+      num_images_per_prompt: 1
+      seed: 42
+      image_path: ${UMM_OUTPUTS}/out.png
+      instruction: "Change the background to a beach."
+
+  output_json: output/omnigen2_editing_results.json

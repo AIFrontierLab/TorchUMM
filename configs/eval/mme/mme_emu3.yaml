@@ -1,0 +1,25 @@
+eval:
+  benchmark: mme
+
+inference:
+  backbone: emu3
+  backbone_cfg:
+    emu_root: ${UMM_CODEBASE}/model/Emu3
+    model_path: BAAI/Emu3-Chat
+    vq_hub: BAAI/Emu3-VisionTokenizer
+    device_map: cuda:0
+    device: cuda:0
+    torch_dtype: bfloat16
+    attn_implementation: flash_attention_2
+  request:
+    task: understanding
+    params:
+      max_new_tokens: 1024
+
+mme:
+  root: src/umm/eval/internvl_chat/eval/mme/Your_Results
+  image_root: data/mme/MME_Benchmark_release_version
+  out_dir: output/mme/emu3
+  score_output_path: output/mme/emu3/summary.json
+  run_calculation: true
+

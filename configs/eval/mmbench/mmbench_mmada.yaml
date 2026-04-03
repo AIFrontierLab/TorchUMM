@@ -1,0 +1,23 @@
+eval:
+  benchmark: mmbench
+
+inference:
+  backbone: mmada
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/mmada/MMaDA-8B-Base
+    mmada_root: ${UMM_CODEBASE}/model/MMaDA
+    vq_model_path: ${UMM_MODEL_CACHE}/mmada/magvitv2
+    seed: 42
+  request:
+    task: understanding
+    params:
+      max_new_tokens: 512
+      steps: 256
+      block_length: 128
+
+mmbench:
+  datasets: [mmbench_dev_20230712]
+  dataset_paths:
+    mmbench_dev_20230712: ${UMM_DATASETS}/mmbench/mmbench_dev_20230712.tsv
+  out_dir: output/mmbench/mmada
+  score_output_path: output/mmbench/mmada/summary.json

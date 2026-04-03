@@ -1,0 +1,5 @@
+run_name: default
+seed: 42
+runtime:
+  device: cuda
+  dtype: bfloat16

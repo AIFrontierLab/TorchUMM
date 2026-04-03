@@ -1,0 +1,24 @@
+eval:
+  benchmark: mmvet
+
+inference:
+  backbone: mmada
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/mmada/MMaDA-8B-Base
+    mmada_root: ${UMM_CODEBASE}/model/MMaDA
+    vq_model_path: ${UMM_MODEL_CACHE}/mmada/magvitv2
+    seed: 42
+  request:
+    task: understanding
+    params:
+      max_new_tokens: 512
+      steps: 256
+      block_length: 128
+
+mmvet:
+  datasets: [mmvet]
+  out_dir: output/mmvet/mmada
+  score_output_path: output/mmvet/mmada/summary.json
+  dataset_paths:
+    image_root: data/mm-vet/mm-vet/images
+    question: data/mm-vet/llava-mm-vet.jsonl

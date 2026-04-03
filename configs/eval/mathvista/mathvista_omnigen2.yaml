@@ -1,0 +1,33 @@
+eval:
+  benchmark: mathvista
+
+inference:
+  backbone: omnigen2
+  backbone_cfg:
+    omnigen2_root: ${UMM_CODEBASE}/model/OmniGen2
+    model_path: ${UMM_MODEL_CACHE}/omnigen2/OmniGen2
+    device: cuda:0
+    device_map: cuda:0
+    torch_dtype: bfloat16
+    enable_cpu_offload: false
+    enable_sequential_cpu_offload: false
+    output_dir_understanding: output/omnigen2_understanding
+  request:
+    task: understanding
+    params:
+      num_inference_steps: 50
+      seed: 42
+      max_new_tokens: 20
+
+mathvista:
+  mode: generate
+  resume: true
+  gt_file: data/MathVista/annot_testmini.json
+  root: AI4Math/MathVista
+  cache_dir: data/MathVista
+  datasets: [MathVista_testmini]
+  out_dir: output/mathvista/omnigen2
+  score_output_path: output/mathvista/omnigen2/summary.json
+  llm_extract:
+    model_path: ${UMM_MODEL_CACHE}/evaluator/Qwen3-32B
+    max_new_tokens: 256
