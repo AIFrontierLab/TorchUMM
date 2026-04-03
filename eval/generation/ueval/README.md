@@ -4,7 +4,7 @@
 
 UEval is a unified evaluation benchmark for text-to-image generation models.
 
-Reference: https://github.com/mdl-ueval/UEval
+Reference: https://github.com/zlab-princeton/UEval
 
 ## Data
 
