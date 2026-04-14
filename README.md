@@ -14,7 +14,8 @@
 </p>
 
 <p align="center">
-  <a href="https://arxiv.org/abs/2604.10784">📄 Paper</a>
+  <a href="https://arxiv.org/abs/2604.10784">📄 Paper</a> |
+  <a href="https://huggingface.co/aifronter/post_train">🤗 Post-Training Weights</a>
 </p>
 
 
