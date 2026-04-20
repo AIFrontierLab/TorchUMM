@@ -1,1 +1,0 @@
-{"ce":0,"mse":0.3133772909641266,"lr":4e-05,"_runtime":80592,"total_ce_tokens":0,"total_norm":0.17909502983093262,"total_samples":36,"allreduce_time_ms":0.10442733764648438,"mem_allocated":85235.1328125,"mem_cache":93922,"_timestamp":1.7727333417438755e+09,"_step":7598,"total_mse_tokens":131072,"_wandb":{"runtime":80592}}
