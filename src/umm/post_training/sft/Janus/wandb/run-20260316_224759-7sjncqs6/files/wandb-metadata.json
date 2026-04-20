@@ -1,0 +1,77 @@
+{
+  "os": "Linux-4.18.0-553.97.1.el8_10.x86_64-x86_64-with-glibc2.35",
+  "python": "CPython 3.11.14",
+  "startedAt": "2026-03-16T22:47:59.084462Z",
+  "args": [
+    "--model_path",
+    "/sciclone/data10/yluo13/project/codebase/model_cache/janus/models/Janus_pro_7B",
+    "--data_json",
+    "/sciclone/data10/yluo13/project/umm_reasoning/dataset/t2i/prompts.json",
+    "--image_root",
+    "/sciclone/data10/yluo13/project/umm_reasoning/dataset/t2i",
+    "--image_size",
+    "384",
+    "--vq_downsample",
+    "16",
+    "--batch_size",
+    "1",
+    "--gradient_accumulation_steps",
+    "1",
+    "--total_steps",
+    "5000",
+    "--lr",
+    "1e-5",
+    "--warmup_steps",
+    "100",
+    "--log_every",
+    "1",
+    "--save_every",
+    "1000",
+    "--checkpoint_dir",
+    "results/checkpoints",
+    "--wandb_project",
+    "janus-posttrain",
+    "--wandb_name",
+    "t2i",
+    "--wandb_offline",
+    "false"
+  ],
+  "program": "/sciclone/data10/yluo13/project/codebase/model/janus_pro/Janus/train/post_train.py",
+  "codePath": "train/post_train.py",
+  "codePathLocal": "train/post_train.py",
+  "email": "yinyil@andrew.cmu.edu",
+  "root": "/sciclone/data10/yluo13/project/codebase/model/janus_pro/Janus",
+  "host": "gpu-check",
+  "executable": "/sciclone/data10/yluo13/.conda/envs/janus/bin/python3.11",
+  "cpu_count": 32,
+  "cpu_count_logical": 32,
+  "gpu": "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+  "gpu_count": 2,
+  "disk": {
+    "/": {
+      "total": "199899344896",
+      "used": "126910984192"
+    }
+  },
+  "memory": {
+    "total": "810788139008"
+  },
+  "gpu_nvidia": [
+    {
+      "name": "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+      "memoryTotal": "102641958912",
+      "cudaCores": 24064,
+      "architecture": "Blackwell",
+      "uuid": "GPU-fc148237-b70c-cc49-b700-06a6e9260135"
+    },
+    {
+      "name": "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+      "memoryTotal": "102641958912",
+      "cudaCores": 24064,
+      "architecture": "Blackwell",
+      "uuid": "GPU-0e77d89a-e87f-46f3-0d4a-f768016b2483"
+    }
+  ],
+  "cudaVersion": "13.1",
+  "writerId": "9zv6lds4p4m6798hp526qvmjehcy7hgt"
+}

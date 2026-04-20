@@ -1,0 +1,261 @@
+_wandb:
+    value:
+        cli_version: 0.25.0
+        e:
+            a15glbour6wgvpn55dmhh07tg9feo9fq:
+                args:
+                    - --model_path
+                    - ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+                    - --dataset_config_file
+                    - data/configs/example.yaml
+                    - --layer_module
+                    - Qwen2MoTDecoderLayer
+                    - --max_latent_size
+                    - "64"
+                    - --freeze_vae
+                    - "True"
+                    - --freeze_vit
+                    - "True"
+                    - --freeze_und
+                    - "True"
+                    - --finetune_from_ema
+                    - "True"
+                    - --resume_from
+                    - ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+                    - --results_dir
+                    - ./
+                    - --checkpoint_dir
+                    - ./checkpoints
+                    - --log_every
+                    - "1"
+                    - --wandb_runid
+                    - "1"
+                    - --use_flex
+                    - "True"
+                    - --num_replicate
+                    - "1"
+                    - --num_shard
+                    - "4"
+                    - --lr
+                    - "4e-05"
+                    - --total_steps
+                    - "1000"
+                codePath: src/umm/post_training/recA/BAGEL/train/pretrain_unified_navit.py
+                codePathLocal: train/pretrain_unified_navit.py
+                cpu_count: 48
+                cpu_count_logical: 48
+                cudaVersion: "12.8"
+                disk:
+                    /:
+                        total: "1876484784128"
+                        used: "213925777408"
+                email: yinyil@andrew.cmu.edu
+                executable: /sciclone/data10/yluo13/.conda/envs/bagel/bin/python3
+                git:
+                    commit: f1af9da7ee12f0d00b42babc320e935780686e3d
+                    remote: https://github.com/AIFrontierLab/TorchUMM.git
+                gpu: NVIDIA H100 NVL
+                gpu_count: 4
+                gpu_nvidia:
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "100485038080"
+                      name: NVIDIA H100 NVL
+                      uuid: GPU-bc470d98-0d49-8419-f8b1-8c82713a9181
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "100485038080"
+                      name: NVIDIA H100 NVL
+                      uuid: GPU-c65fa365-3b68-65d0-a679-c3a0278d20c7
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "100485038080"
+                      name: NVIDIA H100 NVL
+                      uuid: GPU-ab68e001-e4e3-46cc-7c36-a143e0e51030
+                    - architecture: Hopper
+                      cudaCores: 16896
+                      memoryTotal: "100485038080"
+                      name: NVIDIA H100 NVL
+                      uuid: GPU-55e175de-b6e3-a346-72bc-9ad868bb9033
+                host: test-h100
+                memory:
+                    total: "1081614585856"
+                os: Linux-4.18.0-372.9.1.el8.x86_64-x86_64-with-glibc2.35
+                program: /sciclone/data10/yluo13/project/maintain/TorchUMM/src/umm/post_training/recA/BAGEL/train/pretrain_unified_navit.py
+                python: CPython 3.10.19
+                root: /sciclone/data10/yluo13/project/maintain/TorchUMM/src/umm/post_training/recA/BAGEL
+                startedAt: "2026-04-20T21:23:33.635789Z"
+                writerId: a15glbour6wgvpn55dmhh07tg9feo9fq
+        m: []
+        python_version: 3.10.19
+        t:
+            "1":
+                - 1
+                - 5
+                - 11
+                - 41
+                - 49
+                - 53
+                - 71
+                - 105
+            "2":
+                - 1
+                - 5
+                - 11
+                - 41
+                - 49
+                - 53
+                - 71
+                - 105
+            "3":
+                - 5
+                - 13
+                - 14
+                - 62
+            "4": 3.10.19
+            "5": 0.25.0
+            "6": 4.49.0
+            "12": 0.25.0
+            "13": linux-x86_64
+auto_resume:
+    value: false
+backward_prefetch:
+    value: BACKWARD_PRE
+beta1:
+    value: 0.9
+beta2:
+    value: 0.95
+ce_loss_reweighting:
+    value: false
+ce_weight:
+    value: 1
+checkpoint_dir:
+    value: ./checkpoints
+connector_act:
+    value: gelu_pytorch_tanh
+copy_init_moe:
+    value: true
+cpu_offload:
+    value: false
+data_seed:
+    value: 42
+dataset_config_file:
+    value: data/configs/example.yaml
+dist_backend:
+    value: nccl
+ema:
+    value: 0.9999
+eps:
+    value: 1e-15
+expected_num_tokens:
+    value: 32768
+finetune_from_ema:
+    value: true
+finetune_from_hf:
+    value: true
+freeze_llm:
+    value: false
+freeze_und:
+    value: true
+freeze_vae:
+    value: true
+freeze_vit:
+    value: true
+global_seed:
+    value: 4396
+interpolate_pos:
+    value: false
+latent_patch_size:
+    value: 2
+layer_module:
+    value: Qwen2MoTDecoderLayer
+llm_path:
+    value: hf/Qwen2.5-0.5B-Instruct/
+llm_qk_norm:
+    value: true
+log_every:
+    value: 1
+lr:
+    value: 4e-05
+lr_scheduler:
+    value: constant
+max_buffer_size:
+    value: 50
+max_grad_norm:
+    value: 1
+max_latent_size:
+    value: 64
+max_num_tokens:
+    value: 36864
+max_num_tokens_per_sample:
+    value: 16384
+min_lr:
+    value: 1e-07
+model_path:
+    value: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+mse_weight:
+    value: 1
+num_replicate:
+    value: 1
+num_shard:
+    value: 4
+num_workers:
+    value: 1
+prefer_buffer_before:
+    value: 16384
+prefetch_factor:
+    value: 2
+results_dir:
+    value: ./
+resume_from:
+    value: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+resume_model_only:
+    value: true
+save_after:
+    value: 1000
+save_every:
+    value: 250
+sharding_strategy:
+    value: HYBRID_SHARD
+text_cond_dropout_prob:
+    value: 0.1
+tie_word_embeddings:
+    value: false
+timestep_shift:
+    value: 1
+total_steps:
+    value: 1000
+use_flex:
+    value: true
+vae_cond_dropout_prob:
+    value: 0.3
+vae_path:
+    value: flux/vae/ae.safetensors
+visual_gen:
+    value: true
+visual_und:
+    value: true
+vit_cond_dropout_prob:
+    value: 0.3
+vit_max_num_patch_per_side:
+    value: 70
+vit_patch_size:
+    value: 14
+vit_path:
+    value: hf/siglip-so400m-14-980-flash-attn2-navit/
+vit_rope:
+    value: false
+vit_select_layer:
+    value: -2
+wandb_name:
+    value: run
+wandb_offline:
+    value: false
+wandb_project:
+    value: bagel_a800
+wandb_resume:
+    value: allow
+wandb_runid:
+    value: "1"
+warmup_steps:
+    value: 1000

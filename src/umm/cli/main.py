@@ -5,7 +5,7 @@ import sys
 
 from umm.cli.eval import run_eval_command
 from umm.cli.infer import run_infer_command
-# from umm.cli.train import run_train_command
+from umm.cli.train import run_train_command
 # try:
 #     import debugpy
 #     debugpy.listen(("localhost", 9501))
@@ -30,7 +30,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     train = sub.add_parser("train")
     train.add_argument("--config", required=True)
-    # train.set_defaults(handler=run_train_command)
+    train.set_defaults(handler=run_train_command)
 
     return parser
 

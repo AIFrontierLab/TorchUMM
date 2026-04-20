@@ -1,0 +1,25 @@
+2026-04-20 21:23:33,819 INFO    MainThread:1348059 [wandb_setup.py:_flush():81] Current SDK version is 0.25.0
+2026-04-20 21:23:33,819 INFO    MainThread:1348059 [wandb_setup.py:_flush():81] Configure stats pid to 1348059
+2026-04-20 21:23:33,819 INFO    MainThread:1348059 [wandb_setup.py:_flush():81] Loading settings from environment variables
+2026-04-20 21:23:33,820 INFO    MainThread:1348059 [wandb_init.py:setup_run_log_directory():717] Logging user logs to /sciclone/data10/yluo13/project/maintain/TorchUMM/src/umm/post_training/recA/BAGEL/wandb/run-20260420_212333-run-run1/logs/debug.log
+2026-04-20 21:23:33,820 INFO    MainThread:1348059 [wandb_init.py:setup_run_log_directory():718] Logging internal logs to /sciclone/data10/yluo13/project/maintain/TorchUMM/src/umm/post_training/recA/BAGEL/wandb/run-20260420_212333-run-run1/logs/debug-internal.log
+2026-04-20 21:23:33,820 INFO    MainThread:1348059 [wandb_init.py:init():844] calling init triggers
+2026-04-20 21:23:33,820 INFO    MainThread:1348059 [wandb_init.py:init():849] wandb.init called with sweep_config: {}
+config: {'_wandb': {}}
+2026-04-20 21:23:33,820 INFO    MainThread:1348059 [wandb_init.py:init():892] starting backend
+2026-04-20 21:23:34,129 INFO    MainThread:1348059 [wandb_init.py:init():895] sending inform_init request
+2026-04-20 21:23:34,163 INFO    MainThread:1348059 [wandb_init.py:init():903] backend started and connected
+2026-04-20 21:23:34,164 INFO    MainThread:1348059 [wandb_init.py:init():973] updated telemetry
+2026-04-20 21:23:34,424 INFO    MainThread:1348059 [wandb_init.py:init():997] communicating run to backend with 90.0 second timeout
+2026-04-20 21:23:34,880 INFO    MainThread:1348059 [wandb_init.py:init():1037] run resumed
+2026-04-20 21:23:34,882 INFO    MainThread:1348059 [wandb_init.py:init():1042] starting run threads in backend
+2026-04-20 21:23:35,009 INFO    MainThread:1348059 [wandb_run.py:_console_start():2524] atexit reg
+2026-04-20 21:23:35,009 INFO    MainThread:1348059 [wandb_run.py:_redirect():2373] redirect: wrap_raw
+2026-04-20 21:23:35,009 INFO    MainThread:1348059 [wandb_run.py:_redirect():2442] Wrapping output streams.
+2026-04-20 21:23:35,009 INFO    MainThread:1348059 [wandb_run.py:_redirect():2465] Redirects installed.
+2026-04-20 21:23:35,012 INFO    MainThread:1348059 [wandb_init.py:init():1082] run started, returning control to user process
+2026-04-20 21:23:35,013 INFO    MainThread:1348059 [wandb_run.py:_config_callback():1403] config_cb None None {'visual_gen': True, 'visual_und': True, 'results_dir': './', 'checkpoint_dir': './checkpoints', 'wandb_project': 'bagel_a800', 'wandb_name': 'run', 'wandb_runid': '1', 'wandb_resume': 'allow', 'wandb_offline': False, 'save_after': 1000, 'global_seed': 4396, 'auto_resume': False, 'resume_from': '${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT', 'resume_model_only': True, 'finetune_from_ema': True, 'finetune_from_hf': True, 'log_every': 1, 'save_every': 250, 'total_steps': 1000, 'warmup_steps': 1000, 'lr_scheduler': 'constant', 'lr': 4e-05, 'min_lr': 1e-07, 'beta1': 0.9, 'beta2': 0.95, 'eps': 1e-15, 'ema': 0.9999, 'max_grad_norm': 1.0, 'timestep_shift': 1.0, 'mse_weight': 1.0, 'ce_weight': 1.0, 'ce_loss_reweighting': False, 'expected_num_tokens': 32768, 'num_replicate': 1, 'num_shard': 4, 'sharding_strategy': 'HYBRID_SHARD', 'backward_prefetch': 'BACKWARD_PRE', 'cpu_offload': False, 'freeze_llm': False, 'freeze_vit': True, 'freeze_vae': True, 'freeze_und': True, 'copy_init_moe': True, 'use_flex': True, 'dist_backend': 'nccl'}
+2026-04-20 21:23:35,013 INFO    MainThread:1348059 [wandb_run.py:_config_callback():1403] config_cb None None {'model_path': '${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT', 'llm_path': 'hf/Qwen2.5-0.5B-Instruct/', 'llm_qk_norm': True, 'tie_word_embeddings': False, 'layer_module': 'Qwen2MoTDecoderLayer', 'vae_path': 'flux/vae/ae.safetensors', 'vit_path': 'hf/siglip-so400m-14-980-flash-attn2-navit/', 'max_latent_size': 64, 'latent_patch_size': 2, 'vit_patch_size': 14, 'vit_max_num_patch_per_side': 70, 'connector_act': 'gelu_pytorch_tanh', 'interpolate_pos': False, 'vit_select_layer': -2, 'vit_rope': False, 'text_cond_dropout_prob': 0.1, 'vae_cond_dropout_prob': 0.3, 'vit_cond_dropout_prob': 0.3}
+2026-04-20 21:23:35,014 INFO    MainThread:1348059 [wandb_run.py:_config_callback():1403] config_cb None None {'dataset_config_file': 'data/configs/example.yaml', 'prefetch_factor': 2, 'num_workers': 1, 'max_num_tokens_per_sample': 16384, 'max_num_tokens': 36864, 'prefer_buffer_before': 16384, 'max_buffer_size': 50, 'data_seed': 42}
+2026-04-20 21:23:35,452 INFO    wandb-AsyncioManager-main:1348059 [service_client.py:_forward_responses():134] Reached EOF.
+2026-04-20 21:23:35,452 INFO    wandb-AsyncioManager-main:1348059 [mailbox.py:close():155] Closing mailbox, abandoning 1 handles.

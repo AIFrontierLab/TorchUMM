@@ -18,7 +18,7 @@ train:
   dataset_name: text_to_image
   dataset_path: webdataset
   hf_data_files:
-    train: ${UMM_DATASETS}/text-to-image-2M/data_1024_10K/data_000000.tar
+    train: ${UMM_DATASETS}/data_000000.tar
   dataset_cache_dir: ${UMM_DATASETS}
   train_split: train
   val_split: train

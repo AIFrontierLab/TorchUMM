@@ -1,0 +1,158 @@
+_wandb:
+    value:
+        cli_version: 0.25.1
+        e:
+            ghawd3gvo88dsawvndiq0lckeqtgcir8:
+                args:
+                    - --model_path
+                    - /sciclone/data10/yluo13/project/codebase/model_cache/janus/models/Janus_pro_7B
+                    - --data_json
+                    - /sciclone/data10/yluo13/project/umm_reasoning/dataset/t2i/prompts.json
+                    - --image_root
+                    - /sciclone/data10/yluo13/project/umm_reasoning/dataset/t2i
+                    - --image_size
+                    - "384"
+                    - --vq_downsample
+                    - "16"
+                    - --batch_size
+                    - "1"
+                    - --gradient_accumulation_steps
+                    - "1"
+                    - --total_steps
+                    - "1000"
+                    - --lr
+                    - "1e-5"
+                    - --warmup_steps
+                    - "100"
+                    - --log_every
+                    - "10"
+                    - --save_every
+                    - "200"
+                    - --checkpoint_dir
+                    - results/checkpoints
+                    - --wandb_project
+                    - janus-posttrain
+                    - --wandb_name
+                    - t2i
+                    - --wandb_offline
+                    - "false"
+                codePath: train/post_train.py
+                codePathLocal: train/post_train.py
+                cpu_count: 32
+                cpu_count_logical: 32
+                cudaVersion: "13.1"
+                disk:
+                    /:
+                        total: "199899344896"
+                        used: "126911873024"
+                email: yinyil@andrew.cmu.edu
+                executable: /sciclone/data10/yluo13/.conda/envs/janus/bin/python3.11
+                gpu: NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition
+                gpu_count: 2
+                gpu_nvidia:
+                    - architecture: Blackwell
+                      cudaCores: 24064
+                      memoryTotal: "102641958912"
+                      name: NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition
+                      uuid: GPU-fc148237-b70c-cc49-b700-06a6e9260135
+                    - architecture: Blackwell
+                      cudaCores: 24064
+                      memoryTotal: "102641958912"
+                      name: NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition
+                      uuid: GPU-0e77d89a-e87f-46f3-0d4a-f768016b2483
+                host: gpu-check
+                memory:
+                    total: "810788139008"
+                os: Linux-4.18.0-553.97.1.el8_10.x86_64-x86_64-with-glibc2.35
+                program: /sciclone/data10/yluo13/project/codebase/model/janus_pro/Janus/train/post_train.py
+                python: CPython 3.11.14
+                root: /sciclone/data10/yluo13/project/codebase/model/janus_pro/Janus
+                startedAt: "2026-03-16T22:35:56.058313Z"
+                writerId: ghawd3gvo88dsawvndiq0lckeqtgcir8
+        m: []
+        python_version: 3.11.14
+        t:
+            "1":
+                - 1
+                - 11
+                - 41
+                - 49
+                - 63
+                - 71
+            "2":
+                - 1
+                - 11
+                - 41
+                - 49
+                - 63
+                - 71
+            "3":
+                - 13
+                - 61
+            "4": 3.11.14
+            "5": 0.25.1
+            "6": 4.37.2
+            "12": 0.25.1
+            "13": linux-x86_64
+auto_resume:
+    value: false
+batch_size:
+    value: 1
+checkpoint_dir:
+    value: results/checkpoints
+data_json:
+    value: /sciclone/data10/yluo13/project/umm_reasoning/dataset/t2i/prompts.json
+epochs:
+    value: 1
+freeze_gen_vision:
+    value: true
+freeze_language:
+    value: false
+freeze_vision:
+    value: true
+global_seed:
+    value: 4396
+gradient_accumulation_steps:
+    value: 1
+image_root:
+    value: /sciclone/data10/yluo13/project/umm_reasoning/dataset/t2i
+image_size:
+    value: 384
+log_every:
+    value: 10
+lr:
+    value: 1e-05
+lr_scheduler:
+    value: constant
+max_samples:
+    value: null
+min_lr:
+    value: 1e-07
+model_path:
+    value: /sciclone/data10/yluo13/project/codebase/model_cache/janus/models/Janus_pro_7B
+num_workers:
+    value: 4
+output_dir:
+    value: results
+resume_from:
+    value: null
+resume_model_only:
+    value: false
+save_every:
+    value: 200
+torch_dtype:
+    value: bf16
+total_steps:
+    value: 1000
+trust_remote_code:
+    value: true
+vq_downsample:
+    value: 16
+wandb_name:
+    value: t2i
+wandb_offline:
+    value: false
+wandb_project:
+    value: janus-posttrain
+warmup_steps:
+    value: 100

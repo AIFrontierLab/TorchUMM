@@ -1,0 +1,26 @@
+[34m[1mwandb[0m: Detected [huggingface_hub.inference] in use.
+[34m[1mwandb[0m: Use W&B Weave for improved LLM call tracing. Install Weave with `pip install weave` then add `import weave` to the top of your script.
+[34m[1mwandb[0m: For more information, check out the docs at: https://weave-docs.wandb.ai/
+[[34m2026-04-20 21:23:35[0m] Training arguments TrainingArguments(visual_gen=True, visual_und=True, results_dir='./', checkpoint_dir='./checkpoints', wandb_project='bagel_a800', wandb_name='run', wandb_runid='1', wandb_resume='allow', wandb_offline=False, save_after=1000, global_seed=4396, auto_resume=False, resume_from='${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT', resume_model_only=True, finetune_from_ema=True, finetune_from_hf=True, log_every=1, save_every=250, total_steps=1000, warmup_steps=1000, lr_scheduler='constant', lr=4e-05, min_lr=1e-07, beta1=0.9, beta2=0.95, eps=1e-15, ema=0.9999, max_grad_norm=1.0, timestep_shift=1.0, mse_weight=1.0, ce_weight=1.0, ce_loss_reweighting=False, expected_num_tokens=32768, num_replicate=1, num_shard=4, sharding_strategy='HYBRID_SHARD', backward_prefetch='BACKWARD_PRE', cpu_offload=False, freeze_llm=False, freeze_vit=True, freeze_vae=True, freeze_und=True, copy_init_moe=True, use_flex=True, dist_backend='nccl')
+[[34m2026-04-20 21:23:35[0m] Model arguments ModelArguments(model_path='${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT', llm_path='hf/Qwen2.5-0.5B-Instruct/', llm_qk_norm=True, tie_word_embeddings=False, layer_module='Qwen2MoTDecoderLayer', vae_path='flux/vae/ae.safetensors', vit_path='hf/siglip-so400m-14-980-flash-attn2-navit/', max_latent_size=64, latent_patch_size=2, vit_patch_size=14, vit_max_num_patch_per_side=70, connector_act='gelu_pytorch_tanh', interpolate_pos=False, vit_select_layer=-2, vit_rope=False, text_cond_dropout_prob=0.1, vae_cond_dropout_prob=0.3, vit_cond_dropout_prob=0.3)
+[[34m2026-04-20 21:23:35[0m] Data arguments DataArguments(dataset_config_file='data/configs/example.yaml', prefetch_factor=2, num_workers=1, max_num_tokens_per_sample=16384, max_num_tokens=36864, prefer_buffer_before=16384, max_buffer_size=50, data_seed=42)
+Traceback (most recent call last):
+  File "/sciclone/data10/yluo13/project/maintain/TorchUMM/src/umm/post_training/recA/BAGEL/train/pretrain_unified_navit.py", line 742, in <module>
+    main()
+  File "/sciclone/data10/yluo13/project/maintain/TorchUMM/src/umm/post_training/recA/BAGEL/train/pretrain_unified_navit.py", line 407, in main
+    llm_config = Qwen2Config.from_json_file(os.path.join(model_args.model_path, "llm_config.json"))
+  File "/sciclone/data10/yluo13/.conda/envs/bagel/lib/python3.10/site-packages/transformers/configuration_utils.py", line 790, in from_json_file
+    config_dict = cls._dict_from_json_file(json_file)
+  File "/sciclone/data10/yluo13/.conda/envs/bagel/lib/python3.10/site-packages/transformers/configuration_utils.py", line 795, in _dict_from_json_file
+    with open(json_file, "r", encoding="utf-8") as reader:
+FileNotFoundError: [Errno 2] No such file or directory: '${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT/llm_config.json'
+[rank0]: Traceback (most recent call last):
+[rank0]:   File "/sciclone/data10/yluo13/project/maintain/TorchUMM/src/umm/post_training/recA/BAGEL/train/pretrain_unified_navit.py", line 742, in <module>
+[rank0]:     main()
+[rank0]:   File "/sciclone/data10/yluo13/project/maintain/TorchUMM/src/umm/post_training/recA/BAGEL/train/pretrain_unified_navit.py", line 407, in main
+[rank0]:     llm_config = Qwen2Config.from_json_file(os.path.join(model_args.model_path, "llm_config.json"))
+[rank0]:   File "/sciclone/data10/yluo13/.conda/envs/bagel/lib/python3.10/site-packages/transformers/configuration_utils.py", line 790, in from_json_file
+[rank0]:     config_dict = cls._dict_from_json_file(json_file)
+[rank0]:   File "/sciclone/data10/yluo13/.conda/envs/bagel/lib/python3.10/site-packages/transformers/configuration_utils.py", line 795, in _dict_from_json_file
+[rank0]:     with open(json_file, "r", encoding="utf-8") as reader:
+[rank0]: FileNotFoundError: [Errno 2] No such file or directory: '${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT/llm_config.json'

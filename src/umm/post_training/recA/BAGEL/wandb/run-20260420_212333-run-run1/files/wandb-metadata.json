@@ -1,0 +1,99 @@
+{
+  "os":  "Linux-4.18.0-372.9.1.el8.x86_64-x86_64-with-glibc2.35",
+  "python":  "CPython 3.10.19",
+  "startedAt":  "2026-04-20T21:23:33.635789Z",
+  "args":  [
+    "--model_path",
+    "${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT",
+    "--dataset_config_file",
+    "data/configs/example.yaml",
+    "--layer_module",
+    "Qwen2MoTDecoderLayer",
+    "--max_latent_size",
+    "64",
+    "--freeze_vae",
+    "True",
+    "--freeze_vit",
+    "True",
+    "--freeze_und",
+    "True",
+    "--finetune_from_ema",
+    "True",
+    "--resume_from",
+    "${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT",
+    "--results_dir",
+    "./",
+    "--checkpoint_dir",
+    "./checkpoints",
+    "--log_every",
+    "1",
+    "--wandb_runid",
+    "1",
+    "--use_flex",
+    "True",
+    "--num_replicate",
+    "1",
+    "--num_shard",
+    "4",
+    "--lr",
+    "4e-05",
+    "--total_steps",
+    "1000"
+  ],
+  "program":  "/sciclone/data10/yluo13/project/maintain/TorchUMM/src/umm/post_training/recA/BAGEL/train/pretrain_unified_navit.py",
+  "codePath":  "src/umm/post_training/recA/BAGEL/train/pretrain_unified_navit.py",
+  "codePathLocal":  "train/pretrain_unified_navit.py",
+  "git":  {
+    "remote":  "https://github.com/AIFrontierLab/TorchUMM.git",
+    "commit":  "f1af9da7ee12f0d00b42babc320e935780686e3d"
+  },
+  "email":  "yinyil@andrew.cmu.edu",
+  "root":  "/sciclone/data10/yluo13/project/maintain/TorchUMM/src/umm/post_training/recA/BAGEL",
+  "host":  "test-h100",
+  "executable":  "/sciclone/data10/yluo13/.conda/envs/bagel/bin/python3",
+  "cpu_count":  48,
+  "cpu_count_logical":  48,
+  "gpu":  "NVIDIA H100 NVL",
+  "gpu_count":  4,
+  "disk":  {
+    "/":  {
+      "total":  "1876484784128",
+      "used":  "213925777408"
+    }
+  },
+  "memory":  {
+    "total":  "1081614585856"
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA H100 NVL",
+      "memoryTotal":  "100485038080",
+      "cudaCores":  16896,
+      "architecture":  "Hopper",
+      "uuid":  "GPU-bc470d98-0d49-8419-f8b1-8c82713a9181"
+    },
+    {
+      "name":  "NVIDIA H100 NVL",
+      "memoryTotal":  "100485038080",
+      "cudaCores":  16896,
+      "architecture":  "Hopper",
+      "uuid":  "GPU-c65fa365-3b68-65d0-a679-c3a0278d20c7"
+    },
+    {
+      "name":  "NVIDIA H100 NVL",
+      "memoryTotal":  "100485038080",
+      "cudaCores":  16896,
+      "architecture":  "Hopper",
+      "uuid":  "GPU-ab68e001-e4e3-46cc-7c36-a143e0e51030"
+    },
+    {
+      "name":  "NVIDIA H100 NVL",
+      "memoryTotal":  "100485038080",
+      "cudaCores":  16896,
+      "architecture":  "Hopper",
+      "uuid":  "GPU-55e175de-b6e3-a346-72bc-9ad868bb9033"
+    }
+  ],
+  "cudaVersion":  "12.8",
+  "writerId":  "a15glbour6wgvpn55dmhh07tg9feo9fq"
+}
