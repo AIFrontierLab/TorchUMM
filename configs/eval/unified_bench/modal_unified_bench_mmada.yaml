@@ -1,0 +1,43 @@
+eval:
+  benchmark: unified_bench
+inference:
+  backbone: mmada
+  backbone_cfg:
+    model_path: /model_cache/mmada/MMaDA-8B-Base
+    mmada_root: /workspace/model/MMaDA
+    vq_model_path: /model_cache/mmada/magvitv2
+    seed: 42
+    understanding_cfg:
+      max_new_tokens: 5120
+      steps: 256
+      block_length: 128
+      do_sample: false
+unified_bench:
+  mode: generate
+  ref_dir: /datasets/unified_bench/Image
+  out_dir: /output-apr4/unified_bench/mmada
+  resume: true
+  max_samples: 0
+  score_output_path: /output-apr4/unified_bench/mmada/summary.json
+  captioning_instruction: 'You are an expert vision-language model.
+
+    Your task is: Given an input image, generate a **textual description** of the
+    image. If there is text in the image, transcribe it inside double quotes "".
+
+    Now, carefully analyze the input image and output the full description.
+
+    '
+  scoring:
+    models:
+    - clip
+    - dinov2
+    - dinov3
+    - longclip
+    model_paths:
+      clip: /model_cache/unified_bench/clip-vit-large-patch14
+      dinov2: /model_cache/unified_bench/dinov2-large
+      dinov3: /model_cache/unified_bench/dinov3-vitl16
+      longclip: /model_cache/unified_bench/longclip-L.pt
+    device: cuda
+  score_model: unified_bench
+  score_gpu: A100-40GB:1

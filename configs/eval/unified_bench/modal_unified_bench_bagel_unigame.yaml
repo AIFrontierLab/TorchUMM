@@ -1,0 +1,46 @@
+eval:
+  benchmark: unified_bench
+inference:
+  backbone: bagel
+  backbone_cfg:
+    model_path: /post_train_model_cache/post_train/Unigame/bagel/
+    bagel_root: /workspace/model/Bagel
+    max_mem_per_gpu: 80GiB
+    offload_folder: ./tmp/offload
+    seed: 42
+    generation_cfg:
+      cfg_text_scale: 4.0
+      cfg_img_scale: 1.0
+      num_timesteps: 50
+    understanding_cfg:
+      max_think_token_n: 1000
+      do_sample: false
+unified_bench:
+  mode: generate
+  ref_dir: /datasets/unified_bench/Image
+  out_dir: /output-apr4/unified_bench/bagel_unigame
+  resume: true
+  max_samples: 0
+  score_output_path: /output-apr4/unified_bench/bagel_unigame/summary.json
+  captioning_instruction: 'You are an expert vision-language model.
+
+    Your task is: Given an input image, generate a **textual description** of the
+    image. If there is text in the image, transcribe it inside double quotes "".
+
+    Now, carefully analyze the input image and output the full description.
+
+    '
+  scoring:
+    models:
+    - clip
+    - dinov2
+    - dinov3
+    - longclip
+    model_paths:
+      clip: /model_cache/unified_bench/clip-vit-large-patch14
+      dinov2: /model_cache/unified_bench/dinov2-large
+      dinov3: /model_cache/unified_bench/dinov3-vitl16
+      longclip: /model_cache/unified_bench/longclip-L.pt
+    device: cuda
+  score_model: unified_bench
+  score_gpu: A100-40GB:1

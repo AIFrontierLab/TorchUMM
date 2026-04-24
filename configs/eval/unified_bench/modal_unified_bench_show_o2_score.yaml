@@ -1,0 +1,24 @@
+eval:
+  benchmark: unified_bench
+
+inference:
+  backbone: show_o2
+  backbone_cfg: {}
+
+unified_bench:
+  mode: score
+  ref_dir: /datasets/unified_bench/Image
+  out_dir: /output-apr4/unified_bench/show_o2
+  score_output_path: /output-apr4/unified_bench/show_o2/summary.json
+
+  scoring:
+    models: [clip, dinov2, dinov3, longclip]
+    model_paths:
+      clip:     /model_cache/unified_bench/clip-vit-large-patch14
+      dinov2:   /model_cache/unified_bench/dinov2-large
+      dinov3:   /model_cache/unified_bench/dinov3-vitl16
+      longclip: /model_cache/unified_bench/longclip-L.pt
+    device: cuda
+
+  score_model: unified_bench
+  score_gpu: "A100-40GB:1"
