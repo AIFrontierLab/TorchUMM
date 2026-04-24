@@ -54,4 +54,7 @@ def run_eval_command(args: Any) -> int:
     if benchmark == "geneval" or "geneval" in raw_cfg:
         from umm.cli.geneval import run_eval_command as _fn
         return _fn(args)
+    if benchmark == "unified_bench" or "unified_bench" in raw_cfg:
+        from umm.cli.unified_bench import run_unified_bench_eval_command as _fn
+        return _fn(args)
     raise NotImplementedError(f"`umm eval` benchmark '{benchmark}' is not supported yet (config: {args.config}).")
