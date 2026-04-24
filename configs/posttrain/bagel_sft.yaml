@@ -15,6 +15,7 @@ train:
   args:
     dataset_config_file: ./data/configs/example.yaml
     model_path: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+    wandb_project: bagel-finetune
     layer_module: Qwen2MoTDecoderLayer
     max_latent_size: 64
     resume-from: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
@@ -24,7 +25,7 @@ train:
     finetune-from-ema: True
     log_every: 1
     lr: 2e-5
-    num_worker: 1
+    num_workers: 1
     num_replicate: 1
     num_shard: 4
     save_every: 1000

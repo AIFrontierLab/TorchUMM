@@ -1,0 +1,39 @@
+train:
+  pipeline: unicot
+  cwd: src/umm/post_training/unicot/UniCoT
+  env:
+    PYTHONPATH: .
+  torchrun:
+    nnodes: 1
+    nproc_per_node: 4
+  script: train/pretrain_unified_navit_lora.py
+  args:
+    dataset_config_file: ./data/configs/t2i_umm.yaml
+    warmup_steps: 200
+    model_path: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+    wandb_offline: True
+    layer_module: Qwen2MoTDecoderLayer
+    visual_und: False
+    max_latent_size: 64
+    resume_from: ${UMM_MODEL_CACHE}/bagel/BAGEL-7B-MoT
+    finetune_from_hf: True
+    auto_resume: True
+    resume_model_only: True
+    finetune_from_ema: True
+    log_every: 1
+    lr: 2e-5
+    num_workers: 1
+    expected_num_tokens: 49152
+    max_num_tokens: 52224
+    max_num_tokens_per_sample: 16384
+    num_shard: 4
+    cpu_offload: False
+    text_cond_dropout_prob: 0.0
+    vae_cond_dropout_prob: 0.0
+    vit_cond_dropout_prob: 0.0
+    save_every: 500
+    total_steps: 3000
+    lora_rank: 256
+    lora_alpha: 512
+    results_dir: ./results/test_lora/
+    checkpoint_dir: ./results/test_lora/checkpoints
