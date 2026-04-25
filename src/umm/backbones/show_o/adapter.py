@@ -529,11 +529,9 @@ class ShowOBackbone:
         ).to(device).unsqueeze(0)
 
         # VAE encode
-        print("[show_o2] _v2_infer_image: VAE encoding ...", flush=True)
         image_latents = vae_model.sample(image.unsqueeze(2)).squeeze(2).to(weight_type)
 
         # Dual-path embeddings + fusion
-        print("[show_o2] _v2_infer_image: building embeddings ...", flush=True)
         image_embeds_und = model.image_embedder_und(image_latents)
         image_embeds_gen = model.image_embedder_gen(image_latents)
         image_embeds_und = image_embeds_und + model.position_embedding(model.image_position_ids)
@@ -585,7 +583,6 @@ class ShowOBackbone:
             )[None, None, :].to(device)
 
         # Attention mask
-        print(f"[show_o2] _v2_infer_image: input_embeds shape={input_embeds.shape}, building attn mask ...", flush=True)
         attention_mask = self._v2_omni_attn_mask_fn(
             B=input_embeds.size(0),
             LEN=input_embeds.size(1),
@@ -595,7 +592,6 @@ class ShowOBackbone:
         ).to(input_embeds.dtype)
 
         # Generate
-        print(f"[show_o2] _v2_infer_image: attn_mask shape={attention_mask.shape}, generating ...", flush=True)
         torch.manual_seed(self.seed)
         if torch.cuda.is_available():
             torch.cuda.manual_seed_all(self.seed)
@@ -609,7 +605,6 @@ class ShowOBackbone:
                 eos_token=tokenizer.eos_token_id,
             )
 
-        print(f"[show_o2] _v2_infer_image: generation done, {len(output_tokens)} tokens", flush=True)
         output_tokens = torch.stack(output_tokens).squeeze()[None]
         text = tokenizer.batch_decode(output_tokens, skip_special_tokens=True)
         return text[0] if text else ""
