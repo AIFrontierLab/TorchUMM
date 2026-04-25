@@ -3,17 +3,6 @@ eval:
 
 inference:
   backbone: emu3
-  backbone_cfg:
-    emu_root: ${UMM_CODEBASE}/model/Emu3
-    model_path: ${UMM_MODEL_CACHE}/emu3/Emu3-Chat
-    vq_hub: ${UMM_MODEL_CACHE}/emu3/Emu3-VisionTokenizer
-    device_map: cuda:0
-    device: cuda:0
-    torch_dtype: bfloat16
-    attn_implementation: flash_attention_2
-
-    generation_cfg:
-      max_new_tokens: 1024
 
 mmbench:
   datasets: [MMBench_TEST_EN_V11, MMBench_TEST_CN_V11]
@@ -22,7 +11,7 @@ mmbench:
     MMBench_TEST_CN_V11: ${UMM_DATASETS}/mmbench/MMBench_TEST_CN_V11.tsv
   out_dir: output/mmbench/emu3
   score_output_path: output/mmbench/emu3/summary.json
-  mode: generate
+  mode: score
   resume: true
   llm_extract:
     model_path: ${UMM_MODEL_CACHE}/evaluator/Qwen3-32B-AWQ

@@ -16,6 +16,14 @@ inference:
       use_clip_vit: true
 
 mmbench:
-  datasets: [mmbench_dev_20230712]
+  datasets: [MMBench_TEST_EN_V11, MMBench_TEST_CN_V11]
+  dataset_paths:
+    MMBench_TEST_EN_V11: ${UMM_DATASETS}/mmbench/MMBench_TEST_EN_V11.tsv
+    MMBench_TEST_CN_V11: ${UMM_DATASETS}/mmbench/MMBench_TEST_CN_V11.tsv
   out_dir: output/mmbench/show_o
   score_output_path: output/mmbench/show_o/summary.json
+  mode: generate
+  resume: true
+  llm_extract:
+    model_path: ${UMM_MODEL_CACHE}/evaluator/Qwen3-32B-AWQ
+    max_new_tokens: 64
