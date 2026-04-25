@@ -19,7 +19,7 @@ mmbench:
   out_dir: /outputs/mmbench/janus_flow
   score_output_path: /outputs/mmbench/janus_flow/summary.json
   resume: true
-  mode: full
+  mode: score
   score_model: wise
   score_gpu: "A100-80GB"
   llm_extract:

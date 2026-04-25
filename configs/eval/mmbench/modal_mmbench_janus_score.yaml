@@ -2,11 +2,10 @@ eval:
   benchmark: mmbench
 
 inference:
-  backbone: janus_flow
+  backbone: janus_pro
   backbone_cfg:
-    model_path: /model_cache/janus_flow/JanusFlow-1.3B
-    janus_root: /workspace/src/umm/backbones/janus_flow/Janus
-    vae_path: /model_cache/janus_flow/sdxl-vae
+    model_path: /model_cache/janus_pro/Janus-1.3B
+    janus_root: /workspace/src/umm/backbones/janus_pro/Janus
     seed: 42
     torch_dtype: bfloat16
     understanding_cfg:
@@ -16,10 +15,10 @@ inference:
 
 mmbench:
   datasets: [MMBench_TEST_EN_V11, MMBench_TEST_CN_V11]
-  out_dir: /outputs/mmbench/janus_flow
-  score_output_path: /outputs/mmbench/janus_flow/summary.json
+  out_dir: /outputs/mmbench/janus
+  score_output_path: /outputs/mmbench/janus/summary.json
   resume: true
-  mode: full
+  mode: score
   score_model: wise
   score_gpu: "A100-80GB"
   llm_extract:

@@ -493,6 +493,41 @@ def _wise_image():
     )
 
 
+def _unified_bench_image():
+    """Unified-Bench scoring image — light, just needs transformers + Long-CLIP.
+
+    Used for the scoring phase of Unified-Bench (CLIP / DINOv2 / DINOv3 /
+    LongCLIP similarity). No flash-attn needed because we only run vision
+    encoders. DINOv3 support requires transformers >= 4.50.
+    """
+    return (
+        modal.Image.from_registry(
+            "nvidia/cuda:12.4.0-devel-ubuntu22.04", add_python="3.10"
+        )
+        .env({"DEBIAN_FRONTEND": "noninteractive", "TZ": "Etc/UTC"})
+        .apt_install(_SYS_PACKAGES)
+        .pip_install([
+            "torch==2.5.1", "torchvision==0.20.1",
+            "transformers>=4.50.0",
+            "safetensors", "Pillow",
+            "numpy", "tqdm", "PyYAML",
+            "huggingface_hub",
+            "ftfy", "regex",
+            "setuptools", "wheel",
+        ])
+        # Long-CLIP model code (weights downloaded separately to the model cache).
+        # The beichenzbc/Long-CLIP repo is not a pip package, so we clone it
+        # to /opt/longclip; the scorer adds /opt to sys.path and imports
+        # `from longclip.model import longclip`.
+        .pip_install(["open_clip_torch"])  # LongCLIP depends on open_clip internals
+        .run_commands(
+            "git clone --depth 1 https://github.com/beichenzbc/Long-CLIP.git /opt/longclip",
+            "touch /opt/longclip/__init__.py /opt/longclip/model/__init__.py",
+        )
+        .add_local_python_source("config", "volumes", "images")
+    )
+
+
 def _emu3_5_image():
     """EMU3.5 — Python 3.12, torch 2.8.0, vLLM 0.11.0, flash-attn 2.8.3
 
@@ -557,6 +592,7 @@ _IMAGE_FACTORIES = {
     "tokenflow": _tokenflow_image,
     "ueval":     _ueval_image,
     "uni_mmmu":  _uni_mmmu_image,
+    "unified_bench": _unified_bench_image,
     "wise":      _wise_image,
 }
 

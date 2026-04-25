@@ -54,7 +54,7 @@ from volumes import codebase_volume, checkpoint_volume, dataset_volume, model_vo
 _VALID_MODELS = [
     "bagel", "blip3o", "deepgen", "emu3", "emu3_5", "geneval", "janus_flow", "janus_pro",
     "mmada", "omnigen2", "ovis_u1",
-    "show_o", "show_o2", "tokenflow", "ueval", "uni_mmmu", "wise",
+    "show_o", "show_o2", "tokenflow", "ueval", "uni_mmmu", "unified_bench", "wise",
 ]
 
 _IMAGE_NAMES = {
@@ -74,6 +74,7 @@ _IMAGE_NAMES = {
     "tokenflow": "tokenflow_image",
     "ueval":     "ueval_image",
     "uni_mmmu":  "uni_mmmu_image",
+    "unified_bench": "unified_bench_image",
     "wise":      "wise_image",
 }
 
@@ -95,6 +96,7 @@ _REPO_DIRS = {
     "tokenflow": "TokenFlow",
     "ueval":     "UEval",
     "uni_mmmu":  "Uni-MMMU",
+    "unified_bench": "UAE",
     "wise":      "WISE",
 }
 
@@ -142,7 +144,7 @@ def _detect_score_config() -> tuple:
         with open(config_file) as f:
             data = yaml.safe_load(f) or {}
         # Check benchmark-specific sections for score_model
-        for section in ("wise", "geneval", "ueval", "uni_mmmu", "gedit", "imgedit", "mathvista"):
+        for section in ("wise", "geneval", "ueval", "uni_mmmu", "gedit", "imgedit", "mathvista", "mmbench", "unified_bench"):
             sec = data.get(section, {})
             if isinstance(sec, dict) and sec.get("score_model"):
                 sm = str(sec["score_model"])
@@ -203,7 +205,7 @@ def _run_impl(
             import yaml
             with open(config_path) as f:
                 cfg = yaml.safe_load(f) or {}
-            for section in ("wise", "geneval", "ueval", "uni_mmmu", "gedit", "imgedit", "mathvista"):
+            for section in ("wise", "geneval", "ueval", "uni_mmmu", "gedit", "imgedit", "mathvista", "mmbench", "unified_bench"):
                 if section in cfg and isinstance(cfg[section], dict):
                     cfg[section]["mode"] = mode_override
                     break

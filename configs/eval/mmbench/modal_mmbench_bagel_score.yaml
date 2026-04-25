@@ -2,23 +2,24 @@ eval:
   benchmark: mmbench
 
 inference:
-  backbone: janus_pro
+  backbone: bagel
   backbone_cfg:
-    model_path: /model_cache/janus_pro/Janus-1.3B
-    janus_root: /workspace/src/umm/backbones/janus_pro/Janus
+    model_path: /model_cache/bagel/BAGEL-7B-MoT
+    bagel_root: /workspace/model/Bagel
+    max_mem_per_gpu: 80GiB
+    offload_folder: ./tmp/offload
     seed: 42
-    torch_dtype: bfloat16
+
     understanding_cfg:
-      max_new_tokens: 2048
+      max_think_token_n: 1000
       do_sample: false
-      use_cache: true
 
 mmbench:
   datasets: [MMBench_TEST_EN_V11, MMBench_TEST_CN_V11]
-  out_dir: /outputs/mmbench/janus
-  score_output_path: /outputs/mmbench/janus/summary.json
+  out_dir: /outputs/mmbench/bagel
+  score_output_path: /outputs/mmbench/bagel/summary.json
+  mode: score
   resume: true
-  mode: full
   score_model: wise
   score_gpu: "A100-80GB"
   llm_extract:

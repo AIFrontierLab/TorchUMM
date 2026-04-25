@@ -16,6 +16,13 @@ inference:
       use_clip_vit: true
 
 mmbench:
-  datasets: [mmbench_dev_20230712]
+  datasets: [MMBench_TEST_EN_V11, MMBench_TEST_CN_V11]
   out_dir: /output-apr4/mmbench/show_o2-underN10
   score_output_path: /output-apr4/mmbench/show_o2-underN10/summary.json
+  mode: full
+  resume: true
+  score_model: wise
+  score_gpu: "A100-80GB"
+  llm_extract:
+    model_path: /model_cache/evaluator/Qwen3-32B-AWQ
+    max_new_tokens: 64

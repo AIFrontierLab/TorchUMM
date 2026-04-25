@@ -20,7 +20,7 @@ mmbench:
   out_dir: /output-apr4/mmbench/omnigen2_sft
   score_output_path: /output-apr4/mmbench/omnigen2_sft/summary.json
   resume: true
-  mode: full
+  mode: score
   score_model: wise
   score_gpu: "A100-80GB"
   llm_extract:

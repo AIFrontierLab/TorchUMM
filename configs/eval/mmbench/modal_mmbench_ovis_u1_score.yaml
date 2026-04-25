@@ -13,7 +13,7 @@ mmbench:
   datasets: [MMBench_TEST_EN_V11, MMBench_TEST_CN_V11]
   out_dir: /output-apr4/mmbench/ovis_u1-underN5120
   score_output_path: /output-apr4/mmbench/ovis_u1-underN5120/summary.json
-  mode: full
+  mode: score
   resume: true
   score_model: wise
   score_gpu: "A100-80GB"

@@ -25,7 +25,7 @@ mmbench:
   out_dir: /outputs/mmbench/emu3_5
   score_output_path: /outputs/mmbench/emu3_5/summary.json
   resume: true
-  mode: full
+  mode: score
   score_model: wise
   score_gpu: "A100-80GB"
   llm_extract:

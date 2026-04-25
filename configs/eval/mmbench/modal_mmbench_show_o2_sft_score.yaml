@@ -5,7 +5,7 @@ inference:
   backbone: show-o2
   backbone_cfg:
     version: 2
-    model_path: /model_cache/show_o2/show-o2-1.5B
+    model_path: /post_train_model_cache/post_train/show_o2/unwrapped_model
     show_o_root: /workspace/model/Show-o
     vae_path: /model_cache/show_o2/Wan2.1_VAE.pth
     seed: 42
@@ -17,9 +17,9 @@ inference:
 
 mmbench:
   datasets: [MMBench_TEST_EN_V11, MMBench_TEST_CN_V11]
-  out_dir: /output-apr4/mmbench/show_o2_1_5b-underN10
-  score_output_path: /output-apr4/mmbench/show_o2_1_5b-underN10/summary.json
-  mode: full
+  out_dir: /output-apr4/mmbench/show_o2_sft-underN10
+  score_output_path: /output-apr4/mmbench/show_o2_sft-underN10/summary.json
+  mode: score
   resume: true
   score_model: wise
   score_gpu: "A100-80GB"

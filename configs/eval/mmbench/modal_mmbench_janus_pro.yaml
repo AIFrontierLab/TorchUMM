@@ -14,9 +14,13 @@ inference:
       use_cache: true
 
 mmbench:
-  datasets: [mmbench_dev_20230712]
-  dataset_paths:
-    mmbench_dev_20230712: /datasets/mmbench/mmbench_dev_20230712.tsv
+  datasets: [MMBench_TEST_EN_V11, MMBench_TEST_CN_V11]
   out_dir: /outputs/mmbench/janus_pro
   score_output_path: /outputs/mmbench/janus_pro/summary.json
   resume: true
+  mode: full
+  score_model: wise
+  score_gpu: "A100-80GB"
+  llm_extract:
+    model_path: /model_cache/evaluator/Qwen3-32B-AWQ
+    max_new_tokens: 64

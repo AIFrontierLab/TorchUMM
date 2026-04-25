@@ -85,6 +85,17 @@ HF_MODELS = {
         ("Qwen/Qwen3-32B",               "evaluator/Qwen3-32B"),
         ("Qwen/Qwen3-32B-AWQ",           "evaluator/Qwen3-32B-AWQ"),
     ],
+    # Unified-Bench scoring models (CLIP / DINOv2). LongCLIP is a single .pt file
+    # (see HF_SINGLE_FILES). DINOv3 is split into its own entry because the repo
+    # is gated by Meta and requires per-user access approval on HuggingFace; run
+    # `--model unified_bench_dinov3` separately once your HF account is approved.
+    "unified_bench_scorers": [
+        ("openai/clip-vit-large-patch14",           "unified_bench/clip-vit-large-patch14"),
+        ("facebook/dinov2-large",                   "unified_bench/dinov2-large"),
+    ],
+    "unified_bench_dinov3": [
+        ("facebook/dinov3-vitl16-pretrain-lvd1689m", "unified_bench/dinov3-vitl16"),
+    ],
     "post_train": [
         ("aifronter/post_train", "post_train"),
     ],  # NOTE: post_train uses a separate volume (POST_TRAIN_MODEL_VOLUME_NAME)
@@ -99,6 +110,9 @@ HF_MODELS = {
 HF_SINGLE_FILES = {
     "show_o2": [
         ("Wan-AI/Wan2.1-T2V-14B", "Wan2.1_VAE.pth", "show_o2/Wan2.1_VAE.pth"),
+    ],
+    "unified_bench_scorers": [
+        ("BeichenZhang/LongCLIP-L", "longclip-L.pt", "unified_bench/longclip-L.pt"),
     ],
 }
 
@@ -140,8 +154,23 @@ HF_DATASETS = {
     "imgedit": [
         ("sysuyy/ImgEdit", "imgedit"),
     ],
+    # unified_bench: special handling — downloads Image.zip from GitHub release
+    #                (not HuggingFace), extracts to /datasets/unified_bench/Image/
+    #                See _download_unified_bench() in download.py.
+    "unified_bench": [],  # marker only; actual URL handled in download.py
     # geneval: data is bundled with the repo code, no HF dataset needed
     # wise:    data is bundled with the repo code, no HF dataset needed
+}
+
+# ---------------------------------------------------------------------------
+# Dataset URL downloads (non-HuggingFace zip/tar archives).
+# Structure: { "name": (url, local_subdir_under_DATASET_CACHE_PATH) }
+# ---------------------------------------------------------------------------
+DATASET_URL_ARCHIVES = {
+    "unified_bench": (
+        "https://github.com/PKU-YuanGroup/UAE/releases/download/v1.0/Image.zip",
+        "unified_bench",
+    ),
 }
 
 # ---------------------------------------------------------------------------

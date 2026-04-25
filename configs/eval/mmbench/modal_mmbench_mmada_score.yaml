@@ -9,19 +9,16 @@ inference:
     vq_model_path: /model_cache/mmada/magvitv2
     seed: 42
 
-    # MMBench is MCQ — single-letter (A/B/C/D) answers. Matches MMaDA paper's
-    # VLMEvalKit DEFAULT_KWARGS (model/MMaDA/.../dataset_configs.py): MMBench
-    # is not in DATASET_CONFIGS, so it falls back to (2, 2, 2).
     understanding_cfg:
-      max_new_tokens: 2
-      steps: 2
-      block_length: 2
+      max_new_tokens: 2048
+      steps: 256
+      block_length: 128
 
 mmbench:
   datasets: [MMBench_TEST_EN_V11, MMBench_TEST_CN_V11]
   out_dir: /outputs/mmbench/mmada
   score_output_path: /outputs/mmbench/mmada/summary.json
-  mode: full
+  mode: score
   resume: true
   score_model: wise
   score_gpu: "A100-80GB"

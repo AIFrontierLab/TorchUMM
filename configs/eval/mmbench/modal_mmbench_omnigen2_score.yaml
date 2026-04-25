@@ -4,23 +4,26 @@ eval:
 inference:
   backbone: omnigen2
   backbone_cfg:
-    model_path: /post_train_model_cache/post_train/omnigen2/
+    model_path: /model_cache/omnigen2/OmniGen2
     omnigen2_root: /workspace/model/OmniGen2
     device: cuda:0
     device_map: cuda:0
     torch_dtype: bfloat16
     enable_cpu_offload: false
     enable_sequential_cpu_offload: false
+    generation_cfg:
+      num_inference_steps: 50
+      seed: 42
 
     understanding_cfg:
       max_new_tokens: 2048
 
 mmbench:
   datasets: [MMBench_TEST_EN_V11, MMBench_TEST_CN_V11]
-  out_dir: /output-apr4/mmbench/omnigen2_sft
-  score_output_path: /output-apr4/mmbench/omnigen2_sft/summary.json
+  out_dir: /output-apr4/mmbench/omnigen2
+  score_output_path: /output-apr4/mmbench/omnigen2/summary.json
+  mode: score
   resume: true
-  mode: full
   score_model: wise
   score_gpu: "A100-80GB"
   llm_extract:

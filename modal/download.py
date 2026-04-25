@@ -33,6 +33,7 @@ import modal
 
 from config import (
     DATASET_CACHE_PATH,
+    DATASET_URL_ARCHIVES,
     HF_DATASETS,
     HF_MODELS,
     HF_SINGLE_FILES,
@@ -243,6 +244,13 @@ def download_dataset(repo_name: str) -> None:
         print(f"[download] committed dataset Volume for {repo_name}")
         return
 
+    # unified_bench: download Image.zip from GitHub release, extract ref images
+    if repo_name == "unified_bench":
+        _download_unified_bench()
+        dataset_volume.commit()
+        print(f"[download] committed dataset Volume for {repo_name}")
+        return
+
     for hf_repo_id, local_subdir in HF_DATASETS[repo_name]:
         local_dir = f"{DATASET_CACHE_PATH}/{local_subdir}"
         os.makedirs(local_dir, exist_ok=True)
@@ -378,9 +386,15 @@ def _extract_mme(hf_repo: str, local_dir: str, hf_token: str | None) -> None:
 
 
 def _extract_mmbench(hf_repo: str, local_dir: str, hf_token: str | None) -> None:
-    """Extract lmms-lab/MMBench parquet → TSV files."""
+    """Extract lmms-lab/MMBench parquet → TSV, plus fetch V11 test TSVs for local scoring.
+
+    Online MMBench evaluation was shut down on 2026-03-31; OpenCompass responded by
+    publishing the full TEST splits (EN/CN, V11) with ground-truth labels so we can
+    now score TEST entirely locally. See open-compass/MMBench#61.
+    """
     import base64
     import os
+    import urllib.request
     from io import BytesIO
     from pathlib import Path
 
@@ -425,6 +439,25 @@ def _extract_mmbench(hf_repo: str, local_dir: str, hf_token: str | None) -> None
     out_path = Path(local_dir) / "mmbench_dev_20230712.tsv"
     df.to_csv(str(out_path), sep="\t", index=False)
     print(f"[download]   wrote {len(rows)} rows to {out_path}")
+
+    v11_tsvs = [
+        (
+            "MMBench_TEST_EN_V11.tsv",
+            "https://opencompass.openxlab.space/utils/benchmarks/MMBench/MMBench_TEST_EN_V11.tsv",
+        ),
+        (
+            "MMBench_TEST_CN_V11.tsv",
+            "https://opencompass.openxlab.space/utils/benchmarks/MMBench/MMBench_TEST_CN_V11.tsv",
+        ),
+    ]
+    for fname, url in v11_tsvs:
+        target = Path(local_dir) / fname
+        if target.exists() and target.stat().st_size > 10_000_000:
+            print(f"[download]   {fname} already present ({target.stat().st_size:,} bytes), skipping")
+            continue
+        print(f"[download]   fetching {fname} ← {url}")
+        urllib.request.urlretrieve(url, str(target))
+        print(f"[download]   wrote {target.stat().st_size:,} bytes to {target}")
 
 
 def _extract_mmvet(hf_repo: str, local_dir: str, hf_token: str | None) -> None:
@@ -564,6 +597,76 @@ def _download_imgedit(hf_token: str | None) -> None:
     print(f"[download]   singleturn: {singleturn_dir}")
     print(f"[download]   hard (UGE): {hard_dir}")
     print(f"[download]   multiturn:  {multiturn_dir}")
+
+
+def _download_unified_bench() -> None:
+    """Download Unified-Bench (UAE) reference images from GitHub release.
+
+    The GitHub release zip contains only 100 reference images in an `Image/`
+    folder — no prompts/metadata, because Unified-Bench measures round-trip
+    reconstruction (the backbone generates its own caption from the reference
+    image, then regenerates an image from that caption).
+
+    Final layout:
+        /datasets/unified_bench/Image/0.jpg ... 99.jpg
+    """
+    import os
+    import shutil
+    import subprocess
+    from pathlib import Path
+    from urllib.request import urlretrieve
+    from zipfile import ZipFile
+
+    url, subdir = DATASET_URL_ARCHIVES["unified_bench"]
+    target_root = Path(f"{DATASET_CACHE_PATH}/{subdir}")
+    image_dir = target_root / "Image"
+
+    # Skip if already populated.
+    if image_dir.is_dir() and any(image_dir.iterdir()):
+        print(f"[download] unified_bench Image/ already populated at {image_dir}, skipping.")
+        return
+
+    target_root.mkdir(parents=True, exist_ok=True)
+    zip_path = target_root / "Image.zip"
+    print(f"[download] fetching {url} -> {zip_path}")
+    urlretrieve(url, str(zip_path))
+
+    print(f"[download] extracting {zip_path} -> {target_root}")
+    with ZipFile(str(zip_path)) as zf:
+        zf.extractall(str(target_root))
+
+    # The zip may extract as Image/ directly, or nest under a top-level dir.
+    if not image_dir.is_dir():
+        for child in target_root.iterdir():
+            if child.is_dir():
+                nested = child / "Image"
+                if nested.is_dir():
+                    nested.rename(image_dir)
+                    break
+                # If the zip put images directly in a top-level dir other than Image/,
+                # rename that dir to Image/.
+                has_images = any(
+                    p.suffix.lower() in {".jpg", ".jpeg", ".png"}
+                    for p in child.iterdir() if p.is_file()
+                )
+                if has_images:
+                    child.rename(image_dir)
+                    break
+
+    if not image_dir.is_dir():
+        raise RuntimeError(
+            f"unified_bench extraction did not produce {image_dir}. "
+            f"Check zip layout at {target_root}"
+        )
+
+    count = sum(1 for p in image_dir.iterdir() if p.is_file())
+    print(f"[download] unified_bench ready: {count} reference images at {image_dir}")
+
+    # Clean up the zip to save volume space.
+    try:
+        zip_path.unlink()
+    except Exception:
+        pass
 
 
 @app.function(
