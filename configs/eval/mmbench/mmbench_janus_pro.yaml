@@ -14,7 +14,14 @@ inference:
       use_cache: true
 
 mmbench:
-  datasets: [mmbench_dev_20230712]
+  datasets: [MMBench_TEST_EN_V11, MMBench_TEST_CN_V11]
+  dataset_paths:
+    MMBench_TEST_EN_V11: ${UMM_DATASETS}/mmbench/MMBench_TEST_EN_V11.tsv
+    MMBench_TEST_CN_V11: ${UMM_DATASETS}/mmbench/MMBench_TEST_CN_V11.tsv
   out_dir: output/mmbench/janus_pro
   score_output_path: output/mmbench/janus_pro/summary.json
   resume: true
+  mode: generate
+  llm_extract:
+    model_path: ${UMM_MODEL_CACHE}/evaluator/Qwen3-32B-AWQ
+    max_new_tokens: 64
