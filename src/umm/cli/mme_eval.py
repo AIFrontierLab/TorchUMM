@@ -1,14 +1,24 @@
 from __future__ import annotations
 
 import json
-import os
 import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 from umm.core.config import load_config
+from umm.eval.distributed import (
+    barrier,
+    cleanup_distributed,
+    cleanup_shards,
+    load_shard_items,
+    maybe_init_distributed,
+    merge_shards,
+    rank_shard_path,
+    sum_across_ranks,
+)
+from umm.eval.runner import run_sharded_inference
 from umm.inference import InferencePipeline
 
 
@@ -60,8 +70,7 @@ def _extract_text(output: Any) -> str:
 def _post_process(response: str) -> str:
     response = response.replace("\n", "").replace("不是", "No").replace("是", "Yes").replace("否", "No")
     response = response.lower().replace("true", "yes").replace("false", "no")
-    response = re.sub(re.compile(r"[\u4e00-\u9fa5]"), "", response)
-    # Extract first yes/no, discard repetitive garbage
+    response = re.sub(re.compile(r"[一-龥]"), "", response)
     response = response.strip()
     match = re.match(r"^[^a-z]*(yes|no)\b", response)
     if match:
@@ -127,105 +136,169 @@ def run_mme_eval_command(args: Any) -> int:
     if not image_root.exists():
         raise FileNotFoundError(f"MME image root not found: {image_root}")
 
-    out_dir.mkdir(parents=True, exist_ok=True)
-    pipeline = InferencePipeline(backbone_name=backbone, backbone_cfg=backbone_cfg)
+    dist_info = maybe_init_distributed()
+    try:
+        out_dir.mkdir(parents=True, exist_ok=True)
+        pipeline = InferencePipeline(backbone_name=backbone, backbone_cfg=backbone_cfg)
 
-    txt_files = sorted([p for p in dataset_root.iterdir() if p.suffix == ".txt"])
-    if not txt_files:
-        raise FileNotFoundError(f"No .txt files found in MME root: {dataset_root}")
+        txt_files = sorted([p for p in dataset_root.iterdir() if p.suffix == ".txt"])
+        if not txt_files:
+            raise FileNotFoundError(f"No .txt files found in MME root: {dataset_root}")
 
-    total_written = 0
-    missing_images = 0
-    skipped_rows = 0
-    for task_txt in txt_files:
-        task_name = task_txt.stem
-        out_file = out_dir / task_txt.name
+        if dist_info.world_size > 1:
+            print(
+                f"[mme] distributed inference enabled: rank={dist_info.rank}, "
+                f"local_rank={dist_info.local_rank}, world_size={dist_info.world_size}",
+                flush=True,
+            )
 
-        # Resume: count already-completed lines and skip them
-        existing_lines = 0
-        if out_file.exists():
-            existing_lines = sum(1 for ln in out_file.open("r", encoding="utf-8") if ln.strip())
-        if existing_lines > 0:
-            print(f"[mme] {task_name}: resuming after {existing_lines} existing lines", flush=True)
+        total_written = 0
+        # Counters incremented by rank 0 only so the totals are not multiplied
+        # by world_size — every rank reads the full TSV during pre-filtering.
+        missing_images = 0
+        skipped_rows = 0
 
-        with task_txt.open("r", encoding="utf-8") as fin, out_file.open("a", encoding="utf-8") as fout:
-            done = 0
-            for idx, line in enumerate(fin, start=1):
-                row = line.strip().split("\t")
-                if len(row) != 3:
-                    skipped_rows += 1
-                    continue
-                img, question, gt = row
+        for task_txt in txt_files:
+            task_name = task_txt.stem
+            out_file = out_dir / task_txt.name
+            checkpoint_jsonl = out_dir / f"{task_name}_checkpoint.jsonl"
+            shard_path = rank_shard_path(checkpoint_jsonl, dist_info.rank, dist_info.world_size)
 
-                img_path = image_root / task_name / img
-                if not img_path.exists():
-                    img_path = image_root / task_name / "images" / img
-                if not img_path.exists():
-                    missing_images += 1
-                    continue
+            done_idx = {int(it["_sample_idx"]) for it in load_shard_items(shard_path)}
+            if done_idx:
+                print(
+                    f"[mme] {task_name}: rank {dist_info.rank} resuming after "
+                    f"{len(done_idx)} existing shard items",
+                    flush=True,
+                )
 
-                # Skip rows already written in a previous run
-                done += 1
-                if done <= existing_lines:
-                    continue
+            def iter_valid_rows() -> Iterator[tuple[int, str, str, str, str]]:
+                nonlocal missing_images, skipped_rows
+                counter = 0
+                with task_txt.open("r", encoding="utf-8") as fin:
+                    for line in fin:
+                        row = line.strip().split("\t")
+                        if len(row) != 3:
+                            if dist_info.rank == 0:
+                                skipped_rows += 1
+                            continue
+                        img, question, gt = row
+                        img_path = image_root / task_name / img
+                        if not img_path.exists():
+                            img_path = image_root / task_name / "images" / img
+                        if not img_path.exists():
+                            if dist_info.rank == 0:
+                                missing_images += 1
+                            continue
+                        counter += 1
+                        yield counter, img, question, gt, str(img_path)
 
+            def payload_fn(sample: tuple[int, str, str, str, str]) -> dict[str, Any]:
+                _, img, question, _gt, img_path = sample
                 prompt = f"{question} {prompt_suffix}".strip()
-                payload = {
+                print(f"[mme] rank {dist_info.rank} | {task_name}: {img} ... inferring", flush=True)
+                return {
                     "backbone": backbone,
                     "task": "understanding",
                     "prompt": prompt,
-                    "images": [str(img_path)],
+                    "images": [img_path],
                     "params": request_params,
                 }
-                print(f"[mme] {task_name} | {idx}: {img} ... inferring", flush=True)
-                output = pipeline.run(payload)
-                response = _post_process(_extract_text(output))
+
+            def record_fn(sample: tuple[int, str, str, str, str], raw: Any, _idx: int) -> dict[str, Any]:
+                _, img, question, gt, _img_path = sample
+                prompt = f"{question} {prompt_suffix}".strip()
+                response = _post_process(_extract_text(raw))
                 if not response.strip():
                     print(f"[mme] WARNING empty response: {task_name}/{img}", flush=True)
-                print(f"[mme] {task_name} | {idx}: {img} -> {response[:80]!r}", flush=True)
-                print(img, prompt, gt, response, sep="\t", file=fout)
-                fout.flush()
-                os.fsync(fout.fileno())
-                total_written += 1
-                if max_samples > 0 and idx >= max_samples:
-                    break
+                print(f"[mme] rank {dist_info.rank} | {task_name}: {img} -> {response[:80]!r}", flush=True)
+                return {
+                    "img": img,
+                    "prompt": prompt,
+                    "gt": gt,
+                    "response": response,
+                }
 
-    summary: dict[str, Any] = {
-        "benchmark": "mme",
-        "backbone": backbone,
-        "out_dir": str(out_dir),
-        "samples_written": total_written,
-    }
+            n_written = run_sharded_inference(
+                infer_fn=pipeline.run,
+                dist_info=dist_info,
+                shard_path=shard_path,
+                samples=iter_valid_rows(),
+                payload_fn=payload_fn,
+                record_fn=record_fn,
+                sample_id_fn=lambda sample: sample[0],
+                done_ids=done_idx,
+                max_samples=max_samples,
+                log_prefix=f"mme/{task_name}/rank{dist_info.rank}",
+            )
+            total_written += n_written
 
-    # Check if out_dir has any result files at all (including from previous runs)
-    has_results = any(p.suffix == ".txt" and p.stat().st_size > 0 for p in out_dir.iterdir()) if out_dir.exists() else False
-    if total_written == 0 and not has_results:
-        print(
-            "[umm eval] warning: no MME samples were written. "
-            "Skipping calculation. Check `mme.root` and `mme.image_root`."
+            barrier(dist_info)
+
+            if dist_info.rank == 0:
+                merged = merge_shards(checkpoint_jsonl)
+                with out_file.open("w", encoding="utf-8") as fout:
+                    for item in merged:
+                        print(item["img"], item["prompt"], item["gt"], item["response"], sep="\t", file=fout)
+                cleanup_shards(checkpoint_jsonl)
+                if dist_info.world_size <= 1 and checkpoint_jsonl.exists():
+                    checkpoint_jsonl.unlink()
+
+            barrier(dist_info)
+
+        total_written_all = sum_across_ranks(total_written, dist_info)
+
+        if dist_info.rank != 0:
+            print(
+                f"[umm eval] rank {dist_info.rank} finished shard: "
+                f"samples_written={total_written}",
+                flush=True,
+            )
+            return 0
+
+        summary: dict[str, Any] = {
+            "benchmark": "mme",
+            "backbone": backbone,
+            "out_dir": str(out_dir),
+            "samples_written": total_written_all,
+            "world_size": dist_info.world_size,
+        }
+
+        has_results = (
+            any(p.suffix == ".txt" and p.stat().st_size > 0 for p in out_dir.iterdir())
+            if out_dir.exists()
+            else False
         )
-        run_calculation = False
+        if total_written_all == 0 and not has_results:
+            print(
+                "[umm eval] warning: no MME samples were written. "
+                "Skipping calculation. Check `mme.root` and `mme.image_root`."
+            )
+            run_calculation = False
 
-    if run_calculation:
-        cmd = [sys.executable, str(calculation_script), "--results_dir", str(out_dir)]
-        proc = subprocess.run(cmd, cwd=str(repo_root), capture_output=True, text=True)
-        print(proc.stdout)
-        if proc.returncode != 0:
-            if proc.stderr:
-                print(proc.stderr, file=sys.stderr)
-            raise RuntimeError(f"MME calculation failed with return code {proc.returncode}")
-        summary["calculation_stdout"] = proc.stdout
+        if run_calculation:
+            cmd = [sys.executable, str(calculation_script), "--results_dir", str(out_dir)]
+            proc = subprocess.run(cmd, cwd=str(repo_root), capture_output=True, text=True)
+            print(proc.stdout)
+            if proc.returncode != 0:
+                if proc.stderr:
+                    print(proc.stderr, file=sys.stderr)
+                raise RuntimeError(f"MME calculation failed with return code {proc.returncode}")
+            summary["calculation_stdout"] = proc.stdout
 
-    if isinstance(score_output_path, str) and score_output_path:
-        score_path = _resolve_path(score_output_path, repo_root)
-        score_path.parent.mkdir(parents=True, exist_ok=True)
-        score_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-        print(f"[umm eval] wrote MME summary to {score_path}")
+        if isinstance(score_output_path, str) and score_output_path:
+            score_path = _resolve_path(score_output_path, repo_root)
+            score_path.parent.mkdir(parents=True, exist_ok=True)
+            score_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+            print(f"[umm eval] wrote MME summary to {score_path}")
 
-    summary["missing_images"] = missing_images
-    summary["skipped_rows"] = skipped_rows
-    print(
-        f"[umm eval] completed MME for backbone={backbone}, outputs={out_dir}, "
-        f"samples_written={total_written}, missing_images={missing_images}, skipped_rows={skipped_rows}"
-    )
-    return 0
+        summary["missing_images"] = missing_images
+        summary["skipped_rows"] = skipped_rows
+        print(
+            f"[umm eval] completed MME for backbone={backbone}, outputs={out_dir}, "
+            f"samples_written={total_written_all}, missing_images={missing_images}, "
+            f"skipped_rows={skipped_rows}, world_size={dist_info.world_size}"
+        )
+        return 0
+    finally:
+        cleanup_distributed(dist_info)
