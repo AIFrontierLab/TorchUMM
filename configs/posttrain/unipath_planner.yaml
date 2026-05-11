@@ -1,0 +1,35 @@
+train:
+  pipeline: planner
+  cwd: .
+  module: umm.post_training.unipath.planner.train
+  use_torchrun: false
+  env:
+    PYTHONPATH: src
+  args:
+    features-pt: ${UNIPATH_PLANNER_FEATURES}
+    output-dir: ${UNIPATH_PLANNER_OUTPUT_DIR}
+    mmmu-features-pt: ${UNIPATH_MMMU_FEATURES}
+    mmmu-results-root: ${UNIPATH_MMMU_RESULTS_ROOT}
+    planner-type: mlp
+    hidden-dim: 768
+    batch-size: 4096
+    epochs: 45
+    patience: 12
+    learning-rate: 4e-4
+    weight-decay: 5e-5
+    train-sampler: epoch
+    feature-dropout: 0.05
+    feature-noise-std: 0.02
+    single-positive-weight: 3.0
+    double-positive-weight: 2.0
+    multi-positive-weight: 1.0
+    nondirect-positive-weight: 1.3
+    level-weight: ocrvqa=0.25
+    dist-reg-weight: 0.03
+    dist-reg-prior: 0.58,0.20,0.13,0.05,0.04
+    dist-reg-mode: prob_kl
+    margin: 0.03
+    seed: 54
+    device: cuda
+    best-by: mmmu_accuracy
+    mmmu-eval-every: 1

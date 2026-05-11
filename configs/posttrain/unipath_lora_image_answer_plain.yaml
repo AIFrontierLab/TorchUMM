@@ -1,0 +1,46 @@
+train:
+  pipeline: unipath
+  auto_generate_latent_cache: true
+  cwd: .
+  module: umm.post_training.unipath.native_answer_train
+  use_torchrun: false
+  env:
+    PYTHONPATH: src:.
+    PYTORCH_CUDA_ALLOC_CONF: expandable_segments:True
+  args:
+    model_path: ${UNIPATH_BAGEL_MODEL_PATH}
+    output_dir: ${UNIPATH_LORA_OUTPUT_ROOT}/image_answer_plain
+    latent_cache_root: ${UNIPATH_LATENT_CACHE_ROOT}
+    train_jsonl:
+      - ${UNIPATH_DATA_ROOT}/image_answer_plain_train.jsonl
+    val_jsonl:
+      - ${UNIPATH_DATA_ROOT}/image_answer_plain_val.jsonl
+    finetune_mode: lora
+    lora_r: 32
+    lora_alpha: 64
+    lora_dropout: 0.05
+    learning_rate: 5e-5
+    ce_weight: 2.0
+    mse_weight: 0.3
+    visual_summary_weight: 0.0
+    train_max_samples: 5380
+    val_max_samples: 92
+    train_sample_selection: stratified
+    val_sample_selection: stratified
+    max_steps: 3000
+    eval_every_steps: 200
+    initial_eval: true
+    save_best_metric: val_loss
+    best_require_format_no_degrade: true
+    best_format_tolerance: 0.03
+    early_stop_patience: 8
+    min_steps_before_early_stop: 1600
+    min_delta: 0.001
+    eval_generate_max_samples: 92
+    eval_generate_sampling: stratified
+    eval_generate_max_new_tokens: 2048
+    save_eval_cases: true
+    stop_on_zero_format: true
+    save_last: true
+    resume_adapter_path: ${UNIPATH_LORA_OUTPUT_ROOT}/understanding_visual/adapter_imitation_best
+    resume_visual_head_path: ${UNIPATH_LORA_OUTPUT_ROOT}/understanding_visual/adapter_imitation_best/visual_head.pt

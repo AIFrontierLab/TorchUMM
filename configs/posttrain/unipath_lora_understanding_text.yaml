@@ -1,0 +1,49 @@
+train:
+  pipeline: unipath
+  auto_generate_latent_cache: true
+  cwd: .
+  module: umm.post_training.unipath.image_aware_train
+  use_torchrun: true
+  torchrun:
+    nnodes: 1
+    node_rank: 0
+    nproc_per_node: 4
+    master_addr: 127.0.0.1
+    master_port: 29541
+  env:
+    PYTHONPATH: src:.
+  args:
+    model_path: ${UNIPATH_BAGEL_MODEL_PATH}
+    output_dir: ${UNIPATH_LORA_OUTPUT_ROOT}/understanding_text
+    latent_cache_root: ${UNIPATH_LATENT_CACHE_ROOT}
+    train_jsonl:
+      - ${UNIPATH_DATA_ROOT}/understanding_text_train.jsonl
+    val_jsonl:
+      - ${UNIPATH_DATA_ROOT}/understanding_text_val.jsonl
+    stage: imitation
+    visual_loss_weight: 0.0
+    batch_size: 1
+    max_length: 3072
+    loader_mode: bagel_backbone
+    epochs: 10
+    learning_rate: 1e-5
+    gradient_accumulation_steps: 8
+    eval_every_steps: 200
+    save_best_metric: val_loss
+    eval_generate_max_samples: 64
+    save_last: true
+    lora_r: 16
+    lora_alpha: 32
+    lora_dropout: 0.05
+    bf16: true
+    target_modules:
+      - q_proj
+      - k_proj
+      - v_proj
+      - o_proj
+      - gate_proj
+      - up_proj
+      - down_proj
+    max_samples: 200000
+    sample_selection: random
+    early_stop_patience: 3

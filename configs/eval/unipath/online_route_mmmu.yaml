@@ -1,0 +1,29 @@
+eval:
+  benchmark: unipath_online_route
+
+inference:
+  backbone: bagel
+  backbone_cfg:
+    bagel_root: ${UNIPATH_BAGEL_ROOT}
+    model_path: ${UNIPATH_BAGEL_MODEL_PATH}
+    adapter_dir: ${UNIPATH_BAGEL_ADAPTER_DIR}
+    max_mem_per_gpu: 80GiB
+    offload_folder: ${UNIPATH_ONLINE_ROUTE_OUTPUT_ROOT}/offload
+    seed: 42
+  request:
+    params:
+      max_think_token_n: 2048
+      do_sample: false
+
+online_route:
+  benchmark: mmmu
+  policy: qfcp_refined_pragmatic_safe
+  planner_path: ${UNIPATH_PLANNER_PATH}
+  output_dir: ${UNIPATH_ONLINE_ROUTE_OUTPUT_ROOT}/mmmu
+  cache_dir: ${UNIPATH_ONLINE_ROUTE_OUTPUT_ROOT}/cache
+  mmmu_root: MMMU/MMMU
+  mmmu_split: validation
+  mmmu_cache_dir: ${UNIPATH_MMMU_CACHE_DIR}
+  mmmu_max_images: 1
+  max_samples: 0
+  progress_every: 25

@@ -1,0 +1,16 @@
+train:
+  pipeline: unipath
+  cwd: .
+  module: umm.post_training.unipath.cache_latents
+  use_torchrun: false
+  env:
+    PYTHONPATH: src:.
+    MPLCONFIGDIR: /tmp/matplotlib-cache
+  args:
+    input_jsonl:
+      - ${UNIPATH_CACHE_INPUT_JSONL}
+    output_jsonl:
+      - ${UNIPATH_CACHE_OUTPUT_JSONL}
+    model_path: ${UNIPATH_BAGEL_MODEL_PATH}
+    cache_dir: ${UNIPATH_LATENT_CACHE_ROOT}
+    progress_every: 50
