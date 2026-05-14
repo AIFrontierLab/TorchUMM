@@ -1,5 +1,8 @@
 # UniPath Post-Training
 
+[![arXiv](https://img.shields.io/badge/arXiv-2605.11400-b31b1b.svg)](https://arxiv.org/abs/2605.11400)
+[![Hugging Face](https://img.shields.io/badge/HuggingFace-HuggingSelf%2FUniPath-yellow.svg)](https://huggingface.co/datasets/HuggingSelf/UniPath)
+
 This folder contains the TorchUMM integration for UniPath. Keep all UniPath-specific code under this package; the
 planner lives in `umm.post_training.unipath.planner`.
 
@@ -136,3 +139,30 @@ PYTHONPATH=src python -m umm.cli.main eval --config configs/eval/unipath/online_
 - `evals/mmmu_prompt_paths_full/`: old-LoRA MMMU cached generations for offline replay.
 
 More planner-specific details are in `planner/README.md`.
+
+## Citation
+
+If UniPath is helpful for your work, please cite:
+
+```bibtex
+@misc{bai2026unipathadaptivecoordinationunderstanding,
+      title={UniPath: Adaptive Coordination of Understanding and Generation for Unified Multimodal Reasoning},
+      author={Hayes Bai and Yinyi Luo and Wenwen Wang and Qingsong Wen and Jindong Wang},
+      year={2026},
+      eprint={2605.11400},
+      archivePrefix={arXiv},
+      primaryClass={cs.MM},
+      url={https://arxiv.org/abs/2605.11400},
+}
+```
+
+This implementation is integrated in TorchUMM. Please also cite:
+
+```bibtex
+@article{luo2026torchumm,
+  title={TorchUMM: A Unified Multimodal Model Codebase for Evaluation, Analysis, and Post-training},
+  author={Luo, Yinyi and Wang, Wenwen and Bai, Hayes and Zhu, Hongyu and Chen, Hao and He, Pan and Savvides, Marios and Li, Sharon and Wang, Jindong},
+  journal={arXiv preprint arXiv:2604.10784},
+  year={2026}
+}
+```
