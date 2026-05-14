@@ -25,7 +25,7 @@ hf download HuggingSelf/UniPath --repo-type dataset \
   --include "processed/planner_artifacts_20260427/qfcp_single_route_fw_w003_h768_s54/**" \
   --include "processed/planner_feature_space_analysis/**" \
   --include "evals/mmmu_prompt_paths_full/**" \
-  --include "checkpoints/old_lora_best_20260412/image_answer_visual/**"
+  --include "checkpoints/staged_lora/image_answer_visual/**"
 ```
 
 The BAGEL base model is not part of this folder. Put it in the normal model cache, for example:
@@ -42,7 +42,7 @@ Set these paths after downloading:
 export UNIPATH_ROOT=/path/to/UniPath
 export UNIPATH_DATA_ROOT=$UNIPATH_ROOT/processed/unireasoning_task_dataset_staged_with_images
 export UNIPATH_LATENT_CACHE_ROOT=$UNIPATH_ROOT/processed/unireasoning_latents_20260406/unireasoning_latents/cache
-export UNIPATH_BAGEL_ADAPTER_DIR=$UNIPATH_ROOT/checkpoints/old_lora_best_20260412/image_answer_visual
+export UNIPATH_BAGEL_ADAPTER_DIR=$UNIPATH_ROOT/checkpoints/staged_lora/image_answer_visual
 export UNIPATH_PLANNER_PATH=$UNIPATH_ROOT/processed/planner_artifacts_20260427/qfcp_single_route_fw_w003_h768_s54/planner.pt
 export UNIPATH_MMMU_RESULTS_ROOT=$UNIPATH_ROOT/evals/mmmu_prompt_paths_full
 export UNIPATH_MMMU_FEATURES=$UNIPATH_ROOT/processed/planner_feature_space_analysis/features/mmmu/path_aware_mmmu_abs.pt
@@ -56,7 +56,7 @@ If you want to reproduce the latest report planner directly, use `UNIPATH_PLANNE
 
 ## Offline MMMU Replay
 
-This is the fastest way to inspect UniPath routing behavior. We provide the complete old-LoRA MMMU cached results under
+This is the fastest way to inspect UniPath routing behavior. We provide the complete staged-LoRA MMMU cached results under
 `evals/mmmu_prompt_paths_full/`, plus the matching full900 planner input features. This path does not run BAGEL
 generation; it only replays cached path outputs, so it is useful for:
 
@@ -130,13 +130,13 @@ PYTHONPATH=src python -m umm.cli.main eval --config configs/eval/unipath/online_
 
 - `processed/unireasoning_task_dataset_staged_with_images/`: four-stage LoRA train/val JSONL files.
 - `processed/unireasoning_latents_20260406/unireasoning_latents/cache/`: BAGEL VAE latent cache for image-answer stages.
-- `checkpoints/old_lora_best_20260412/image_answer_visual/`: final UniPath BAGEL LoRA adapter used by routing eval.
+- `checkpoints/staged_lora/image_answer_visual/`: final UniPath BAGEL staged-LoRA adapter used by routing eval.
 - `processed/planner_outcomes/`: original multi-path outcome labels and non-path-aware planner feature cache.
 - `processed/external_scienceqa_1k/` and `processed/external_ocrvqa_1k/`: auxiliary planner training outcome data.
 - `processed/planner_feature_space_analysis/features/train/path_aware_pretrain_abs.pt`: path-aware planner training feature cache.
 - `processed/planner_feature_space_analysis/features/mmmu/path_aware_mmmu_abs.pt`: MMMU full900 planner input features.
 - `processed/planner_artifacts_20260427/qfcp_single_route_fw_w003_h768_s54/planner.pt`: current report planner weight.
-- `evals/mmmu_prompt_paths_full/`: old-LoRA MMMU cached generations for offline replay.
+- `evals/mmmu_prompt_paths_full/`: staged-LoRA MMMU cached generations for offline replay.
 
 More planner-specific details are in `planner/README.md`.
 

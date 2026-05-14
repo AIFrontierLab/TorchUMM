@@ -58,7 +58,7 @@ PYTHONPATH=src python -m umm.post_training.unipath.planner.offline_mmmu_route \
   --policy qfcp_refined_pragmatic_safe --query-mode raw --device cpu
 ```
 
-Expected report-aligned replay on the old-LoRA MMMU cache:
+Expected report-aligned replay on the staged-LoRA MMMU cache:
 
 MMMU full900: `490/900 = 54.44%`
 
