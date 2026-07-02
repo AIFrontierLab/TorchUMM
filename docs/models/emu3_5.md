@@ -115,6 +115,7 @@ result = pipeline.run(InferenceRequest(
 | DPG Bench | `configs/eval/dpg_bench/modal_dpg_bench_emu3_5.yaml` |
 | Uni-MMMU (generate) | `configs/eval/uni_mmmu/uni_mmmu_emu3_5_generate.yaml` |
 | Uni-MMMU (score) | `configs/eval/uni_mmmu/uni_mmmu_emu3_5_score.yaml` |
+| MMStar    | `configs/eval/mmstar/mmstar_emu3_5.yaml` |
 
 ```bash
 # Example: run GenEval on Modal

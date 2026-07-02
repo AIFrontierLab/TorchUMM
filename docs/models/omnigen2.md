@@ -76,6 +76,7 @@ result = pipeline.run(InferenceRequest(
 | MME       | `configs/eval/mme/mme_omnigen2.yaml` |
 | MMMU      | `configs/eval/mmmu/mmmu_omnigen2.yaml` |
 | MMBench   | `configs/eval/mmbench/mmbench_omnigen2.yaml` |
+| MMStar    | `configs/eval/mmstar/mmstar_omnigen2.yaml` |
 | MM-Vet    | `configs/eval/mmvet/mmvet_omnigen2.yaml` |
 | MathVista | `configs/eval/mathvista/mathvista_omnigen2.yaml` |
 

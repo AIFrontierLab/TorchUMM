@@ -83,6 +83,7 @@ result = pipeline.run(InferenceRequest(
 | MME       | `configs/eval/mme/modal_mme_show_o.yaml` |
 | MMMU      | `configs/eval/mmmu/modal_mmmu_show_o.yaml` |
 | MMBench   | `configs/eval/mmbench/modal_mmbench_show_o.yaml` |
+| MMStar    | `configs/eval/mmstar/mmstar_show_o.yaml` |
 | MM-Vet    | `configs/eval/mmvet/modal_mmvet_show_o.yaml` |
 | MathVista | `configs/eval/mathvista/modal_mathvista_show_o.yaml` |
 

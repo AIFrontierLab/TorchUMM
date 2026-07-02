@@ -103,6 +103,7 @@ modal run modal/run.py --model mmada --eval-config modal_ueval_mmada
 |-----------|--------|
 | UEval     | `configs/eval/ueval/modal_ueval_mmada.yaml` |
 | MMBench   | `configs/eval/mmbench/modal_mmbench_mmada.yaml` |
+| MMStar    | `configs/eval/mmstar/mmstar_mmada.yaml` |
 | MME       | `configs/eval/mme/modal_mme_mmada.yaml` |
 | MMMU      | `configs/eval/mmmu/modal_mmmu_mmada.yaml` |
 | MM-Vet    | `configs/eval/mmvet/modal_mmvet_mmada.yaml` |

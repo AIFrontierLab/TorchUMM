@@ -38,6 +38,10 @@ Each benchmark requires specific data. Generation benchmarks (DPG Bench, GenEval
     cd -
     ```
 
+    ### MMStar
+
+    MMStar is auto-downloaded from HuggingFace (`Lin-Chen/MMStar`) at evaluation time and cached in `data/MMStar/`. No manual download is needed.
+
     ### MM-Vet
 
     ```bash

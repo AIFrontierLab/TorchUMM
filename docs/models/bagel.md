@@ -82,6 +82,7 @@ result = pipeline.run(InferenceRequest(
 | MME       | `configs/eval/mme/mme_bagel.yaml` |
 | MMMU      | `configs/eval/mmmu/mmmu_bagel.yaml` |
 | MMBench   | `configs/eval/mmbench/mmbench_bagel.yaml` |
+| MMStar    | `configs/eval/mmstar/mmstar_bagel.yaml` |
 | MM-Vet    | `configs/eval/mmvet/mmvet_bagel.yaml` |
 | MathVista | `configs/eval/mathvista/mathvista_bagel.yaml` |
 

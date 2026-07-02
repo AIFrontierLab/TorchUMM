@@ -89,7 +89,7 @@ PYTHONPATH=src python -m umm.cli.main eval \
     --config configs/eval/dpg_bench/dpg_bench_bagel.yaml
 ```
 
-### MMMU, MMBench, MM-Vet, MathVista
+### MMMU, MMBench, MMStar, MM-Vet, MathVista
 
 These follow the same single-command pattern:
 
@@ -101,6 +101,10 @@ PYTHONPATH=src python -m umm.cli.main eval \
 # MMBench
 PYTHONPATH=src python -m umm.cli.main eval \
     --config configs/eval/mmbench/mmbench_bagel.yaml
+
+# MMStar
+PYTHONPATH=src python -m umm.cli.main eval \
+    --config configs/eval/mmstar/mmstar_bagel.yaml
 
 # MM-Vet
 PYTHONPATH=src python -m umm.cli.main eval \

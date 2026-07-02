@@ -1,0 +1,25 @@
+eval:
+  benchmark: mmstar
+
+inference:
+  backbone: janus_pro
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/janus_pro/Janus-Pro-7B
+    janus_root: ${UMM_CODEBASE}/model/janus_pro/Janus
+    seed: 42
+    torch_dtype: bfloat16
+    understanding_cfg:
+      max_new_tokens: 2048
+      do_sample: false
+      use_cache: true
+
+mmstar:
+  datasets: [MMStar]
+  root: Lin-Chen/MMStar
+  split: val
+  cache_dir: data/MMStar
+  out_dir: output/mmstar/janus_pro
+  score_output_path: output/mmstar/janus_pro/summary.json
+  max_new_tokens: 20
+  resume: true
+  answer_instruction: "Answer with the option's letter from the given choices directly."

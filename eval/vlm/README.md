@@ -1,6 +1,6 @@
 # Understanding Benchmarks -- Data Preparation
 
-This guide covers data preparation for the understanding evaluation benchmarks: **MME**, **MMMU**, **MMBench**, **MM-Vet**, and **MathVista**.
+This guide covers data preparation for the understanding evaluation benchmarks: **MME**, **MMMU**, **MMBench**, **MMStar**, **MM-Vet**, and **MathVista**.
 
 All benchmark data is stored under `data/` at the repository root.
 
@@ -78,6 +78,22 @@ data/mmbench/
 ├── mmbench_dev_en_20231003.tsv
 ├── mmbench_test_cn_20231003.tsv
 └── mmbench_test_en_20231003.tsv
+```
+
+---
+
+## MMStar
+
+MMStar is auto-downloaded from HuggingFace (`Lin-Chen/MMStar`) during evaluation. No manual download is needed.
+
+- Cached at: `data/MMStar/`
+
+Referenced in config as:
+
+```yaml
+root: Lin-Chen/MMStar
+split: val
+cache_dir: data/MMStar
 ```
 
 ---

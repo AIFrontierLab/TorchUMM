@@ -78,6 +78,7 @@ result = pipeline.run(InferenceRequest(
 | MME       | `configs/eval/mme/mme_janus_pro.yaml` |
 | MMMU      | `configs/eval/mmmu/mmmu_janus_pro.yaml` |
 | MMBench   | `configs/eval/mmbench/mmbench_janus_pro.yaml` |
+| MMStar    | `configs/eval/mmstar/mmstar_janus_pro.yaml` |
 | MM-Vet    | `configs/eval/mmvet/mmvet_janus_pro.yaml` |
 | MathVista | `configs/eval/mathvista/mathvista_janus_pro.yaml` |
 

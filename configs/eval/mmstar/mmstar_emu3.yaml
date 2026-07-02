@@ -1,0 +1,27 @@
+eval:
+  benchmark: mmstar
+
+inference:
+  backbone: emu3
+  backbone_cfg:
+    emu_root: ${UMM_CODEBASE}/model/Emu3
+    model_path: ${UMM_MODEL_CACHE}/emu3/Emu3-Chat
+    vq_hub: ${UMM_MODEL_CACHE}/emu3/Emu3-VisionTokenizer
+    device_map: cuda:0
+    device: cuda:0
+    torch_dtype: bfloat16
+    attn_implementation: flash_attention_2
+
+    generation_cfg:
+      max_new_tokens: 1024
+
+mmstar:
+  datasets: [MMStar]
+  root: Lin-Chen/MMStar
+  split: val
+  cache_dir: data/MMStar
+  out_dir: output/mmstar/emu3
+  score_output_path: output/mmstar/emu3/summary.json
+  max_new_tokens: 20
+  resume: true
+  answer_instruction: "Answer with the option's letter from the given choices directly."

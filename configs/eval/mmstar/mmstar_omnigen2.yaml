@@ -1,0 +1,30 @@
+eval:
+  benchmark: mmstar
+
+inference:
+  backbone: omnigen2
+  backbone_cfg:
+    omnigen2_root: ${UMM_CODEBASE}/model/OmniGen2
+    model_path: ${UMM_MODEL_CACHE}/omnigen2/OmniGen2
+    device: cuda:0
+    device_map: cuda:0
+    torch_dtype: bfloat16
+    enable_cpu_offload: false
+    enable_sequential_cpu_offload: false
+    generation_cfg:
+      num_inference_steps: 50
+      seed: 42
+
+    understanding_cfg:
+      max_new_tokens: 2048
+
+mmstar:
+  datasets: [MMStar]
+  root: Lin-Chen/MMStar
+  split: val
+  cache_dir: data/MMStar
+  out_dir: output/mmstar/omnigen2
+  score_output_path: output/mmstar/omnigen2/summary.json
+  max_new_tokens: 20
+  resume: true
+  answer_instruction: "Answer with the option's letter from the given choices directly."

@@ -77,6 +77,7 @@ result = pipeline.run(InferenceRequest(
 | MME       | `configs/eval/mme/mme_emu3.yaml` |
 | MMMU      | `configs/eval/mmmu/mmmu_emu3.yaml` |
 | MMBench   | `configs/eval/mmbench/mmbench_emu3.yaml` |
+| MMStar    | `configs/eval/mmstar/mmstar_emu3.yaml` |
 | MM-Vet    | `configs/eval/mmvet/mmvet_emu3.yaml` |
 | MathVista | `configs/eval/mathvista/mathvista_emu3.yaml` |
 

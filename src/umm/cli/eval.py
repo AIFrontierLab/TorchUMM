@@ -30,6 +30,9 @@ def run_eval_command(args: Any) -> int:
     if benchmark == "mmbench" or "mmbench" in raw_cfg:
         from umm.cli.mmbench_eval import run_mmbench_eval_command as _fn
         return _fn(args)
+    if benchmark == "mmstar" or "mmstar" in raw_cfg:
+        from umm.cli.mmstar_eval import run_mmstar_eval_command as _fn
+        return _fn(args)
     if benchmark == "mmvet" or "mmvet" in raw_cfg:
         from umm.cli.mmvet_eval import run_mmvet_eval_command as _fn
         return _fn(args)

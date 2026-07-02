@@ -18,10 +18,18 @@
   <a href="https://huggingface.co/aifronter/post_train">🤗 Post-Training Weights</a>
 </p>
 
+---
+
+## News
+
+- **Jul 2026**: Added MMStar evaluation benchmark support.
+
+---
 
 ## Table of Contents
 
 - [Table of Contents](#table-of-contents)
+- [News](#news)
 - [Introduction](#introduction)
 - [Supported Models](#supported-models)
 - [Repository Structure](#repository-structure)
@@ -210,6 +218,8 @@ cd -
 
 **MMMU** — auto-downloaded from HuggingFace (`MMMU/MMMU`) at evaluation time, cached in `data/MMMU/`. No manual download needed.
 
+**MMStar** — auto-downloaded from HuggingFace (`Lin-Chen/MMStar`) at evaluation time, cached in `data/MMStar/`. No manual download needed.
+
 ### Generation Benchmarks Data
 
 These benchmarks include their data in the repository:
@@ -250,6 +260,9 @@ PYTHONPATH=src python -m umm.cli.main eval --config configs/eval/ueval/ueval_bag
 
 # MME on Bagel
 PYTHONPATH=src python -m umm.cli.main eval --config configs/eval/mme/mme_bagel.yaml
+
+# MMStar on Bagel
+PYTHONPATH=src python -m umm.cli.main eval --config configs/eval/mmstar/mmstar_bagel.yaml
 ```
 
 **Post-Training**
@@ -531,7 +544,7 @@ PYTHONPATH=src python -m umm.cli.main eval --config configs/eval/ueval/ueval_bag
 PYTHONPATH=src python -m umm.cli.main eval --config configs/eval/ueval/ueval_bagel_score.yaml
 ```
 
-**Single-stage benchmarks** (DPG Bench, MME, MMMU, MMBench, MM-Vet) run generation and scoring in one step:
+**Single-stage benchmarks** (DPG Bench, MME, MMMU, MMBench, MMStar, MM-Vet) run generation and scoring in one step:
 
 ```bash
 PYTHONPATH=src python -m umm.cli.main eval --config configs/eval/mme/mme_bagel.yaml
@@ -691,4 +704,3 @@ If you find TorchUMM useful in your research, please consider citing:
       url={https://arxiv.org/abs/2604.10784}, 
 }
 ```
-

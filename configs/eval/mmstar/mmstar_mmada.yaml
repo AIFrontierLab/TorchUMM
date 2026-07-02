@@ -1,0 +1,26 @@
+eval:
+  benchmark: mmstar
+
+inference:
+  backbone: mmada
+  backbone_cfg:
+    model_path: ${UMM_MODEL_CACHE}/mmada/MMaDA-8B-Base
+    mmada_root: ${UMM_CODEBASE}/model/MMaDA
+    vq_model_path: ${UMM_MODEL_CACHE}/mmada/magvitv2
+    seed: 42
+
+    understanding_cfg:
+      max_new_tokens: 2048
+      steps: 256
+      block_length: 128
+
+mmstar:
+  datasets: [MMStar]
+  root: Lin-Chen/MMStar
+  split: val
+  cache_dir: data/MMStar
+  out_dir: output/mmstar/mmada
+  score_output_path: output/mmstar/mmada/summary.json
+  max_new_tokens: 20
+  resume: true
+  answer_instruction: "Answer with the option's letter from the given choices directly."

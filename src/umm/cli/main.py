@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import sys
 
+from umm.core.config import set_config_overrides
 from umm.cli.eval import run_eval_command
 from umm.cli.infer import run_infer_command
 from umm.cli.train import run_train_command
@@ -21,15 +22,18 @@ def build_parser() -> argparse.ArgumentParser:
 
     infer = sub.add_parser("infer")
     infer.add_argument("--config", required=True)
+    infer.add_argument("--set", action="append", default=[], help="Override config value, e.g. a.b.c=value.")
     infer.add_argument("--output-json", default=None, help="Optional path to dump serializable outputs.")
     infer.set_defaults(handler=run_infer_command)
 
     evaluate = sub.add_parser("eval")
     evaluate.add_argument("--config", required=True)
+    evaluate.add_argument("--set", action="append", default=[], help="Override config value, e.g. a.b.c=value.")
     evaluate.set_defaults(handler=run_eval_command)
 
     train = sub.add_parser("train")
     train.add_argument("--config", required=True)
+    train.add_argument("--set", action="append", default=[], help="Override config value, e.g. a.b.c=value.")
     train.set_defaults(handler=run_train_command)
 
     return parser
@@ -43,6 +47,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
     if not hasattr(args, "handler"):
         parser.error(f"No handler configured for command: {args.cmd}")
+    set_config_overrides(getattr(args, "set", []))
     return int(args.handler(args))
 
 
