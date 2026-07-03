@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import random
 import subprocess
 import sys
@@ -10,11 +11,21 @@ from typing import Any, Iterable
 
 from datasets import concatenate_datasets, load_dataset
 from PIL import Image
-from tqdm import tqdm
 
 from umm.core.config import load_config
-from umm.inference import InferencePipeline
+from umm.eval.distributed import (
+    barrier,
+    cleanup_distributed,
+    cleanup_shards,
+    load_shard_items,
+    maybe_init_distributed,
+    merge_shards,
+    rank_shard_path,
+    sum_across_ranks,
+)
 from umm.eval.internvl_chat.eval.mmmu import data_utils, eval_utils
+from umm.eval.runner import run_sharded_inference
+from umm.inference import InferencePipeline
 
 
 def _resolve_path(path_str: str, repo_root: Path) -> Path:
@@ -53,7 +64,6 @@ def _extract_text(output: Any) -> str:
                 text = _extract_text(item)
                 if text:
                     return text
-        # Handle adapters that return {"understandings": [{"response": "..."}]}
         for list_key in ("understandings",):
             container = output.get(list_key)
             if isinstance(container, list):
@@ -79,8 +89,27 @@ def _load_eval_cfg(config_path: str) -> tuple[dict[str, Any], dict[str, Any], di
     return eval_cfg, mmmu_cfg, inference_cfg
 
 
+def _load_mmmu_subject_from_local_snapshot(root_path: Path, subject: str, split: str) -> Any:
+    subject_dir = root_path / subject
+    parquet_files = sorted(subject_dir.glob(f"{split}-*.parquet"))
+    if not parquet_files:
+        raise FileNotFoundError(
+            f"Missing MMMU parquet for subject={subject}, split={split}, expected files under {subject_dir}"
+        )
+    return load_dataset(
+        "parquet",
+        data_files={split: [str(path) for path in parquet_files]},
+        split=split,
+    )
+
+
 def _load_mmmu_dataset(root: str, split: str, cache_dir: str | None) -> Any:
+    root_path = Path(root).expanduser()
     datasets_list = []
+    if root_path.exists() and root_path.is_dir():
+        for subject in data_utils.CAT_SHORT2LONG.values():
+            datasets_list.append(_load_mmmu_subject_from_local_snapshot(root_path, subject, split))
+        return concatenate_datasets(datasets_list)
     for subject in data_utils.CAT_SHORT2LONG.values():
         datasets_list.append(load_dataset(root, subject, split=split, cache_dir=cache_dir))
     return concatenate_datasets(datasets_list)
@@ -200,75 +229,89 @@ def run_mmmu_eval_command(args: Any) -> int:
     max_images = int(mmmu_cfg.get("max_images", 1) or 1)
     seed = int(mmmu_cfg.get("seed", 0) or 0)
 
-    out_dir.mkdir(parents=True, exist_ok=True)
-    pipeline = InferencePipeline(backbone_name=backbone, backbone_cfg=backbone_cfg)
+    dist_info = maybe_init_distributed()
+    try:
+        out_dir.mkdir(parents=True, exist_ok=True)
+        pipeline = InferencePipeline(backbone_name=backbone, backbone_cfg=backbone_cfg)
 
-    summary: dict[str, Any] = {
-        "benchmark": "mmmu",
-        "backbone": backbone,
-        "out_dir": str(out_dir),
-        "datasets": datasets,
-    }
+        summary: dict[str, Any] = {
+            "benchmark": "mmmu",
+            "backbone": backbone,
+            "out_dir": str(out_dir),
+            "datasets": datasets,
+            "world_size": dist_info.world_size,
+        }
 
-    random.seed(seed)
-    for ds_name in datasets:
-        split = "validation"
-        if ds_name.endswith("test"):
-            split = "test"
-        elif ds_name.endswith("dev"):
-            split = "dev"
-        elif ds_name.endswith("validation"):
+        if dist_info.world_size > 1:
+            print(
+                f"[mmmu] distributed inference enabled: rank={dist_info.rank}, "
+                f"local_rank={dist_info.local_rank}, world_size={dist_info.world_size}",
+                flush=True,
+            )
+
+        random.seed(seed)
+        local_total_written = 0
+        for ds_name in datasets:
             split = "validation"
+            if ds_name.endswith("test"):
+                split = "test"
+            elif ds_name.endswith("dev"):
+                split = "dev"
+            elif ds_name.endswith("validation"):
+                split = "validation"
 
-        dataset = _load_mmmu_dataset(
-            root=dataset_root,
-            split=split,
-            cache_dir=str(cache_dir_path),
-        )
+            dataset = _load_mmmu_dataset(
+                root=dataset_root,
+                split=split,
+                cache_dir=str(cache_dir_path),
+            )
 
-        # Resume: load checkpoint JSONL if exists
-        checkpoint_jsonl = out_dir / f"{ds_name}_checkpoint.jsonl"
-        done_ids: set[str] = set()
-        outputs: list[dict[str, Any]] = []
-        if checkpoint_jsonl.exists():
-            with checkpoint_jsonl.open("r", encoding="utf-8") as reader:
-                for line in reader:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    item = json.loads(line)
-                    outputs.append(item)
-                    done_ids.add(str(item.get("data_id", "")))
-            print(f"[mmmu] resume: {len(done_ids)} done, skipping completed items", flush=True)
+            checkpoint_jsonl = out_dir / f"{ds_name}_checkpoint.jsonl"
+            shard_path = rank_shard_path(checkpoint_jsonl, dist_info.rank, dist_info.world_size)
 
-        total = len(dataset)
-        remaining = total - len(done_ids)
-        print(f"[mmmu] {ds_name}: {total} total, {len(done_ids)} done, {remaining} remaining", flush=True)
+            done_ids: set[Any] = {
+                str(it.get("data_id", "")) for it in load_shard_items(shard_path)
+            }
+            if done_ids:
+                print(
+                    f"[mmmu] {ds_name}: rank {dist_info.rank} resuming after "
+                    f"{len(done_ids)} shard items",
+                    flush=True,
+                )
 
-        with checkpoint_jsonl.open("a", encoding="utf-8") as ckpt_writer:
-            for idx, sample in enumerate(tqdm(dataset, desc=f"mmmu/{ds_name}", file=sys.stdout), start=1):
+            total = len(dataset)
+            assigned_total = (
+                (total + dist_info.world_size - 1 - dist_info.rank) // dist_info.world_size
+                if dist_info.world_size > 1
+                else total
+            )
+            print(
+                f"[mmmu] {ds_name}: total={total}, rank={dist_info.rank}, "
+                f"assigned={assigned_total}, done={len(done_ids)}, "
+                f"remaining={max(0, assigned_total - len(done_ids))}",
+                flush=True,
+            )
+
+            def payload_fn(sample: Any) -> dict[str, Any]:
                 data = data_utils.process_single_sample(sample)
                 data_id = str(data["id"])
-                if data_id in done_ids:
-                    continue
-
                 question = str(data["question"]).strip()
                 question_type = str(data["question_type"])
-                options = eval(data["options"]) if isinstance(data.get("options"), str) else data.get("options", [])
+                options = (
+                    eval(data["options"])
+                    if isinstance(data.get("options"), str)
+                    else data.get("options", [])
+                )
                 if not isinstance(options, list):
                     options = []
-
                 prompt = _build_prompt(question, question_type, options, prompt_cfg)
-                index2ans, all_choices = data_utils.get_multi_choice_info(options) if options else ({}, [])
-
                 image_paths = _coerce_image_paths(
                     data.get("image", []),
                     image_dir=image_dir,
                     data_id=data_id,
                     max_images=max_images,
                 )
-
-                payload = {
+                return {
                     "backbone": backbone,
                     "task": "understanding",
                     "prompt": prompt,
@@ -276,14 +319,29 @@ def run_mmmu_eval_command(args: Any) -> int:
                     "params": request_params,
                     "metadata": {"question_type": question_type, "data_id": data_id},
                 }
-                output = pipeline.run(payload)
-                response = _extract_text(output)
+
+            def record_fn(sample: Any, raw: Any, _idx: int) -> dict[str, Any]:
+                data = data_utils.process_single_sample(sample)
+                data_id = str(data["id"])
+                question = str(data["question"]).strip()
+                question_type = str(data["question_type"])
+                options = (
+                    eval(data["options"])
+                    if isinstance(data.get("options"), str)
+                    else data.get("options", [])
+                )
+                if not isinstance(options, list):
+                    options = []
+                prompt = _build_prompt(question, question_type, options, prompt_cfg)
+                index2ans, all_choices = (
+                    data_utils.get_multi_choice_info(options) if options else ({}, [])
+                )
+                response = _extract_text(raw)
                 if question_type == "multiple-choice" and all_choices and index2ans:
                     pred = eval_utils.parse_multi_choice_response(response, all_choices, index2ans)
                 else:
                     pred = response
-
-                item = {
+                return {
                     "question": question,
                     "answer": pred,
                     "gt_answers": data.get("answer"),
@@ -292,52 +350,86 @@ def run_mmmu_eval_command(args: Any) -> int:
                     "prompt": prompt,
                     "raw_response": response,
                 }
-                outputs.append(item)
-                ckpt_writer.write(json.dumps(item) + "\n")
-                ckpt_writer.flush()
 
-                if max_samples > 0 and len(outputs) >= max_samples:
-                    break
+            def sample_id_fn(sample: Any) -> str:
+                data = data_utils.process_single_sample(sample)
+                return str(data["id"])
 
-        time_prefix = time.strftime("%y%m%d%H%M%S", time.localtime())
-        output_json = out_dir / f"{ds_name}_{time_prefix}.json"
-        output_jsonl = out_dir / f"{ds_name}_{time_prefix}.jsonl"
+            n_written = run_sharded_inference(
+                infer_fn=pipeline.run,
+                dist_info=dist_info,
+                shard_path=shard_path,
+                samples=dataset,
+                total=total,
+                payload_fn=payload_fn,
+                record_fn=record_fn,
+                sample_id_fn=sample_id_fn,
+                done_ids=done_ids,
+                max_samples=max_samples,
+                log_prefix=f"mmmu/{ds_name}/rank{dist_info.rank}",
+            )
+            local_total_written += n_written
 
-        output_dict = {item["data_id"]: item["answer"] for item in outputs}
-        output_json.write_text(json.dumps(output_dict, indent=4), encoding="utf-8")
-        with output_jsonl.open("w", encoding="utf-8") as writer:
-            for item in outputs:
-                writer.write(json.dumps(item) + "\n")
+            barrier(dist_info)
 
-        # Clean up checkpoint after successful completion
-        if checkpoint_jsonl.exists():
-            checkpoint_jsonl.unlink()
+            time_prefix = time.strftime("%y%m%d%H%M%S", time.localtime())
+            output_json = out_dir / f"{ds_name}_{time_prefix}.json"
+            output_jsonl = out_dir / f"{ds_name}_{time_prefix}.jsonl"
 
-        summary[f"{ds_name}_output_path"] = str(output_json)
-        summary[f"{ds_name}_output_jsonl"] = str(output_jsonl)
+            if dist_info.rank == 0:
+                merged_outputs = merge_shards(checkpoint_jsonl)
+                output_dict = {item["data_id"]: item["answer"] for item in merged_outputs}
+                output_json.write_text(json.dumps(output_dict, indent=4), encoding="utf-8")
+                with output_jsonl.open("w", encoding="utf-8") as writer:
+                    for item in merged_outputs:
+                        writer.write(json.dumps(item) + "\n")
 
-        if run_calculation and split == "validation":
-            cmd = [
-                sys.executable,
-                str(calculation_script),
-                "--output_path",
-                str(output_json),
-                "--answer_path",
-                str(answer_path),
-            ]
-            proc = subprocess.run(cmd, cwd=str(repo_root), capture_output=True, text=True)
-            print(proc.stdout)
-            if proc.returncode != 0:
-                if proc.stderr:
-                    print(proc.stderr, file=sys.stderr)
-                raise RuntimeError(f"MMMU calculation failed with return code {proc.returncode}")
-            summary[f"{ds_name}_calculation_stdout"] = proc.stdout
+                cleanup_shards(checkpoint_jsonl)
+                if dist_info.world_size <= 1 and checkpoint_jsonl.exists():
+                    checkpoint_jsonl.unlink()
 
-    if isinstance(score_output_path, str) and score_output_path:
-        score_path = _resolve_path(score_output_path, repo_root)
-        score_path.parent.mkdir(parents=True, exist_ok=True)
-        score_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
-        print(f"[umm eval] wrote MMMU summary to {score_path}")
+                summary[f"{ds_name}_output_path"] = str(output_json)
+                summary[f"{ds_name}_output_jsonl"] = str(output_jsonl)
 
-    print(f"[umm eval] completed MMMU for backbone={backbone}, outputs={out_dir}")
-    return 0
+                if run_calculation and split == "validation":
+                    cmd = [
+                        sys.executable,
+                        str(calculation_script),
+                        "--output_path",
+                        str(output_json),
+                        "--answer_path",
+                        str(answer_path),
+                    ]
+                    proc = subprocess.run(cmd, cwd=str(repo_root), capture_output=True, text=True)
+                    print(proc.stdout)
+                    if proc.returncode != 0:
+                        if proc.stderr:
+                            print(proc.stderr, file=sys.stderr)
+                        raise RuntimeError(f"MMMU calculation failed with return code {proc.returncode}")
+                    summary[f"{ds_name}_calculation_stdout"] = proc.stdout
+
+            barrier(dist_info)
+
+        total_written_all = sum_across_ranks(local_total_written, dist_info)
+        if dist_info.rank != 0:
+            print(
+                f"[umm eval] rank {dist_info.rank} finished MMMU shard: "
+                f"samples_written={local_total_written}",
+                flush=True,
+            )
+            return 0
+
+        summary["samples_written"] = total_written_all
+        if isinstance(score_output_path, str) and score_output_path:
+            score_path = _resolve_path(score_output_path, repo_root)
+            score_path.parent.mkdir(parents=True, exist_ok=True)
+            score_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+            print(f"[umm eval] wrote MMMU summary to {score_path}")
+
+        print(
+            f"[umm eval] completed MMMU for backbone={backbone}, outputs={out_dir}, "
+            f"samples_written={total_written_all}, world_size={dist_info.world_size}"
+        )
+        return 0
+    finally:
+        cleanup_distributed(dist_info)
