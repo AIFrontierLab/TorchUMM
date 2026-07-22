@@ -3,16 +3,49 @@
 
 import functools
 import gc
+import json
 import os
 import sys
-import wandb
+try:
+    import wandb
+except ImportError:
+    class _NoOpWandbConfig:
+        @staticmethod
+        def update(*args, **kwargs):
+            return None
+
+    class _NoOpWandb:
+        config = _NoOpWandbConfig()
+
+        class Settings:
+            def __init__(self, *args, **kwargs):
+                pass
+
+        @staticmethod
+        def init(*args, **kwargs):
+            return None
+
+        @staticmethod
+        def log(*args, **kwargs):
+            return None
+
+        @staticmethod
+        def finish(*args, **kwargs):
+            return None
+
+    wandb = _NoOpWandb()
 import yaml
 from copy import deepcopy
 from dataclasses import dataclass, field
+from functools import lru_cache
 from time import time
 from typing import Optional, Tuple, List
 
-from peft import LoraConfig, get_peft_model
+try:
+    from peft import LoraConfig, get_peft_model
+except ImportError:
+    LoraConfig = None
+    get_peft_model = None
 
 import torch
 import torch.distributed as dist
@@ -49,6 +82,110 @@ from train.fsdp_utils import (
 )
 from data.data_utils import prepare_attention_mask_per_sample
 from safetensors.torch import load_file
+
+
+@lru_cache(maxsize=200_000)
+def _load_latentumm_embedding(path: str) -> Tuple[float, ...]:
+    with open(path, "r", encoding="utf-8") as fh:
+        data = json.load(fh)
+    values = data.get("values", data.get("embedding", data.get("embeddings")))
+    if values is None:
+        raise KeyError(f"No embedding vector found in {path}")
+    return tuple(float(v) for v in values)
+
+
+def _latentumm_sample_index(data_index, row_group_size: int, rows_per_parquet: int) -> Optional[int]:
+    if data_index is None:
+        return None
+    raw = data_index.get("data_indexes", data_index) if isinstance(data_index, dict) else data_index
+    if isinstance(raw, int):
+        return raw
+    if isinstance(raw, (tuple, list)):
+        if len(raw) >= 3:
+            parquet_idx, row_group_id, row_idx = int(raw[0]), int(raw[1]), int(raw[2])
+            base = parquet_idx * rows_per_parquet if rows_per_parquet > 0 else 0
+            return base + row_group_id * row_group_size + row_idx
+        if len(raw) == 1:
+            return int(raw[0])
+    return None
+
+
+def _build_latentumm_batch(
+    data_indexes,
+    num_samples: int,
+    embedding_root: str,
+    text_embedding_dir: str,
+    image_embedding_dir: str,
+    row_group_size: int,
+    rows_per_parquet: int,
+    device,
+    dtype: torch.dtype = torch.float32,
+) -> Optional[dict]:
+    if data_indexes is None or len(data_indexes) == 0:
+        return None
+
+    text_tensors, image_tensors = [], []
+    valid = torch.zeros(num_samples, dtype=torch.bool, device=device)
+    embedding_dim = None
+    for sample_id in range(num_samples):
+        if sample_id >= len(data_indexes):
+            if embedding_dim is None:
+                continue
+            text_tensors.append(torch.zeros(embedding_dim, dtype=dtype, device=device))
+            image_tensors.append(torch.zeros(embedding_dim, dtype=dtype, device=device))
+            continue
+
+        sample_index = _latentumm_sample_index(data_indexes[sample_id], row_group_size, rows_per_parquet)
+        if sample_index is None:
+            if embedding_dim is None:
+                continue
+            text_tensors.append(torch.zeros(embedding_dim, dtype=dtype, device=device))
+            image_tensors.append(torch.zeros(embedding_dim, dtype=dtype, device=device))
+            continue
+
+        text_path = os.path.join(embedding_root, text_embedding_dir, f"{sample_index}.json")
+        image_path = os.path.join(embedding_root, image_embedding_dir, f"{sample_index}.json")
+        if not (os.path.exists(text_path) and os.path.exists(image_path)):
+            if embedding_dim is None:
+                continue
+            text_tensors.append(torch.zeros(embedding_dim, dtype=dtype, device=device))
+            image_tensors.append(torch.zeros(embedding_dim, dtype=dtype, device=device))
+            continue
+
+        text_values = _load_latentumm_embedding(text_path)
+        image_values = _load_latentumm_embedding(image_path)
+        if len(text_values) != len(image_values):
+            raise ValueError(
+                f"LatentUMM embedding dim mismatch for index {sample_index}: "
+                f"text={len(text_values)}, image={len(image_values)}"
+            )
+        if embedding_dim is None:
+            embedding_dim = len(text_values)
+            for _ in range(len(text_tensors), sample_id):
+                text_tensors.append(torch.zeros(embedding_dim, dtype=dtype, device=device))
+                image_tensors.append(torch.zeros(embedding_dim, dtype=dtype, device=device))
+        elif len(text_values) != embedding_dim:
+            raise ValueError(
+                f"LatentUMM embedding dim changed at index {sample_index}: "
+                f"expected={embedding_dim}, found={len(text_values)}"
+            )
+
+        text_tensors.append(torch.tensor(text_values, dtype=dtype, device=device))
+        image_tensors.append(torch.tensor(image_values, dtype=dtype, device=device))
+        valid[sample_id] = True
+
+    if embedding_dim is None or len(text_tensors) == 0 or not bool(valid.any().item()):
+        return None
+
+    while len(text_tensors) < num_samples:
+        text_tensors.append(torch.zeros(embedding_dim, dtype=dtype, device=device))
+        image_tensors.append(torch.zeros(embedding_dim, dtype=dtype, device=device))
+
+    return {
+        "latentumm_text_embeddings": torch.stack(text_tensors, dim=0),
+        "latentumm_image_embeddings": torch.stack(image_tensors, dim=0),
+        "latentumm_valid_mask": valid,
+    }
 
 
 def count_parameters(module: torch.nn.Module) -> int:
@@ -629,6 +766,14 @@ class ModelArguments:
         default="gelu_pytorch_tanh",
         metadata={"help": "Activation function used in the latent-to-text connector MLP."}
     )
+    latentumm_embedding_dim: int = field(
+        default=3072,
+        metadata={"help": "Gemini/refined embedding dimension for optional LatentUMM hidden-state heads."}
+    )
+    latentumm_mapper_hidden_dim: int = field(
+        default=0,
+        metadata={"help": "Hidden size for LatentUMM mapper heads; 0 uses the LLM hidden size."}
+    )
     interpolate_pos: bool = field(
         default=False,
         metadata={"help": "Interpolate positional embeddings when image resolution differs from pre-training."}
@@ -768,6 +913,10 @@ class TrainingArguments:
     save_every: int = field(
         default=2000,
         metadata={"help": "Save a checkpoint every N training steps."}
+    )
+    save_final_checkpoint: bool = field(
+        default=True,
+        metadata={"help": "Save a checkpoint after the training loop exits."}
     )
     total_steps: int = field(
         default=500_000,
@@ -1003,12 +1152,65 @@ class TrainingArguments:
         metadata={"help": "Maximum prompt token length used for shared-latent alignment."},
     )
     shared_latent_teacher_ckpt: str = field(
-        default="<path-to-stage2-rollout-model-ckpt>",
+        default="/path/to/stage1_shared_latent_model.pt",
         metadata={"help": "Optional Stage1/Stage2 checkpoint to provide a frozen shared-latent teacher."},
     )
     shared_latent_teacher_weight: float = field(
         default=0.05,
         metadata={"help": "Weight for teacher-guided latent target loss (0 disables teacher term)."},
+    )
+    # --- LatentUMM hidden-state alignment on the real shared transformer path ---
+    latentumm_enable: bool = field(
+        default=False,
+        metadata={"help": "Enable LatentUMM auxiliary losses on shared transformer hidden states."},
+    )
+    latentumm_embedding_root: str = field(
+        default="/path/to/dataset_embedding/t2i",
+        metadata={"help": "Root containing text_embedding/ and image_embedding/ JSON files."},
+    )
+    latentumm_text_embedding_dir: str = field(
+        default="text_embedding",
+        metadata={"help": "Subdirectory under latentumm_embedding_root for text Gemini embeddings."},
+    )
+    latentumm_image_embedding_dir: str = field(
+        default="image_embedding",
+        metadata={"help": "Subdirectory under latentumm_embedding_root for image Gemini embeddings."},
+    )
+    latentumm_row_group_size: int = field(
+        default=100,
+        metadata={"help": "Rows per parquet row group, used to map packed data indexes to embedding ids."},
+    )
+    latentumm_rows_per_parquet: int = field(
+        default=0,
+        metadata={"help": "Rows per parquet file for embedding id offsets; 0 means no parquet-file offset."},
+    )
+    latentumm_modal_weight: float = field(
+        default=0.0,
+        metadata={"help": "Weight for L_x-modal on mapped shared hidden states."},
+    )
+    latentumm_task_weight: float = field(
+        default=0.0,
+        metadata={"help": "Weight lambda1 for L_x-task hidden -> Gemini -> hidden consistency."},
+    )
+    latentumm_pref_weight: float = field(
+        default=0.0,
+        metadata={"help": "Weight lambda2 for stochastic rollout preference loss."},
+    )
+    latentumm_target_weight: float = field(
+        default=0.0,
+        metadata={"help": "Optional regression weight tying hidden-to-Gemini maps to precomputed embeddings."},
+    )
+    latentumm_num_rollouts: int = field(
+        default=4,
+        metadata={"help": "K stochastic latent rollouts for LatentUMM preference loss."},
+    )
+    latentumm_noise_std: float = field(
+        default=0.05,
+        metadata={"help": "Gaussian perturbation sigma for stochastic latent rollouts."},
+    )
+    latentumm_source: str = field(
+        default="text",
+        metadata={"help": "Hidden latent source for L_x-task/L_pref: text, image, or fused."},
     )
 
 
@@ -1019,6 +1221,12 @@ def main():
     torch.cuda.set_device(device)
     parser = HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
     model_args, data_args, training_args = parser.parse_args_into_dataclasses()
+    if training_args.latentumm_source not in ("text", "image", "fused"):
+        raise ValueError("--latentumm_source must be one of: text, image, fused")
+    if training_args.latentumm_pref_weight > 0 and training_args.latentumm_num_rollouts < 2:
+        raise ValueError("--latentumm_num_rollouts must be >= 2 when --latentumm_pref_weight > 0")
+    if training_args.latentumm_noise_std < 0:
+        raise ValueError("--latentumm_noise_std must be non-negative")
     if training_args.peak_device_tflops <= 0:
         auto_tflops = detect_peak_tflops(training_args.peak_device_tflops)
         if auto_tflops > 0:
@@ -1122,6 +1330,8 @@ def main():
         connector_act=model_args.connector_act,
         interpolate_pos=model_args.interpolate_pos,
         timestep_shift=training_args.timestep_shift,
+        latentumm_embedding_dim=model_args.latentumm_embedding_dim if training_args.latentumm_enable else 0,
+        latentumm_mapper_hidden_dim=model_args.latentumm_mapper_hidden_dim,
     )
     model = Bagel(
         language_model, 
@@ -1158,6 +1368,8 @@ def main():
             param.requires_grad = False
 
     use_lora = training_args.lora_rank is not None and training_args.lora_rank > 0
+    if use_lora and (LoraConfig is None or get_peft_model is None):
+        raise ImportError("LoRA training requires the optional 'peft' package. Install peft or set --lora_rank 0.")
 
     # Setup FSDP and load pretrained model:
     fsdp_config = FSDPConfig(
@@ -1185,6 +1397,10 @@ def main():
             ] if training_args.lora_target_modules is None else training_args.lora_target_modules.split(","),
         )
         model = get_peft_model(model, peft_config)
+        if training_args.latentumm_enable:
+            for name, param in model.named_parameters():
+                if "latentumm_hidden_to_embed" in name or "latentumm_embed_to_hidden" in name:
+                    param.requires_grad = True
         if dist.get_rank() == 0:
             model.print_trainable_parameters()
     rollout_model = None
@@ -1207,11 +1423,6 @@ def main():
         ), 
         check_fn=grad_checkpoint_check_fn
     )
-
-    if dist.get_rank() == 0:
-        print(fsdp_model)
-        for name, param in model.named_parameters():
-            print(name, param.requires_grad)
 
     shared_latent_teacher = None
     if training_args.shared_latent_teacher_weight > 0:
@@ -1330,6 +1541,23 @@ def main():
         data = data.cuda(device).to_dict()
         data_indexes = data.pop('batch_data_indexes', None)
         ce_loss_weights = data.pop('ce_loss_weights', None)       
+        if training_args.latentumm_enable:
+            latentumm_batch = _build_latentumm_batch(
+                data_indexes=data_indexes,
+                num_samples=len(data["sample_lens"]),
+                embedding_root=training_args.latentumm_embedding_root,
+                text_embedding_dir=training_args.latentumm_text_embedding_dir,
+                image_embedding_dir=training_args.latentumm_image_embedding_dir,
+                row_group_size=training_args.latentumm_row_group_size,
+                rows_per_parquet=training_args.latentumm_rows_per_parquet,
+                device=torch.device("cuda", device),
+            )
+            if latentumm_batch is not None:
+                data.update(latentumm_batch)
+                data["latentumm_num_rollouts"] = training_args.latentumm_num_rollouts
+                data["latentumm_noise_std"] = training_args.latentumm_noise_std
+                data["latentumm_source"] = training_args.latentumm_source
+
         tokens_tensor = torch.tensor(float(data['sequence_length']), device=device)
         dist.all_reduce(tokens_tensor, op=dist.ReduceOp.SUM)
         token_window += tokens_tensor.item()
@@ -1366,11 +1594,10 @@ def main():
             loss_dict["ce"] = ce.detach()
             loss = loss + ce * training_args.ce_weight
         else:
-            assert not training_args.visual_und
             loss_dict["ce"] = torch.tensor(0, device=device)
             total_ce_tokens = torch.tensor(0, device=device)
 
-        if training_args.visual_gen:
+        if loss_dict["mse"] is not None:
             mse = loss_dict["mse"]
             total_mse_tokens = torch.tensor(len(data['mse_loss_indexes']), device=device)
             dist.all_reduce(total_mse_tokens, op=dist.ReduceOp.SUM)
@@ -1378,9 +1605,25 @@ def main():
             loss_dict["mse"] = mse.detach()
             loss = loss + mse * training_args.mse_weight
         else:
-            assert not training_args.visual_gen
             loss_dict["mse"] = torch.tensor(0, device=device)
             total_mse_tokens = torch.tensor(0, device=device)
+
+        latentumm_modal = loss_dict.get("latentumm_modal", torch.tensor(0.0, device=device))
+        latentumm_task = loss_dict.get("latentumm_task", torch.tensor(0.0, device=device))
+        latentumm_pref = loss_dict.get("latentumm_pref", torch.tensor(0.0, device=device))
+        latentumm_target = loss_dict.get("latentumm_target", torch.tensor(0.0, device=device))
+        if training_args.latentumm_enable:
+            loss = (
+                loss
+                + training_args.latentumm_modal_weight * latentumm_modal
+                + training_args.latentumm_task_weight * latentumm_task
+                + training_args.latentumm_pref_weight * latentumm_pref
+                + training_args.latentumm_target_weight * latentumm_target
+            )
+        loss_dict["latentumm_modal"] = latentumm_modal.detach()
+        loss_dict["latentumm_task"] = latentumm_task.detach()
+        loss_dict["latentumm_pref"] = latentumm_pref.detach()
+        loss_dict["latentumm_target"] = latentumm_target.detach()
 
         # Shared latent alignment (text summaries vs image latent summaries).
         shared_latent_loss = torch.tensor(0.0, device=device)
@@ -1728,7 +1971,7 @@ def main():
                 data_status[item['dataset_name']] = {}
             data_status[item['dataset_name']][item['worker_id']] = item['data_indexes']
 
-        if curr_step > 0 and curr_step % training_args.save_every == 0:
+        if training_args.save_every > 0 and curr_step > 0 and curr_step % training_args.save_every == 0:
             # Clear caches and ensure all CUDA operations complete before checkpoint
             torch.cuda.empty_cache()
             torch.cuda.synchronize()
@@ -1769,7 +2012,7 @@ def main():
             # )
     
     # Save final checkpoint if not already saved
-    if curr_step > 0:
+    if training_args.save_final_checkpoint and curr_step > 0:
         logger.info(f"Saving final checkpoint at step {curr_step}...")
         # Clear caches and ensure all CUDA operations complete before final checkpoint
         torch.cuda.empty_cache()

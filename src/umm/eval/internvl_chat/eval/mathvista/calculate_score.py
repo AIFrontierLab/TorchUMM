@@ -4,9 +4,29 @@ import os
 import re
 
 import pandas as pd
-# !pip install python-Levenshtein
-from Levenshtein import distance
 from utilities import read_json, save_json
+
+try:
+    from Levenshtein import distance
+except ImportError:
+    def distance(a, b):
+        a = str(a)
+        b = str(b)
+        if len(a) < len(b):
+            a, b = b, a
+        previous = list(range(len(b) + 1))
+        for i, ca in enumerate(a, start=1):
+            current = [i]
+            for j, cb in enumerate(b, start=1):
+                current.append(
+                    min(
+                        previous[j] + 1,
+                        current[j - 1] + 1,
+                        previous[j - 1] + (ca != cb),
+                    )
+                )
+            previous = current
+        return previous[-1]
 
 
 def get_most_similar(prediction, choices):

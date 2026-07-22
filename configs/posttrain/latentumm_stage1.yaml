@@ -1,0 +1,13 @@
+train:
+  pipeline: latentumm
+  cwd: src/umm/post_training/LatentUMM
+  module: train.stage1_shared_latent
+  use_torchrun: false
+  flag_style: hyphen
+  bool_style: flag
+  args:
+    prompts_path: ${LATENTUMM_PROMPTS_PATH}
+    image_root: ${LATENTUMM_IMAGE_ROOT}
+    embedding_root: ${LATENTUMM_EMBEDDING_ROOT}
+    output_dir: ${LATENTUMM_STAGE1_OUTPUT_DIR}
+    cache_embeddings: true

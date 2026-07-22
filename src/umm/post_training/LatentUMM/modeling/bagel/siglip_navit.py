@@ -11,11 +11,50 @@
 
 import torch
 from torch import nn
+from torch.nn.functional import scaled_dot_product_attention
 
 from transformers.activations import ACT2FN
 from modeling.siglip.configuration_siglip import SiglipVisionConfig as _SiglipVisionConfig
 from modeling.siglip.modeling_siglip import SiglipAttention, SiglipPreTrainedModel
-from flash_attn import flash_attn_varlen_func
+try:
+    from flash_attn import flash_attn_varlen_func as _flash_attn_varlen_func
+except ImportError:
+    _flash_attn_varlen_func = None
+
+
+def flash_attn_varlen_func(
+    q,
+    k,
+    v,
+    cu_seqlens_q,
+    cu_seqlens_k,
+    max_seqlen_q,
+    max_seqlen_k,
+    causal=False,
+    **kwargs,
+):
+    if _flash_attn_varlen_func is not None:
+        return _flash_attn_varlen_func(
+            q=q,
+            k=k,
+            v=v,
+            cu_seqlens_q=cu_seqlens_q,
+            cu_seqlens_k=cu_seqlens_k,
+            max_seqlen_q=max_seqlen_q,
+            max_seqlen_k=max_seqlen_k,
+            causal=causal,
+            **kwargs,
+        )
+    outputs = []
+    for i in range(cu_seqlens_q.numel() - 1):
+        q_start, q_end = int(cu_seqlens_q[i].item()), int(cu_seqlens_q[i + 1].item())
+        k_start, k_end = int(cu_seqlens_k[i].item()), int(cu_seqlens_k[i + 1].item())
+        q_i = q[q_start:q_end].transpose(0, 1).unsqueeze(0)
+        k_i = k[k_start:k_end].transpose(0, 1).unsqueeze(0)
+        v_i = v[k_start:k_end].transpose(0, 1).unsqueeze(0)
+        attn_i = scaled_dot_product_attention(q_i, k_i, v_i, is_causal=causal)
+        outputs.append(attn_i.squeeze(0).transpose(0, 1))
+    return torch.cat(outputs, dim=0)
 
 
 class SiglipVisionConfig(_SiglipVisionConfig):

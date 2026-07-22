@@ -38,6 +38,8 @@ class BagelConfig(PretrainedConfig):
         connector_act="gelu_pytorch_tanh",
         interpolate_pos=False,
         timestep_shift=1.0,
+        latentumm_embedding_dim=0,
+        latentumm_mapper_hidden_dim=0,
         **kwargs
     ):
         super().__init__(**kwargs)
@@ -52,6 +54,8 @@ class BagelConfig(PretrainedConfig):
         self.connector_act = connector_act
         self.interpolate_pos = interpolate_pos
         self.timestep_shift = timestep_shift
+        self.latentumm_embedding_dim = latentumm_embedding_dim
+        self.latentumm_mapper_hidden_dim = latentumm_mapper_hidden_dim
 
 
 class Bagel(PreTrainedModel):
@@ -90,6 +94,23 @@ class Bagel(PreTrainedModel):
         else:
             self.get_flattened_position_ids = get_flattened_position_ids_extrapolate
 
+        if getattr(config, "latentumm_embedding_dim", 0) and config.latentumm_embedding_dim > 0:
+            mapper_hidden_dim = (
+                config.latentumm_mapper_hidden_dim
+                if getattr(config, "latentumm_mapper_hidden_dim", 0) and config.latentumm_mapper_hidden_dim > 0
+                else self.hidden_size
+            )
+            self.latentumm_hidden_to_embed = nn.Sequential(
+                nn.Linear(self.hidden_size, mapper_hidden_dim),
+                nn.GELU(),
+                nn.Linear(mapper_hidden_dim, config.latentumm_embedding_dim),
+            )
+            self.latentumm_embed_to_hidden = nn.Sequential(
+                nn.Linear(config.latentumm_embedding_dim, mapper_hidden_dim),
+                nn.GELU(),
+                nn.Linear(mapper_hidden_dim, self.hidden_size),
+            )
+
         self.config = config
         self._init_weights()
 
@@ -122,6 +143,13 @@ class Bagel(PreTrainedModel):
         packed_vae_token_indexes: Optional[torch.LongTensor] = None,
         packed_timesteps: Optional[torch.LongTensor] = None,
         mse_loss_indexes: Optional[torch.BoolTensor] = None,
+        # LatentUMM auxiliary losses on shared transformer hidden states.
+        latentumm_text_embeddings: Optional[torch.Tensor] = None,
+        latentumm_image_embeddings: Optional[torch.Tensor] = None,
+        latentumm_valid_mask: Optional[torch.BoolTensor] = None,
+        latentumm_num_rollouts: int = 4,
+        latentumm_noise_std: float = 0.05,
+        latentumm_source: str = "text",
     ) -> torch.Tensor:
         """
         Args:
@@ -163,7 +191,15 @@ class Bagel(PreTrainedModel):
         else:
             attention_mask = nested_attention_masks
 
-        if self.config.visual_und:
+        has_vit_tokens = (
+            self.config.visual_und
+            and packed_vit_tokens is not None
+            and packed_vit_token_indexes is not None
+            and packed_vit_position_ids is not None
+            and vit_token_seqlens is not None
+            and vit_token_seqlens.numel() > 0
+        )
+        if has_vit_tokens:
             cu_seqlens = torch.nn.functional.pad(torch.cumsum(vit_token_seqlens, dim=0), (1, 0))
             cu_seqlens = cu_seqlens.to(torch.int32)
             max_seqlen = torch.max(vit_token_seqlens).item()
@@ -226,7 +262,161 @@ class Bagel(PreTrainedModel):
             packed_ce_preds = self.language_model.lm_head(last_hidden_state[ce_loss_indexes])
             ce = F.cross_entropy(packed_ce_preds, packed_label_ids, reduction="none")
 
-        return dict(mse=mse, ce=ce)
+        output = dict(mse=mse, ce=ce)
+        if latentumm_text_embeddings is not None and latentumm_image_embeddings is not None:
+            output.update(
+                self._compute_latentumm_losses(
+                    last_hidden_state=last_hidden_state,
+                    sample_lens=sample_lens,
+                    packed_text_indexes=packed_text_indexes,
+                    packed_vae_token_indexes=packed_vae_token_indexes,
+                    packed_vit_token_indexes=packed_vit_token_indexes,
+                    text_embeddings=latentumm_text_embeddings,
+                    image_embeddings=latentumm_image_embeddings,
+                    valid_mask=latentumm_valid_mask,
+                    num_rollouts=latentumm_num_rollouts,
+                    noise_std=latentumm_noise_std,
+                    source=latentumm_source,
+                )
+            )
+
+        return output
+
+    def _summarize_positions(
+        self,
+        hidden: torch.Tensor,
+        indexes: Optional[torch.LongTensor],
+        start: int,
+        end: int,
+        before: Optional[int] = None,
+    ) -> Optional[torch.Tensor]:
+        if indexes is None:
+            return None
+        mask = (indexes >= start) & (indexes < end)
+        if before is not None:
+            mask = mask & (indexes < before)
+        selected = indexes[mask]
+        if selected.numel() == 0:
+            return None
+        return hidden[selected].mean(dim=0)
+
+    def _compute_latentumm_losses(
+        self,
+        last_hidden_state: torch.Tensor,
+        sample_lens: List[int],
+        packed_text_indexes: torch.LongTensor,
+        packed_vae_token_indexes: Optional[torch.LongTensor],
+        packed_vit_token_indexes: Optional[torch.LongTensor],
+        text_embeddings: torch.Tensor,
+        image_embeddings: torch.Tensor,
+        valid_mask: Optional[torch.BoolTensor],
+        num_rollouts: int,
+        noise_std: float,
+        source: str,
+    ) -> Dict[str, torch.Tensor]:
+        zero = last_hidden_state.new_zeros(())
+        if not hasattr(self, "latentumm_hidden_to_embed"):
+            return {
+                "latentumm_modal": zero,
+                "latentumm_task": zero,
+                "latentumm_pref": zero,
+                "latentumm_target": zero,
+            }
+
+        if valid_mask is None:
+            valid_mask = torch.ones(len(sample_lens), dtype=torch.bool, device=last_hidden_state.device)
+        else:
+            valid_mask = valid_mask.to(device=last_hidden_state.device, dtype=torch.bool)
+
+        z_text_list, z_image_list, valid_ids = [], [], []
+        start = 0
+        for sample_id, sample_len in enumerate(sample_lens):
+            end = start + int(sample_len)
+            if sample_id >= valid_mask.numel() or not bool(valid_mask[sample_id].item()):
+                start = end
+                continue
+
+            image_summary = self._summarize_positions(
+                last_hidden_state, packed_vae_token_indexes, start, end
+            )
+            image_indexes = packed_vae_token_indexes
+            if image_summary is None:
+                image_summary = self._summarize_positions(
+                    last_hidden_state, packed_vit_token_indexes, start, end
+                )
+                image_indexes = packed_vit_token_indexes
+
+            before_image = None
+            if image_indexes is not None:
+                image_mask = (image_indexes >= start) & (image_indexes < end)
+                if image_mask.any():
+                    before_image = int(image_indexes[image_mask].min().item()) - 1
+            text_summary = self._summarize_positions(
+                last_hidden_state, packed_text_indexes, start, end, before=before_image
+            )
+            if text_summary is None:
+                text_summary = self._summarize_positions(
+                    last_hidden_state, packed_text_indexes, start, end
+                )
+
+            if text_summary is not None and image_summary is not None:
+                z_text_list.append(text_summary)
+                z_image_list.append(image_summary)
+                valid_ids.append(sample_id)
+            start = end
+
+        if len(valid_ids) == 0:
+            return {
+                "latentumm_modal": zero,
+                "latentumm_task": zero,
+                "latentumm_pref": zero,
+                "latentumm_target": zero,
+            }
+
+        valid_ids = torch.tensor(valid_ids, dtype=torch.long, device=last_hidden_state.device)
+        z_text = torch.stack(z_text_list, dim=0)
+        z_image = torch.stack(z_image_list, dim=0)
+        target_text = text_embeddings.to(device=last_hidden_state.device, dtype=z_text.dtype)[valid_ids]
+        target_image = image_embeddings.to(device=last_hidden_state.device, dtype=z_text.dtype)[valid_ids]
+
+        phi_text = self.latentumm_hidden_to_embed(z_text)
+        phi_image = self.latentumm_hidden_to_embed(z_image)
+        latentumm_modal = torch.mean((phi_text.float() - phi_image.float()) ** 2)
+        latentumm_target = 0.5 * (
+            torch.mean((phi_text.float() - target_text.float()) ** 2)
+            + torch.mean((phi_image.float() - target_image.float()) ** 2)
+        )
+
+        if source == "fused":
+            z = 0.5 * (z_text + z_image)
+        elif source == "image":
+            z = z_image
+        else:
+            z = z_text
+
+        x_hat = self.latentumm_hidden_to_embed(z)
+        z_hat = self.latentumm_embed_to_hidden(x_hat)
+        latentumm_task = torch.mean((z.float() - z_hat.float()) ** 2)
+
+        if num_rollouts < 2:
+            latentumm_pref = zero
+        else:
+            scores = []
+            for _ in range(num_rollouts):
+                z_k = z + float(noise_std) * torch.randn_like(z)
+                x_hat_k = self.latentumm_hidden_to_embed(z_k)
+                z_hat_k = self.latentumm_embed_to_hidden(x_hat_k)
+                scores.append(F.cosine_similarity(z.float(), z_hat_k.float(), dim=-1))
+            score_tensor = torch.stack(scores, dim=0)
+            score_margin = score_tensor.max(dim=0).values - score_tensor.min(dim=0).values
+            latentumm_pref = -F.logsigmoid(score_margin).mean()
+
+        return {
+            "latentumm_modal": latentumm_modal,
+            "latentumm_task": latentumm_task,
+            "latentumm_pref": latentumm_pref,
+            "latentumm_target": latentumm_target,
+        }
 
 
     def prepare_prompts(self, curr_kvlens, curr_rope, prompts, tokenizer, new_token_ids):

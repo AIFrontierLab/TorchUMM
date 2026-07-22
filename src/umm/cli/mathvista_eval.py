@@ -123,16 +123,37 @@ def _run_llm_extraction(
         return results
 
     import torch
-    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 
     print(f"[mathvista] loading extraction LLM: {model_path} ...", flush=True)
+    config = AutoConfig.from_pretrained(model_path, trust_remote_code=True)
     tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
-    model = AutoModelForCausalLM.from_pretrained(
-        model_path,
-        torch_dtype="auto",
-        device_map="auto",
-        trust_remote_code=True,
-    )
+    model_type = str(getattr(config, "model_type", "")).lower()
+    if model_type == "qwen2_5_vl":
+        from transformers import Qwen2_5_VLForConditionalGeneration
+
+        model = Qwen2_5_VLForConditionalGeneration.from_pretrained(
+            model_path,
+            torch_dtype="auto",
+            device_map="auto",
+            trust_remote_code=True,
+        )
+    elif model_type == "qwen2_vl":
+        from transformers import Qwen2VLForConditionalGeneration
+
+        model = Qwen2VLForConditionalGeneration.from_pretrained(
+            model_path,
+            torch_dtype="auto",
+            device_map="auto",
+            trust_remote_code=True,
+        )
+    else:
+        model = AutoModelForCausalLM.from_pretrained(
+            model_path,
+            torch_dtype="auto",
+            device_map="auto",
+            trust_remote_code=True,
+        )
     model.eval()
 
     for pid in tqdm(need_llm, desc="mathvista/extract", file=sys.stdout):

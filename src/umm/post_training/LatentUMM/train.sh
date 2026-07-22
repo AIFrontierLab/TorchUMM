@@ -13,10 +13,11 @@ master_addr=$(getent hosts "${master_addr:-127.0.0.1}" | awk '{ print $1 }' || e
 num_nodes="${num_nodes:-1}"
 master_port="${master_port:-29501}"
 nproc_per_node="${nproc_per_node:-4}"
-model_path="${model_path:-<path-to-bagel-7b-mot-model>}"
+model_path="${model_path:-/path/to/BAGEL-7B-MoT}"
 wandb_project="${wandb_project:-bagel-finetune}"
-shared_latent_teacher_ckpt="${shared_latent_teacher_ckpt:-<path-to-stage2-rollout-model-ckpt>}"
-checkpoint_dir="${checkpoint_dir:-<path-to-stage2-integrated-checkpoint-dir>}"
+wandb_offline="${wandb_offline:-True}"
+shared_latent_teacher_ckpt="${shared_latent_teacher_ckpt:-None}"
+checkpoint_dir="${checkpoint_dir:-/path/to/outputs/latentumm/checkpoints}"
 rir_enable="${rir_enable:-False}"
 rir_every="${rir_every:-11}"
 
@@ -28,10 +29,31 @@ warmup_steps="${warmup_steps:-1000}"
 ce_weight="${ce_weight:-0.7}"
 mse_weight="${mse_weight:-1.0}"
 ema_decay="${ema_decay:-0.99995}"
+total_steps="${total_steps:-500000}"
+save_every="${save_every:-1000}"
+save_final_checkpoint="${save_final_checkpoint:-True}"
+expected_num_tokens="${expected_num_tokens:-10240}"
+max_num_tokens="${max_num_tokens:-11520}"
+max_num_tokens_per_sample="${max_num_tokens_per_sample:-10240}"
+num_replicate="${num_replicate:-1}"
+num_shard="${num_shard:-$nproc_per_node}"
+sharding_strategy="${sharding_strategy:-HYBRID_SHARD}"
 
 # Shared latent losses can over-regularize image generation when too strong.
-shared_latent_weight="${shared_latent_weight:-0.02}"
-shared_latent_teacher_weight="${shared_latent_teacher_weight:-0.01}"
+shared_latent_weight="${shared_latent_weight:-0.0}"
+shared_latent_teacher_weight="${shared_latent_teacher_weight:-0.0}"
+
+# LatentUMM hidden-state auxiliary losses. Disabled by default; enable for the
+# real shared-transformer alignment objective.
+latentumm_enable="${latentumm_enable:-False}"
+latentumm_embedding_root="${latentumm_embedding_root:-/path/to/dataset_embedding/t2i}"
+latentumm_modal_weight="${latentumm_modal_weight:-0.0}"
+latentumm_task_weight="${latentumm_task_weight:-0.0}"
+latentumm_pref_weight="${latentumm_pref_weight:-0.0}"
+latentumm_target_weight="${latentumm_target_weight:-0.0}"
+latentumm_num_rollouts="${latentumm_num_rollouts:-4}"
+latentumm_noise_std="${latentumm_noise_std:-0.05}"
+latentumm_source="${latentumm_source:-text}"
 
 # LoRA by default to avoid full-parameter drift; set lora_rank=0 for full finetune.
 lora_rank="${lora_rank:-64}"
@@ -53,6 +75,7 @@ echo "Checkpoint dir: $checkpoint_dir"
 echo "RIR enabled: $rir_enable (every $rir_every steps)"
 echo "Train profile: lr=$lr min_lr=$min_lr warmup=$warmup_steps ce=$ce_weight mse=$mse_weight"
 echo "Latent profile: shared=$shared_latent_weight teacher=$shared_latent_teacher_weight"
+echo "LatentUMM profile: enable=$latentumm_enable modal=$latentumm_modal_weight task=$latentumm_task_weight pref=$latentumm_pref_weight target=$latentumm_target_weight K=$latentumm_num_rollouts sigma=$latentumm_noise_std source=$latentumm_source"
 echo "Adapter profile: lora_rank=$lora_rank lora_alpha=$lora_alpha"
 
 torchrun \
@@ -75,8 +98,10 @@ torchrun \
   --rir_rollout_lazy True \
   --rir_rollout_free_each_step True \
   --log_every 1 \
-  --num_replicate 1 \
-  --num_shard 4 \
+  --wandb_offline $wandb_offline \
+  --num_replicate $num_replicate \
+  --num_shard $num_shard \
+  --sharding_strategy $sharding_strategy \
   --lr $lr \
   --min_lr $min_lr \
   --lr_scheduler cosine \
@@ -87,14 +112,25 @@ torchrun \
   --lora_rank $lora_rank \
   --lora_alpha $lora_alpha \
   --num_workers 1 \
-  --save_every 1000 \
+  --save_every $save_every \
+  --save_final_checkpoint $save_final_checkpoint \
+  --total_steps $total_steps \
   --checkpoint_dir $checkpoint_dir \
-  --expected_num_tokens 10240 \
-  --max_num_tokens 11520 \
-  --max_num_tokens_per_sample 10240 \
+  --expected_num_tokens $expected_num_tokens \
+  --max_num_tokens $max_num_tokens \
+  --max_num_tokens_per_sample $max_num_tokens_per_sample \
   --shared_latent_weight $shared_latent_weight \
   --shared_latent_teacher_ckpt $shared_latent_teacher_ckpt \
   --shared_latent_teacher_weight $shared_latent_teacher_weight \
+  --latentumm_enable $latentumm_enable \
+  --latentumm_embedding_root $latentumm_embedding_root \
+  --latentumm_modal_weight $latentumm_modal_weight \
+  --latentumm_task_weight $latentumm_task_weight \
+  --latentumm_pref_weight $latentumm_pref_weight \
+  --latentumm_target_weight $latentumm_target_weight \
+  --latentumm_num_rollouts $latentumm_num_rollouts \
+  --latentumm_noise_std $latentumm_noise_std \
+  --latentumm_source $latentumm_source \
   --rir_enable $rir_enable \
   --rir_rollout_device cuda \
   --rir_skip_logp True \

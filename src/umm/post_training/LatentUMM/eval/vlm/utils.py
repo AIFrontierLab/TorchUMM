@@ -54,6 +54,8 @@ def load_model_and_tokenizer(args):
     tokenizer, new_token_ids, _ = add_special_tokens(tokenizer)
 
     model_state_dict_path = os.path.join(args.model_path, "ema.safetensors")
+    if not os.path.exists(model_state_dict_path):
+        model_state_dict_path = os.path.join(args.model_path, "model.safetensors")
     model_state_dict = load_file(model_state_dict_path, device="cpu")
     msg = model.load_state_dict(model_state_dict, strict=False)
     print(msg)

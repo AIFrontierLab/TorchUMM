@@ -10,6 +10,7 @@ from umm.post_training.IRG.pipeline import run_irg_train
 from umm.post_training.unigame.pipeline import run_unigame_train
 from umm.post_training.unipath.pipeline import run_unipath_train
 from umm.post_training.unipath.planner.pipeline import run_planner_train
+from umm.post_training.LatentUMM.pipeline import run_latentumm_train
 
 
 def _unwrap_train_block(config: dict[str, Any]) -> dict[str, Any]:
@@ -45,5 +46,8 @@ def run_train_command(args: Any) -> int:
         return 0
     if pipeline == "unipath":
         run_unipath_train(cfg, config_path=args.config)
+        return 0
+    if pipeline == "latentumm":
+        run_latentumm_train(cfg, config_path=args.config)
         return 0
     raise ValueError(f"Unsupported training pipeline: {pipeline}")

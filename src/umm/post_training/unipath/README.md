@@ -6,6 +6,26 @@
 This folder contains the TorchUMM integration for UniPath. Keep all UniPath-specific code under this package; the
 planner lives in `umm.post_training.unipath.planner`.
 
+LatentUMM is exposed through the same TorchUMM training CLI. Its two stages are launched from the repository root with:
+
+```bash
+PYTHONPATH=src python -m umm.cli.main train --config configs/posttrain/latentumm_stage1.yaml
+PYTHONPATH=src python -m umm.cli.main train --config configs/posttrain/latentumm_stage2.yaml
+```
+
+See `umm.post_training.LatentUMM` for the LatentUMM implementation.
+
+If LatentUMM is helpful for your work, please cite:
+
+```bibtex
+@article{luo2026latentumm,
+  title={LatentUMM: Dual Latent Alignment for Unified Multimodal Models},
+  author={Luo, Yinyi and Wang, Wenwen and Bai, Hayes and Savvides, Marios and Wang, Jindong},
+  journal={arXiv preprint arXiv:2605.17766},
+  year={2026}
+}
+```
+
 Path names in this README use paper notation: p<sub>dir</sub>, p<sub>A</sub>, p<sub>U</sub>, p<sub>R</sub>,
 p<sub>C</sub>, and p<sub>H</sub>. Some scripts still keep legacy cache keys internally for backward compatibility.
 

@@ -1,0 +1,42 @@
+train:
+  pipeline: latentumm
+  cwd: src/umm/post_training/LatentUMM
+  module: train.pretrain_unified_navit_pt
+  use_torchrun: true
+  flag_style: underscore
+  bool_style: value
+  torchrun:
+    nnodes: 1
+    node_rank: 0
+    nproc_per_node: 4
+    master_addr: 127.0.0.1
+    master_port: 29501
+  args:
+    dataset_config_file: data/configs/example.yaml
+    model_path: ${LATENTUMM_BAGEL_MODEL_PATH}
+    resume_from: ${LATENTUMM_BAGEL_MODEL_PATH}
+    checkpoint_dir: ${LATENTUMM_STAGE2_OUTPUT_DIR}
+    latentumm_embedding_root: ${LATENTUMM_EMBEDDING_ROOT}
+    shared_latent_teacher_ckpt: ${LATENTUMM_STAGE1_CKPT}
+    layer_module: Qwen2MoTDecoderLayer
+    max_latent_size: 64
+    finetune_from_hf: true
+    auto_resume: true
+    resume_model_only: true
+    finetune_from_ema: true
+    wandb_offline: true
+    num_replicate: 1
+    num_shard: 4
+    sharding_strategy: HYBRID_SHARD
+    lora_rank: 64
+    lora_alpha: 128
+    shared_latent_weight: 0.001
+    shared_latent_teacher_weight: 0.001
+    latentumm_enable: true
+    latentumm_modal_weight: 0.01
+    latentumm_task_weight: 0.01
+    latentumm_pref_weight: 0.001
+    latentumm_target_weight: 0.01
+    latentumm_num_rollouts: 2
+    latentumm_noise_std: 0.05
+    latentumm_source: text

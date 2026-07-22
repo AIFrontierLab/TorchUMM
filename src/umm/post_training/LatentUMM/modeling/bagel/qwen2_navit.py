@@ -21,7 +21,10 @@ from torch.nn.attention.flex_attention import flex_attention
 from torch.nn.functional import scaled_dot_product_attention
 from transformers.utils import ModelOutput
 
-from flash_attn import flash_attn_varlen_func
+try:
+    from flash_attn import flash_attn_varlen_func as _flash_attn_varlen_func
+except ImportError:
+    _flash_attn_varlen_func = None
 from modeling.qwen2.modeling_qwen2 import (
     Qwen2Attention, 
     Qwen2MLP, 
@@ -41,6 +44,55 @@ torch._dynamo.config.cache_size_limit = 512
 torch._dynamo.config.accumulated_cache_size_limit = 4096
 # flex_attention = torch.compile(flex_attention) # , dynamic=True, mode='max-autotune'
 flex_attention = torch.compile(flex_attention)
+
+
+def flash_attn_varlen_func(
+    q,
+    k,
+    v,
+    cu_seqlens_q,
+    cu_seqlens_k,
+    max_seqlen_q,
+    max_seqlen_k,
+    causal=False,
+    **kwargs,
+):
+    if _flash_attn_varlen_func is not None:
+        return _flash_attn_varlen_func(
+            q=q,
+            k=k,
+            v=v,
+            cu_seqlens_q=cu_seqlens_q,
+            cu_seqlens_k=cu_seqlens_k,
+            max_seqlen_q=max_seqlen_q,
+            max_seqlen_k=max_seqlen_k,
+            causal=causal,
+            **kwargs,
+        )
+    outputs = []
+    for i in range(cu_seqlens_q.numel() - 1):
+        q_start, q_end = int(cu_seqlens_q[i].item()), int(cu_seqlens_q[i + 1].item())
+        k_start, k_end = int(cu_seqlens_k[i].item()), int(cu_seqlens_k[i + 1].item())
+        q_i = q[q_start:q_end].transpose(0, 1).unsqueeze(0)
+        k_i = k[k_start:k_end].transpose(0, 1).unsqueeze(0)
+        v_i = v[k_start:k_end].transpose(0, 1).unsqueeze(0)
+        if q_i.shape[1] != k_i.shape[1]:
+            repeat = q_i.shape[1] // k_i.shape[1]
+            k_i = k_i.repeat_interleave(repeat, dim=1)
+            v_i = v_i.repeat_interleave(repeat, dim=1)
+        attn_mask = None
+        if causal:
+            q_len = q_end - q_start
+            k_len = k_end - k_start
+            past_len = max(0, k_len - q_len)
+            rows = torch.arange(q_len, device=q.device)[:, None]
+            cols = torch.arange(k_len, device=q.device)[None, :]
+            allowed = cols <= (past_len + rows)
+            attn_mask = torch.zeros((q_len, k_len), dtype=q.dtype, device=q.device)
+            attn_mask = attn_mask.masked_fill(~allowed, float("-inf"))
+        attn_i = scaled_dot_product_attention(q_i, k_i, v_i, attn_mask=attn_mask, is_causal=False)
+        outputs.append(attn_i.squeeze(0).transpose(0, 1))
+    return torch.cat(outputs, dim=0)
 
 
 class Qwen2Config(_Qwen2Config):

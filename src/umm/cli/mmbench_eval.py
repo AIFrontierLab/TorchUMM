@@ -610,7 +610,10 @@ def run_mmbench_eval_command(args: Any) -> int:
     llm_extract_cfg = mmbench_cfg.get("llm_extract", {})
     if not isinstance(llm_extract_cfg, dict):
         llm_extract_cfg = {}
-    llm_model_path = str(llm_extract_cfg.get("model_path", "")).strip()
+    llm_model_path_raw = llm_extract_cfg.get("model_path", "")
+    llm_model_path = "" if llm_model_path_raw is None else str(llm_model_path_raw).strip()
+    if llm_model_path.lower() == "none":
+        llm_model_path = ""
     llm_max_new_tokens = int(llm_extract_cfg.get("max_new_tokens", 32))
 
     dataset_paths = _get_dataset_paths(

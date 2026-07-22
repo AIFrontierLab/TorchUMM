@@ -16,8 +16,17 @@ import random
 import re
 
 import numpy as np
-import decord
+try:
+    import decord
+except ImportError:
+    decord = None
 from PIL import Image
+
+
+def _require_decord():
+    if decord is None:
+        raise ImportError("Video decoding requires the optional 'decord' package.")
+    return decord
 
 
 def get_frame_indices(num_frames, vlen, sample='rand', fix_start=None, input_fps=1, max_num_frames=-1):
@@ -61,6 +70,7 @@ def get_frame_indices(num_frames, vlen, sample='rand', fix_start=None, input_fps
 
 
 def read_frames_decord(video_path, num_frames, sample='rand', fix_start=None, clip=None, min_num_frames=4):
+    decord = _require_decord()
     video_reader = decord.VideoReader(video_path, num_threads=1)
     vlen = len(video_reader)
     fps = video_reader.get_avg_fps()
@@ -127,12 +137,14 @@ class FrameSampler:
 
 
 def decode_video_byte(video_bytes):
+    decord = _require_decord()
     video_stream = io.BytesIO(video_bytes)
     vr = decord.VideoReader(video_stream)
     return vr
 
 
 def sample_mp4_frames(mp4_p, n_frames=None, fps=None, return_frame_indices=False, random_sample=False):
+    decord = _require_decord()
     if isinstance(mp4_p, str):
         vr = decord.VideoReader(mp4_p, num_threads=1)
     elif isinstance(mp4_p, decord.video_reader.VideoReader):
@@ -155,6 +167,7 @@ def sample_mp4_frames(mp4_p, n_frames=None, fps=None, return_frame_indices=False
 
 
 def sample_mp4_frames_by_indices(mp4_p, frame_indices: list):
+    decord = _require_decord()
     if isinstance(mp4_p, str):
         vr = decord.VideoReader(mp4_p, num_threads=1)
     elif isinstance(mp4_p, decord.video_reader.VideoReader):
