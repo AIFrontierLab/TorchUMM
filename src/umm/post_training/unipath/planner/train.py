@@ -42,7 +42,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=54)
     parser.add_argument("--margin", type=float, default=0.03)
     parser.add_argument("--patience", type=int, default=12)
-    parser.add_argument("--best-by", choices=["selected_target", "val_loss", "mmmu_accuracy"], default="mmmu_accuracy")
+    parser.add_argument("--best-by", choices=["selected_target", "val_loss", "mmmu_accuracy"], default="val_loss")
     parser.add_argument("--drop-all-wrong", type=str2bool, default=True)
     parser.add_argument("--single-positive-weight", type=float, default=3.0)
     parser.add_argument("--double-positive-weight", type=float, default=2.0)
