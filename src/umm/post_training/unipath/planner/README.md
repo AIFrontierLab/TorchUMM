@@ -41,8 +41,7 @@ PYTHONPATH=src python -m umm.post_training.unipath.planner.train \
   --single-positive-weight 3.0 --double-positive-weight 2.0 --multi-positive-weight 1.0 \
   --nondirect-positive-weight 1.3 --level-weight ocrvqa=0.25 \
   --dist-reg-weight 0.03 --dist-reg-prior 0.58,0.20,0.13,0.05,0.04 \
-  --dist-reg-mode prob_kl --margin 0.03 --seed 54 --device cuda \
-  --best-by mmmu_accuracy --mmmu-eval-every 1
+  --dist-reg-mode prob_kl --margin 0.03 --seed 54 --device cuda
 ```
 
 ## Offline MMMU Replay
@@ -60,7 +59,7 @@ PYTHONPATH=src python -m umm.post_training.unipath.planner.offline_mmmu_route \
 
 Expected report-aligned replay on the staged-LoRA MMMU cache:
 
-MMMU full900: `490/900 = 54.44%`
+MMMU full900: `487/900 = 54.11%`
 
 Path distribution: p<sub>dir</sub>=159, p<sub>A</sub>=43, p<sub>U</sub>=195, p<sub>R</sub>=503,
 p<sub>C</sub>=0, p<sub>H</sub>=0.
