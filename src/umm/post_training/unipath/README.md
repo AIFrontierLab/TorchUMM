@@ -158,7 +158,6 @@ PYTHONPATH=src python -m umm.cli.main eval --config configs/eval/unipath/online_
 - `processed/planner_artifacts_20260427/qfcp_single_route_fw_w003_h768_s54/planner.pt`: current report planner weight.
 - `evals/mmmu_prompt_paths_full/`: staged-LoRA MMMU cached generations for offline replay.
 
-More planner-specific details are in `planner/README.md`.
 
 ## Citation
 
