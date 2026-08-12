@@ -110,11 +110,16 @@ def run_infer(config_path: str) -> list[Any]:
         payload["backbone"] = backbone_name
         normalized_payloads.append(payload)
 
-    if len(normalized_payloads) == 1:
-        return [pipeline.run(normalized_payloads[0])]
+    try:
+        if len(normalized_payloads) == 1:
+            return [pipeline.run(normalized_payloads[0])]
 
-    batch_size = int(cfg.get("batch_size", 1))
-    return pipeline.run_many(normalized_payloads, batch_size=batch_size)
+        batch_size = int(cfg.get("batch_size", 1))
+        return pipeline.run_many(normalized_payloads, batch_size=batch_size)
+    finally:
+        # Important for one-model-at-a-time smoke runs: release CUDA memory and
+        # remove an adapter-owned ephemeral checkpoint cache before returning.
+        pipeline.close()
 
 
 def run_infer_command(args: Any) -> int:
