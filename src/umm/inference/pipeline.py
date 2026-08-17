@@ -62,6 +62,9 @@ def register_builtin_backbones() -> None:
         from umm.backbones.ovis_u1 import OvisU1Backbone
 
         registry.register("backbone", "ovis_u1", OvisU1Backbone)
+    from umm.backbones.diffusers_t2i import register_discovered_backbones
+
+    register_discovered_backbones()
 
 
 class InferencePipeline:
@@ -115,3 +118,20 @@ class InferencePipeline:
             for payload in group:
                 results.append(self.run(payload))
         return results
+
+    def close(self) -> None:
+        """Release resources owned by the active backbone, when supported."""
+
+        close = getattr(self.backbone, "close", None)
+        if callable(close):
+            close()
+            return
+        unload = getattr(self.backbone, "unload", None)
+        if callable(unload):
+            unload()
+
+    def __enter__(self) -> "InferencePipeline":
+        return self
+
+    def __exit__(self, exc_type: Any, exc: Any, traceback: Any) -> None:
+        self.close()
