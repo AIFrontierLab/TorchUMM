@@ -1,0 +1,9 @@
+from umm.backbones.diffusers_t2i.integrations.group_06_sd35_auraflow import BACKBONES
+
+
+def test_group_06_backbones_construct_without_loading_weights() -> None:
+    assert set(BACKBONES) == {"sd35_medium", "auraflow"}
+    for name, factory in BACKBONES.items():
+        backbone = factory()
+        assert backbone.name == name
+        assert backbone.pipeline is None

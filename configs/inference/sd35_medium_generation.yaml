@@ -1,0 +1,13 @@
+inference:
+  backbone: sd35_medium
+  backbone_cfg:
+    model_path: stabilityai/stable-diffusion-3.5-medium
+    device: cuda:0
+    torch_dtype: bfloat16
+    local_files_only: true
+    ephemeral_cache: false
+  request:
+    task: generation
+    prompt: "A blue ceramic cup on a wooden table"
+    output_path: output/sd35_medium_smoke.png
+    params: {height: 1024, width: 1024, num_inference_steps: 40, guidance_scale: 4.5, seed: 42}
