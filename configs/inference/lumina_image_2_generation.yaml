@@ -1,0 +1,13 @@
+inference:
+  backbone: lumina_image_2
+  backbone_cfg:
+    model_path: Alpha-VLLM/Lumina-Image-2.0
+    device: cuda:0
+    torch_dtype: bfloat16
+    local_files_only: true
+    ephemeral_cache: false
+  request:
+    task: generation
+    prompt: "A blue ceramic cup on a wooden table"
+    output_path: output/lumina_image_2_smoke.png
+    params: {height: 1024, width: 1024, num_inference_steps: 50, guidance_scale: 4.0, cfg_trunc_ratio: 0.25, cfg_normalization: true, seed: 42}
