@@ -1,4 +1,4 @@
-from umm.backbones.diffusers_t2i.integrations.group_06_sd35_auraflow import BACKBONES
+from extensions.text2image.integrations.group_06_sd35_auraflow import BACKBONES
 
 
 def test_group_06_backbones_construct_without_loading_weights() -> None:

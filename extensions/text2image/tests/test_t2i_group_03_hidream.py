@@ -1,4 +1,4 @@
-from umm.backbones.diffusers_t2i.integrations.group_03_hidream import BACKBONES
+from extensions.text2image.integrations.group_03_hidream import BACKBONES
 
 
 def test_group_03_backbones_construct_without_loading_weights() -> None:

@@ -6,11 +6,13 @@ from types import SimpleNamespace
 import pytest
 from PIL import Image
 
-from umm.backbones.diffusers_t2i import (
+from extensions.text2image import (
     DiffusersTextToImageBackbone,
     TextToImageModelSpec,
     factories_from_specs,
+    register,
 )
+from umm.core import registry
 
 
 DUMMY_SPEC = TextToImageModelSpec(
@@ -62,6 +64,13 @@ def test_specs_create_lazy_zero_argument_factories() -> None:
     backbone = factory()
     assert isinstance(backbone, DiffusersTextToImageBackbone)
     assert backbone.pipeline is None
+
+
+def test_extension_registration_is_explicit_and_lazy() -> None:
+    register()
+    registered = set(registry.list_registered("backbone"))
+    assert {"flux1_schnell", "hidream_i1", "sana_1_5", "sd35_medium"} <= registered
+    assert registry.get("backbone", "flux1_schnell")().pipeline is None
 
 
 def test_owned_ephemeral_cache_is_removed() -> None:

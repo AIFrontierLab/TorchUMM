@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from umm.backbones.diffusers_t2i import (
+from extensions.text2image import (
     DiffusersTextToImageBackbone,
     TextToImageModelSpec,
     factories_from_specs,

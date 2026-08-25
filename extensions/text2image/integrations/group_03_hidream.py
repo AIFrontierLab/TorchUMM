@@ -7,7 +7,7 @@ from typing import Any
 
 from PIL import Image
 
-from umm.backbones.diffusers_t2i import (
+from extensions.text2image import (
     DiffusersTextToImageBackbone,
     TextToImageModelSpec,
     factories_from_specs,

@@ -8,7 +8,7 @@ from typing import Any, Callable
 
 from PIL import Image
 
-from umm.backbones.diffusers_t2i.specs import TextToImageModelSpec
+from .specs import TextToImageModelSpec
 
 
 PipelineFactory = Callable[[TextToImageModelSpec, dict[str, Any]], Any]

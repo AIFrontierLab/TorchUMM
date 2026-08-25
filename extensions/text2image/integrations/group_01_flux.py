@@ -1,4 +1,4 @@
-from umm.backbones.diffusers_t2i import TextToImageModelSpec, factories_from_specs
+from extensions.text2image import TextToImageModelSpec, factories_from_specs
 
 
 SPECS = {

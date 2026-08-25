@@ -1,4 +1,4 @@
-from umm.backbones.diffusers_t2i.integrations.group_04_sana_lumina import BACKBONES
+from extensions.text2image.integrations.group_04_sana_lumina import BACKBONES
 
 
 def test_group_04_backbones_construct_without_loading_weights() -> None:

@@ -5,8 +5,8 @@ import pkgutil
 from functools import partial
 from typing import Any, Callable, Mapping
 
-from umm.backbones.diffusers_t2i.adapter import DiffusersTextToImageBackbone
-from umm.backbones.diffusers_t2i.specs import TextToImageModelSpec
+from .adapter import DiffusersTextToImageBackbone
+from .specs import TextToImageModelSpec
 from umm.core import registry
 
 
@@ -27,7 +27,7 @@ def factories_from_specs(
 
 
 def discover_backbone_factories() -> dict[str, BackboneFactory]:
-    """Discover drop-in modules below ``diffusers_t2i.integrations``.
+    """Discover drop-in modules below ``extensions.text2image.integrations``.
 
     An integration module exports a ``BACKBONES`` mapping. Most modules build
     that mapping with :func:`factories_from_specs`; non-Diffusers runtimes may
@@ -35,7 +35,7 @@ def discover_backbone_factories() -> dict[str, BackboneFactory]:
     TorchUMM interface.
     """
 
-    package = importlib.import_module("umm.backbones.diffusers_t2i.integrations")
+    package = importlib.import_module("extensions.text2image.integrations")
     factories: dict[str, BackboneFactory] = {}
     for module_info in pkgutil.iter_modules(package.__path__, f"{package.__name__}."):
         module = importlib.import_module(module_info.name)
