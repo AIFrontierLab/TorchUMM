@@ -1,0 +1,13 @@
+inference:
+  backbone: hidream_i1
+  backbone_cfg:
+    model_path: HiDream-ai/HiDream-I1-Dev
+    device: cuda:0
+    torch_dtype: bfloat16
+    local_files_only: true
+    ephemeral_cache: false
+  request:
+    task: generation
+    prompt: "A blue ceramic cup on a wooden table"
+    output_path: output/hidream_i1_smoke.png
+    params: {height: 1024, width: 1024, num_inference_steps: 28, guidance_scale: 0.0, seed: 42}

@@ -1,0 +1,15 @@
+inference:
+  backbone: hunyuan_image_2_1
+  backbone_cfg:
+    model_path: hunyuanimage-v2.1-distilled
+    source_root: /path/to/HunyuanImage-2.1
+    use_fp8: true
+    device: cuda:0
+    torch_dtype: bfloat16
+    local_files_only: true
+    ephemeral_cache: false
+  request:
+    task: generation
+    prompt: "A blue ceramic cup on a wooden table"
+    output_path: output/hunyuan_image_2_1_smoke.png
+    params: {height: 2048, width: 2048, num_inference_steps: 8, guidance_scale: 3.25, shift: 4, use_reprompt: false, use_refiner: false, seed: 42}

@@ -1,0 +1,13 @@
+inference:
+  backbone: pixart_sigma
+  backbone_cfg:
+    model_path: PixArt-alpha/PixArt-Sigma-XL-2-1024-MS
+    device: cuda:0
+    torch_dtype: bfloat16
+    local_files_only: true
+    ephemeral_cache: false
+  request:
+    task: generation
+    prompt: "A blue ceramic cup on a wooden table"
+    output_path: output/pixart_sigma_smoke.png
+    params: {height: 1024, width: 1024, num_inference_steps: 20, guidance_scale: 4.5, seed: 42}
