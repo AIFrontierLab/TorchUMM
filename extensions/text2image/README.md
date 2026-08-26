@@ -1,8 +1,7 @@
 # Text-to-image extension
 
 This directory is an opt-in TorchUMM extension. It contains the shared adapter,
-model declarations, example configs, and smoke tests without changing any file
-in TorchUMM's core `src/` tree.
+model declarations, example configs, and smoke tests.
 
 The extension does not register models on import. Register them explicitly:
 
