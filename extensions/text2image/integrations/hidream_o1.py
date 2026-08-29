@@ -7,14 +7,10 @@ from typing import Any
 
 from PIL import Image
 
-from extensions.text2image import (
-    DiffusersTextToImageBackbone,
-    TextToImageModelSpec,
-    factories_from_specs,
-)
+from extensions.text2image import DiffusersTextToImageBackbone, TextToImageModelSpec
 
 
-HIDREAM_O1_SPEC = TextToImageModelSpec(
+SPEC = TextToImageModelSpec(
     name="hidream_o1",
     model_id="HiDream-ai/HiDream-O1-Image-Dev-2604",
     pipeline_class="HiDreamO1Pipeline",
@@ -31,7 +27,7 @@ HIDREAM_O1_SPEC = TextToImageModelSpec(
 
 class HiDreamO1Backbone(DiffusersTextToImageBackbone):
     def __init__(self) -> None:
-        super().__init__(HIDREAM_O1_SPEC)
+        super().__init__(SPEC)
 
     def _build_diffusers_pipeline(self) -> Any:
         source_root = self.load_cfg.get("source_root")
@@ -72,7 +68,14 @@ class HiDreamO1Backbone(DiffusersTextToImageBackbone):
 
 
 class _HiDreamO1Runtime:
-    def __init__(self, model: Any, processor: Any, generate_image: Any, default_timesteps: Any, model_type: str) -> None:
+    def __init__(
+        self,
+        model: Any,
+        processor: Any,
+        generate_image: Any,
+        default_timesteps: Any,
+        model_type: str,
+    ) -> None:
         self.model = model
         self.processor = processor
         self.generate_image = generate_image
@@ -107,13 +110,4 @@ class _HiDreamO1Runtime:
         )
 
 
-HIDREAM_I1_SPECS = {
-    "hidream_i1": TextToImageModelSpec(
-        name="hidream_i1",
-        model_id="HiDream-ai/HiDream-I1-Dev",
-        pipeline_class="HiDreamImagePipeline",
-        default_generation_cfg={"height": 1024, "width": 1024, "num_inference_steps": 28, "guidance_scale": 0.0},
-    )
-}
-
-BACKBONES = {"hidream_o1": HiDreamO1Backbone, **factories_from_specs(HIDREAM_I1_SPECS)}
+BACKBONES = {SPEC.name: HiDreamO1Backbone}

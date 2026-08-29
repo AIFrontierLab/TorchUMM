@@ -5,14 +5,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from extensions.text2image import (
-    DiffusersTextToImageBackbone,
-    TextToImageModelSpec,
-    factories_from_specs,
-)
+from extensions.text2image import DiffusersTextToImageBackbone, TextToImageModelSpec
 
 
-HUNYUAN_SPEC = TextToImageModelSpec(
+SPEC = TextToImageModelSpec(
     name="hunyuan_image_2_1",
     model_id="hunyuanimage-v2.1-distilled",
     pipeline_class="HunyuanImagePipeline",
@@ -31,7 +27,7 @@ HUNYUAN_SPEC = TextToImageModelSpec(
 
 class HunyuanImage21Backbone(DiffusersTextToImageBackbone):
     def __init__(self) -> None:
-        super().__init__(HUNYUAN_SPEC)
+        super().__init__(SPEC)
 
     def _build_diffusers_pipeline(self) -> Any:
         source_root = self.load_cfg.get("source_root")
@@ -57,13 +53,4 @@ class HunyuanImage21Backbone(DiffusersTextToImageBackbone):
         return self.pipeline(prompt=prompt, seed=int(call_cfg.pop("seed", 42)), **call_cfg)
 
 
-PIXART_SPECS = {
-    "pixart_sigma": TextToImageModelSpec(
-        name="pixart_sigma",
-        model_id="PixArt-alpha/PixArt-Sigma-XL-2-1024-MS",
-        pipeline_class="PixArtSigmaPipeline",
-        default_generation_cfg={"height": 1024, "width": 1024, "num_inference_steps": 20, "guidance_scale": 4.5},
-    )
-}
-
-BACKBONES = {"hunyuan_image_2_1": HunyuanImage21Backbone, **factories_from_specs(PIXART_SPECS)}
+BACKBONES = {SPEC.name: HunyuanImage21Backbone}
