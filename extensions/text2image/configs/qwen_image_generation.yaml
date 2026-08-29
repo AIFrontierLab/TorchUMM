@@ -1,0 +1,13 @@
+inference:
+  backbone: qwen_image
+  backbone_cfg:
+    model_path: Qwen/Qwen-Image-2512
+    device: cuda:0
+    torch_dtype: bfloat16
+    local_files_only: true
+    ephemeral_cache: false
+  request:
+    task: generation
+    prompt: "A blue ceramic cup on a wooden table"
+    output_path: output/qwen_image_smoke.png
+    params: {height: 1024, width: 1024, num_inference_steps: 50, true_cfg_scale: 4.0, guidance_scale: 1.0, seed: 42}
