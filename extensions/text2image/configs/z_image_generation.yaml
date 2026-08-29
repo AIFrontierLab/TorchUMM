@@ -1,0 +1,13 @@
+inference:
+  backbone: z_image
+  backbone_cfg:
+    model_path: Tongyi-MAI/Z-Image-Turbo
+    device: cuda:0
+    torch_dtype: bfloat16
+    local_files_only: true
+    ephemeral_cache: false
+  request:
+    task: generation
+    prompt: "A blue ceramic cup on a wooden table"
+    output_path: output/z_image_smoke.png
+    params: {height: 1024, width: 1024, num_inference_steps: 8, guidance_scale: 0.0, seed: 42}
