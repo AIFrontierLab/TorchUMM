@@ -68,7 +68,7 @@
 
 **Key features:**
 
-- **Pluggable backbone architecture** — 14 multimodal model adapters with a unified inference interface
+- **Pluggable backbone architecture** — 16 multimodal model adapters with a unified inference interface
 - **Comprehensive evaluation** — 10+ benchmarks covering generation, understanding, and editing
 - **Post-training support** — SFT, IRG, recA, UniCot, Unigame
 - **Cloud-native** — seamless scaling to cloud GPUs via [Modal](https://modal.com) ([details](modal/README.md))
@@ -84,7 +84,7 @@
 ```
 umm_codebase/
 ├── src/umm/                    # Core framework
-│   ├── backbones/              # Model adapters (Bagel, BLIP3-o, DeepGen, Emu3, Emu3.5, Janus, Janus-Pro, JanusFlow, MMaDA, OmniGen2, Show-o, Show-o2, TokenFlow)
+│   ├── backbones/              # Model adapters (Bagel, BLIP3-o, DeepGen, Emu3, Emu3.5, Janus, Janus-Pro, JanusFlow, MMaDA, OmniGen2, Show-o, Show-o2, TokenFlow, Transformers VLMs)
 │   ├── cli/                    # CLI entry points (infer, eval, train)
 │   ├── core/                   # Config, registry, interfaces
 │   ├── data/                   # Datasets, collators, transforms
@@ -129,6 +129,8 @@ umm_codebase/
 | [BLIP3-o](https://github.com/salesforce/BLIP3o)        |    4B     |     ❌     |    ✅    |  ❌  |  [guide](docs/models/blip3o.md)  |
 | [TokenFlow](https://github.com/ByteFlow-AI/TokenFlow)  |          |     ❌     |    ✅    |  ❌  | [guide](docs/models/tokenflow.md) |
 | [Ovis-U1](https://github.com/AIDC-AI/Ovis-U1)         |    3B     |     ✅     |    ✅    |  ✅  | [guide](docs/models/ovis_u1.md)  |
+| [Qwen2.5-VL-7B](https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct) | 7B | ✅ | ❌ | ❌ | [guide](docs/models/transformers_vlm.md#qwen25-vl) |
+| [InternVL3-8B](https://huggingface.co/OpenGVLab/InternVL3-8B) | 8B | ✅ | ❌ | ❌ | [guide](docs/models/transformers_vlm.md#internvl3) |
 
 > See each model's [guide](docs/models/) for detailed usage instructions, configuration examples, and supported benchmarks.
 >
@@ -164,6 +166,9 @@ pip install -e .
 
 # Install model-specific dependencies (example: Bagel)
 pip install -r model/Bagel/requirements.txt
+
+# Install the shared Transformers VLM adapter and its dependencies
+pip install -e '.[vlm]'
 ```
 
 > **Note:** Each backbone model has its own dependencies and may require different Python/PyTorch versions. Install only the requirements for the model(s) you plan to use. For cloud execution via [Modal](https://modal.com), each model runs in an isolated container image with the correct environment — see [modal/README.md](modal/README.md) for details.
