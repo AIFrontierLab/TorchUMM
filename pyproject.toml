@@ -10,5 +10,13 @@ readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
 
+[project.optional-dependencies]
+vlm = [
+    "accelerate>=1.0",
+    "Pillow>=10.0",
+    "torch>=2.5",
+    "transformers>=4.51",
+]
+
 [project.scripts]
 umm = "umm.cli.main:main"

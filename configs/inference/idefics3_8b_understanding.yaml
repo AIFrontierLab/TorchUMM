@@ -1,0 +1,13 @@
+inference:
+  backbone: idefics3_8b
+  backbone_cfg:
+    model_path: HuggingFaceM4/Idefics3-8B-Llama3
+    device: cuda:0
+    torch_dtype: bfloat16
+  request:
+    task: understanding
+    prompt: "What is happening in this image?"
+    images:
+      - assets/torchumm_frame.png
+    params:
+      max_new_tokens: 256

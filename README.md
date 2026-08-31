@@ -68,7 +68,7 @@
 
 **Key features:**
 
-- **Pluggable backbone architecture** — 14 multimodal model adapters with a unified inference interface
+- **Pluggable backbone architecture** — 24 multimodal model adapters with a unified inference interface
 - **Comprehensive evaluation** — 10+ benchmarks covering generation, understanding, and editing
 - **Post-training support** — SFT, IRG, recA, UniCot, Unigame
 - **Cloud-native** — seamless scaling to cloud GPUs via [Modal](https://modal.com) ([details](modal/README.md))
@@ -94,6 +94,16 @@
 | [BLIP3-o](https://github.com/salesforce/BLIP3o)        |    4B     |     ❌     |    ✅    |  ❌  |  [guide](docs/models/blip3o.md)  |
 | [TokenFlow](https://github.com/ByteFlow-AI/TokenFlow)  |          |     ❌     |    ✅    |  ❌  | [guide](docs/models/tokenflow.md) |
 | [Ovis-U1](https://github.com/AIDC-AI/Ovis-U1)         |    3B     |     ✅     |    ✅    |  ✅  | [guide](docs/models/ovis_u1.md)  |
+| [Qwen2.5-VL-7B](https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct) | 7B | ✅ | ❌ | ❌ | [guide](docs/models/transformers_vlm.md#qwen25-vl) |
+| [InternVL3-8B](https://huggingface.co/OpenGVLab/InternVL3-8B) | 8B | ✅ | ❌ | ❌ | [guide](docs/models/transformers_vlm.md#internvl3) |
+| [LLaVA-OneVision](https://huggingface.co/llava-hf/llava-onevision-qwen2-7b-ov-hf) | 7B | ✅ | ❌ | ❌ | [guide](docs/models/transformers_vlm.md#llava-onevision) |
+| [Idefics3-8B](https://huggingface.co/HuggingFaceM4/Idefics3-8B-Llama3) | 8B | ✅ | ❌ | ❌ | [guide](docs/models/transformers_vlm.md#idefics3) |
+| [SmolVLM](https://huggingface.co/HuggingFaceTB/SmolVLM-Instruct) | 2B | ✅ | ❌ | ❌ | [guide](docs/models/transformers_vlm.md#smolvlm) |
+| [Phi-3.5 Vision](https://huggingface.co/microsoft/Phi-3.5-vision-instruct) | 4B | ✅ | ❌ | ❌ | [guide](docs/models/transformers_vlm.md#phi35-vision) |
+| [Gemma 3](https://huggingface.co/google/gemma-3-4b-it) | 4B | ✅ | ❌ | ❌ | [guide](docs/models/transformers_vlm.md#gemma-3) |
+| [Molmo-7B](https://huggingface.co/allenai/Molmo-7B-D-0924) | 7B | ✅ | ❌ | ❌ | [guide](docs/models/transformers_vlm.md#molmo) |
+| [MiniCPM-V 2.6](https://huggingface.co/openbmb/MiniCPM-V-2_6) | 8B | ✅ | ❌ | ❌ | [guide](docs/models/transformers_vlm.md#minicpm-v) |
+| [PaliGemma 2](https://huggingface.co/google/paligemma2-3b-mix-224) | 3B | ✅ | ❌ | ❌ | [guide](docs/models/transformers_vlm.md#paligemma-2) |
 
 > See each model's [guide](docs/models/) for detailed usage instructions, configuration examples, and supported benchmarks.
 >
@@ -123,7 +133,7 @@
 ```
 umm_codebase/
 ├── src/umm/                    # Core framework
-│   ├── backbones/              # Model adapters (Bagel, BLIP3-o, DeepGen, Emu3, Emu3.5, Janus, Janus-Pro, JanusFlow, MMaDA, OmniGen2, Show-o, Show-o2, TokenFlow)
+│   ├── backbones/              # Model adapters, including ten Transformers VLM integrations
 │   ├── cli/                    # CLI entry points (infer, eval, train)
 │   ├── core/                   # Config, registry, interfaces
 │   ├── data/                   # Datasets, collators, transforms
@@ -163,6 +173,9 @@ pip install -e .
 
 # Install model-specific dependencies (example: Bagel)
 pip install -r model/Bagel/requirements.txt
+
+# Install the shared Transformers VLM adapter and its dependencies
+pip install -e '.[vlm]'
 ```
 
 > **Note:** Each backbone model has its own dependencies and may require different Python/PyTorch versions. Install only the requirements for the model(s) you plan to use. For cloud execution via [Modal](https://modal.com), each model runs in an isolated container image with the correct environment — see [modal/README.md](modal/README.md) for details.

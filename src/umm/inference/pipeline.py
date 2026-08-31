@@ -62,9 +62,16 @@ def register_builtin_backbones() -> None:
         from umm.backbones.ovis_u1 import OvisU1Backbone
 
         registry.register("backbone", "ovis_u1", OvisU1Backbone)
-    from umm.backbones.diffusers_t2i import register_discovered_backbones
+    from umm.backbones.diffusers_t2i import (
+        register_discovered_backbones as register_t2i_backbones,
+    )
 
-    register_discovered_backbones()
+    register_t2i_backbones()
+    from umm.backbones.transformers_vlm import (
+        register_discovered_backbones as register_transformers_vlm_backbones,
+    )
+
+    register_transformers_vlm_backbones()
 
 
 class InferencePipeline:

@@ -1,0 +1,13 @@
+inference:
+  backbone: molmo_7b
+  backbone_cfg:
+    model_path: allenai/Molmo-7B-D-0924
+    device: cuda:0
+    torch_dtype: bfloat16
+  request:
+    task: understanding
+    prompt: "What is happening in this image?"
+    images:
+      - assets/torchumm_frame.png
+    params:
+      max_new_tokens: 256

@@ -1,0 +1,13 @@
+inference:
+  backbone: paligemma2_3b
+  backbone_cfg:
+    model_path: google/paligemma2-3b-mix-224
+    device: cuda:0
+    torch_dtype: bfloat16
+  request:
+    task: understanding
+    prompt: "What is happening in this image?"
+    images:
+      - assets/torchumm_frame.png
+    params:
+      max_new_tokens: 128

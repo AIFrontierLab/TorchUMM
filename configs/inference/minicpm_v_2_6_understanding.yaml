@@ -1,0 +1,13 @@
+inference:
+  backbone: minicpm_v_2_6
+  backbone_cfg:
+    model_path: openbmb/MiniCPM-V-2_6
+    device: cuda:0
+    torch_dtype: bfloat16
+  request:
+    task: understanding
+    prompt: "What is happening in this image?"
+    images:
+      - assets/torchumm_frame.png
+    params:
+      max_new_tokens: 256

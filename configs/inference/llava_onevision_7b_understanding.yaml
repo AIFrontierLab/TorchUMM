@@ -1,0 +1,13 @@
+inference:
+  backbone: llava_onevision_7b
+  backbone_cfg:
+    model_path: llava-hf/llava-onevision-qwen2-7b-ov-hf
+    device: cuda:0
+    torch_dtype: bfloat16
+  request:
+    task: understanding
+    prompt: "What is happening in this image?"
+    images:
+      - assets/torchumm_frame.png
+    params:
+      max_new_tokens: 256
