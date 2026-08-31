@@ -1,4 +1,4 @@
-from umm.backbones.transformers_vlm import VLMModelSpec, factories_from_specs
+from extensions.vlm import VLMModelSpec, factories_from_specs
 
 
 SPEC = VLMModelSpec(

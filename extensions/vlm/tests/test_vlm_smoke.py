@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from umm.backbones.transformers_vlm import (
+from extensions.vlm import (
     TransformersVLMBackbone,
     VLMModelSpec,
     factories_from_specs,
 )
-from umm.backbones.transformers_vlm.registration import discover_backbone_factories
+from extensions.vlm.registration import discover_backbone_factories
 
 
 DUMMY_SPEC = VLMModelSpec(

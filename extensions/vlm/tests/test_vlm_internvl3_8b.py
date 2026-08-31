@@ -1,4 +1,4 @@
-from umm.backbones.transformers_vlm.integrations.internvl3_8b import BACKBONES
+from extensions.vlm.integrations.internvl3_8b import BACKBONES
 
 
 def test_internvl3_8b_constructs_without_loading_weights() -> None:

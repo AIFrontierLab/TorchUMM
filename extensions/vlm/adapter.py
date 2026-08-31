@@ -4,7 +4,7 @@ import gc
 import importlib
 from typing import Any, Callable
 
-from umm.backbones.transformers_vlm.specs import VLMModelSpec
+from .specs import VLMModelSpec
 
 
 PipelineFactory = Callable[[VLMModelSpec, dict[str, Any]], Any]
