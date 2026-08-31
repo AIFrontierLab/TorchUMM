@@ -76,6 +76,41 @@
 
 ---
 
+## Repository Structure
+<p align="center">
+  <img src="assets/torchumm_frame.png" width="800" alt="TorchUMM Framework">
+</p>
+
+```
+umm_codebase/
+├── src/umm/                    # Core framework
+│   ├── backbones/              # Model adapters (Bagel, BLIP3-o, DeepGen, Emu3, Emu3.5, Janus, Janus-Pro, JanusFlow, MMaDA, OmniGen2, Show-o, Show-o2, TokenFlow)
+│   ├── cli/                    # CLI entry points (infer, eval, train)
+│   ├── core/                   # Config, registry, interfaces
+│   ├── data/                   # Datasets, collators, transforms
+│   ├── evaluation/             # Evaluation runners and metrics
+│   ├── inference/              # Inference pipeline (batching, generation)
+│   ├── models/                 # Model builders, heads, processors
+│   ├── post_training/          # Post-training methods (SFT, IRG, recA, UniCot)
+│   └── serving/                # Serving APIs
+│
+├── model/                      # External model repos & evaluation toolkits (submodules)
+│   ├── Bagel/, BLIP3o/, deepgen/, Emu3/, Emu3.5/, MMaDA/, OmniGen2/, Show-o/, TokenFlow/
+│   └── UEval/, Uni-MMMU/, WISE/, geneval/, Step1X-Edit/
+│
+├── configs/                    # YAML configurations
+│   ├── inference/              # Per-model inference configs
+│   ├── eval/                   # Benchmark evaluation configs (modal_*, amd_*, and local)
+│   └── posttrain/              # Post-training configs
+│
+├── modal/                      # Modal cloud infrastructure (see modal/README.md)
+├── docs/                       # Per-model usage documentation
+├── eval/                       # Evaluation runner scripts
+├── scripts/                    # Utility scripts
+└── output/                     # Evaluation results
+```
+---
+
 ## Supported Models
 
 | Model                                               | Parameters | Understand | Generate | Edit |              Docs              |
@@ -113,41 +148,7 @@
 > | OmniGen2 | 2.7.4 | Recommended | [guide](docs/models/omnigen2.md#flash-attention-recommended) |
 > | DeepGen | latest | Recommended | [guide](docs/models/deepgen.md#flash-attention-recommended) |
 
----
 
-## Repository Structure
-<p align="center">
-  <img src="assets/torchumm_frame.png" width="800" alt="TorchUMM Framework">
-</p>
-
-```
-umm_codebase/
-├── src/umm/                    # Core framework
-│   ├── backbones/              # Model adapters (Bagel, BLIP3-o, DeepGen, Emu3, Emu3.5, Janus, Janus-Pro, JanusFlow, MMaDA, OmniGen2, Show-o, Show-o2, TokenFlow)
-│   ├── cli/                    # CLI entry points (infer, eval, train)
-│   ├── core/                   # Config, registry, interfaces
-│   ├── data/                   # Datasets, collators, transforms
-│   ├── evaluation/             # Evaluation runners and metrics
-│   ├── inference/              # Inference pipeline (batching, generation)
-│   ├── models/                 # Model builders, heads, processors
-│   ├── post_training/          # Post-training methods (SFT, IRG, recA, UniCot)
-│   └── serving/                # Serving APIs
-│
-├── model/                      # External model repos & evaluation toolkits (submodules)
-│   ├── Bagel/, BLIP3o/, deepgen/, Emu3/, Emu3.5/, MMaDA/, OmniGen2/, Show-o/, TokenFlow/
-│   └── UEval/, Uni-MMMU/, WISE/, geneval/, Step1X-Edit/
-│
-├── configs/                    # YAML configurations
-│   ├── inference/              # Per-model inference configs
-│   ├── eval/                   # Benchmark evaluation configs (modal_*, amd_*, and local)
-│   └── posttrain/              # Post-training configs
-│
-├── modal/                      # Modal cloud infrastructure (see modal/README.md)
-├── docs/                       # Per-model usage documentation
-├── eval/                       # Evaluation runner scripts
-├── scripts/                    # Utility scripts
-└── output/                     # Evaluation results
-```
 
 ---
 
