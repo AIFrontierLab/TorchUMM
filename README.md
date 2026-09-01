@@ -64,11 +64,11 @@
 
 ## Introduction
 
-**TorchUMM** is a unified toolkit for running, evaluating, and fine-tuning state-of-the-art multimodal models under a single interface. It is designed to make fair, reproducible comparisons across diverse multimodal architectures easy.
+**TorchUMM** is a unified toolkit for running, evaluating, and fine-tuning multimodal models through a shared interface. It supports unified multimodal models together with task-specific models for image understanding (**Image → Text**), image generation (**Text → Image**), and image editing.
 
 **Key features:**
 
-- **Pluggable backbone architecture** — 14 multimodal model adapters with a unified inference interface
+- **Pluggable model architecture** — unified multimodal backbones and opt-in single-task extensions under one inference interface
 - **Comprehensive evaluation** — 10+ benchmarks covering generation, understanding, and editing
 - **Post-training support** — SFT, IRG, recA, UniCot, Unigame
 - **Cloud-native** — seamless scaling to cloud GPUs via [Modal](https://modal.com) ([details](modal/README.md))
@@ -131,6 +131,35 @@ umm_codebase/
 | [Ovis-U1](https://github.com/AIDC-AI/Ovis-U1)         |    3B     |     ✅     |    ✅    |  ✅  | [guide](docs/models/ovis_u1.md)  |
 
 > See each model's [guide](docs/models/) for detailed usage instructions, configuration examples, and supported benchmarks.
+
+### Single-Task Models
+
+| Model | Parameters | Direction |
+| :-- | :--: | :--: |
+| [FLUX.2 Klein](https://huggingface.co/black-forest-labs/FLUX.2-klein-4B) | 4B | Text → Image |
+| [FLUX.1 Schnell](https://huggingface.co/black-forest-labs/FLUX.1-schnell) | 12B | Text → Image |
+| [Qwen-Image-2512](https://huggingface.co/Qwen/Qwen-Image-2512) | 20B | Text → Image |
+| [Z-Image-Turbo](https://huggingface.co/Tongyi-MAI/Z-Image-Turbo) | 6B | Text → Image |
+| [HiDream-O1](https://huggingface.co/HiDream-ai/HiDream-O1-Image-Dev-2604) | 9B | Text → Image |
+| [HiDream-I1](https://huggingface.co/HiDream-ai/HiDream-I1-Dev) | 17B | Text → Image |
+| [SANA 1.5](https://huggingface.co/Efficient-Large-Model/SANA1.5_4.8B_1024px_diffusers) | 4.8B | Text → Image |
+| [Lumina-Image 2.0](https://huggingface.co/Alpha-VLLM/Lumina-Image-2.0) | 2B | Text → Image |
+| [Stable Diffusion 3.5 Medium](https://huggingface.co/stabilityai/stable-diffusion-3.5-medium) | 2.6B | Text → Image |
+| [AuraFlow](https://huggingface.co/fal/AuraFlow-v0.3) | 6.8B | Text → Image |
+| [HunyuanImage 2.1](https://huggingface.co/tencent/HunyuanImage-2.1) | 17B | Text → Image |
+| [PixArt-Σ](https://huggingface.co/PixArt-alpha/PixArt-Sigma-XL-2-1024-MS) | 0.6B | Text → Image |
+| [CogView4](https://huggingface.co/THUDM/CogView4-6B) | 6B | Text → Image |
+| [Kolors](https://huggingface.co/Kwai-Kolors/Kolors-diffusers) | 3B | Text → Image |
+| [Qwen2.5-VL-7B](https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct) | 7B | Image → Text |
+| [InternVL3-8B](https://huggingface.co/OpenGVLab/InternVL3-8B) | 8B | Image → Text |
+| [LLaVA-OneVision-7B](https://huggingface.co/llava-hf/llava-onevision-qwen2-7b-ov-hf) | 7B | Image → Text |
+| [Idefics3-8B](https://huggingface.co/HuggingFaceM4/Idefics3-8B-Llama3) | 8B | Image → Text |
+| [SmolVLM](https://huggingface.co/HuggingFaceTB/SmolVLM-Instruct) | 2B | Image → Text |
+| [Phi-3.5-Vision](https://huggingface.co/microsoft/Phi-3.5-vision-instruct) | 4.2B | Image → Text |
+| [Gemma 3 4B](https://huggingface.co/google/gemma-3-4b-it) | 4B | Image → Text |
+| [Molmo 7B-D](https://huggingface.co/allenai/Molmo-7B-D-0924) | 7B | Image → Text |
+| [MiniCPM-V 2.6](https://huggingface.co/openbmb/MiniCPM-V-2_6) | 8B | Image → Text |
+| [PaliGemma 2 3B](https://huggingface.co/google/paligemma2-3b-mix-224) | 3B | Image → Text |
 >
 > **Emu3.5 note:** Emu3.5 is the only model in TorchUMM that uses **native vLLM integration** via BAAI's official patches (20 patches applied at image build time). Unlike other models that use the standard `TransformersForCausalLM` wrapper, Emu3.5 runs on vLLM's optimized attention kernels with a custom batch scheduler for classifier-free guidance, achieving ~74 tokens/s on 2×A100-80GB. See the [Emu3.5 guide](docs/models/emu3_5.md) for details.
 >
