@@ -1,0 +1,13 @@
+inference:
+  backbone: cogview4
+  backbone_cfg:
+    model_path: THUDM/CogView4-6B
+    device: cuda:0
+    torch_dtype: bfloat16
+    local_files_only: true
+    ephemeral_cache: false
+  request:
+    task: generation
+    prompt: "A blue ceramic cup on a wooden table"
+    output_path: output/cogview4_smoke.png
+    params: {height: 1024, width: 1024, num_inference_steps: 50, guidance_scale: 3.5, seed: 42}
