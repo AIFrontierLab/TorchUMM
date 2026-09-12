@@ -2,6 +2,7 @@
 from __future__ import annotations
 import argparse
 import base64
+import colorsys
 import csv
 import glob
 import html
