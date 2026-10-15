@@ -1,0 +1,21 @@
+{
+  "tafe_enabled": true,
+  "tafe_task_names_understanding": ["understanding", "mixed", "vqa"],
+  "tafe_task_names_generation": ["generation", "mixed"],
+  "tafe_controller_hidden_size": 256,
+  "tafe_num_specialized_subsets": 2,
+  "tafe_adapter_rank": 16,
+  "tafe_adapter_scale": 1.0,
+  "tafe_condition_on_task": true,
+  "tafe_lambda_cost": 0.0,
+  "tafe_action_costs": [1.0, 0.75, 0.0],
+  "tafe_initial_action_bias": [0.0, -0.1, -1.0],
+  "tafe_soft_routing_train": false,
+  "tafe_soft_routing_temperature": 1.0,
+  "router_tasks": [
+    "understanding",
+    "generation",
+    "mixed",
+    "vqa"
+  ]
+}
