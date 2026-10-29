@@ -1,0 +1,1163 @@
+{
+  "records": [
+    {
+      "sample_id": "a",
+      "text": "A small red box is above two blue cups on a wooden table.",
+      "targets": {
+        "object_heads": [
+          "box",
+          "cups",
+          "table"
+        ],
+        "attribute_terms": [
+          "small",
+          "red",
+          "blue",
+          "wooden"
+        ],
+        "count_terms": [
+          "two"
+        ],
+        "relation_terms": [
+          "above"
+        ]
+      }
+    },
+    {
+      "sample_id": "b",
+      "text": "A white dog stands behind a large green chair in a room.",
+      "targets": {
+        "object_heads": [
+          "dog",
+          "chair",
+          "room"
+        ],
+        "attribute_terms": [
+          "white",
+          "large",
+          "green"
+        ],
+        "count_terms": [],
+        "relation_terms": [
+          "behind"
+        ]
+      }
+    },
+    {
+      "sample_id": "c",
+      "text": "Three yellow birds sit to the left of one black bicycle outdoors.",
+      "targets": {
+        "object_heads": [
+          "birds",
+          "bicycle"
+        ],
+        "attribute_terms": [
+          "yellow",
+          "black"
+        ],
+        "count_terms": [
+          "three",
+          "one"
+        ],
+        "relation_terms": [
+          "left"
+        ]
+      }
+    },
+    {
+      "sample_id": "d",
+      "text": "The landscape contains mountains. A river runs through the center."
+    },
+    {
+      "sample_id": "e",
+      "text": "This picture shows an object."
+    },
+    {
+      "sample_id": "f",
+      "text": "A clear window is below a short blue shelf near a white wall.",
+      "targets": {
+        "object_heads": [
+          "window",
+          "shelf",
+          "wall"
+        ],
+        "attribute_terms": [
+          "clear",
+          "short",
+          "blue",
+          "white"
+        ],
+        "count_terms": [],
+        "relation_terms": [
+          "below"
+        ]
+      }
+    }
+  ],
+  "negative_sampling": [
+    {
+      "record": 0,
+      "group": "caption-ranking:a:0",
+      "answers": [
+        "A small red box is two blue cups on a wooden table.",
+        "A small red box is below two blue cups on a wooden table.",
+        "This picture shows an object."
+      ]
+    },
+    {
+      "record": 0,
+      "group": "caption-ranking:a:3",
+      "answers": [
+        "A small red box is above two cups on a wooden table.",
+        "A small red box is above two red cups on a wooden table.",
+        "This picture shows an object."
+      ]
+    },
+    {
+      "record": 0,
+      "group": "caption-ranking:a:29",
+      "answers": [
+        "A small red box is above two blue cups on a wooden.",
+        "A small red box is above three blue cups on a wooden table.",
+        "A white dog stands behind a large green chair in a room."
+      ]
+    },
+    {
+      "record": 1,
+      "group": "caption-ranking:b:0",
+      "answers": [
+        "A white stands behind a large green chair in a room.",
+        "A black dog stands behind a large green chair in a room.",
+        "A small red box is above two blue cups on a wooden table."
+      ]
+    },
+    {
+      "record": 1,
+      "group": "caption-ranking:b:3",
+      "answers": [
+        "A white stands behind a large green chair in a room.",
+        "A black dog stands behind a large green chair in a room.",
+        "A small red box is above two blue cups on a wooden table."
+      ]
+    },
+    {
+      "record": 1,
+      "group": "caption-ranking:b:29",
+      "answers": [
+        "A white dog stands behind a large chair in a room.",
+        "A white dog stands in front of a large green chair in a room.",
+        "Three yellow birds sit to the left of one black bicycle outdoors."
+      ]
+    },
+    {
+      "record": 2,
+      "group": "caption-ranking:c:0",
+      "answers": [
+        "Three yellow birds sit to the left of one bicycle outdoors.",
+        "Three yellow birds sit to the left of one white bicycle outdoors.",
+        "A white dog stands behind a large green chair in a room."
+      ]
+    },
+    {
+      "record": 2,
+      "group": "caption-ranking:c:3",
+      "answers": [
+        "Three yellow birds sit to the of one black bicycle outdoors.",
+        "Three yellow birds sit to the left of several black bicycle outdoors.",
+        "A small red box is above two blue cups on a wooden table."
+      ]
+    },
+    {
+      "record": 2,
+      "group": "caption-ranking:c:29",
+      "answers": [
+        "Three yellow birds sit to the left of.",
+        "two yellow birds sit to the left of one black bicycle outdoors.",
+        "A white dog stands behind a large green chair in a room."
+      ]
+    },
+    {
+      "record": 3,
+      "group": "caption-ranking:d:0",
+      "answers": [
+        "The landscape contains mountains.",
+        "Three yellow birds sit to the left of one black bicycle outdoors.",
+        "A white dog stands behind a large green chair in a room."
+      ]
+    },
+    {
+      "record": 3,
+      "group": "caption-ranking:d:3",
+      "answers": [
+        "The landscape contains mountains.",
+        "This picture shows an object.",
+        "A clear window is below a short blue shelf near a white wall."
+      ]
+    },
+    {
+      "record": 3,
+      "group": "caption-ranking:d:29",
+      "answers": [
+        "The landscape contains mountains.",
+        "A white dog stands behind a large green chair in a room.",
+        "A small red box is above two blue cups on a wooden table."
+      ]
+    },
+    {
+      "record": 4,
+      "group": "caption-ranking:e:0",
+      "answers": [
+        "The landscape contains mountains. A river runs through the center.",
+        "A small red box is above two blue cups on a wooden table.",
+        "A white dog stands behind a large green chair in a room."
+      ]
+    },
+    {
+      "record": 4,
+      "group": "caption-ranking:e:3",
+      "answers": [
+        "A small red box is above two blue cups on a wooden table.",
+        "The landscape contains mountains. A river runs through the center.",
+        "Three yellow birds sit to the left of one black bicycle outdoors."
+      ]
+    },
+    {
+      "record": 4,
+      "group": "caption-ranking:e:29",
+      "answers": [
+        "The landscape contains mountains. A river runs through the center.",
+        "A clear window is below a short blue shelf near a white wall.",
+        "A white dog stands behind a large green chair in a room."
+      ]
+    },
+    {
+      "record": 5,
+      "group": "caption-ranking:f:0",
+      "answers": [
+        "A clear window is below a blue shelf near a white wall.",
+        "A clear window is below a long blue shelf near a white wall.",
+        "A small red box is above two blue cups on a wooden table."
+      ]
+    },
+    {
+      "record": 5,
+      "group": "caption-ranking:f:3",
+      "answers": [
+        "A clear window is below a short blue.",
+        "A cloudy window is below a short blue shelf near a white wall.",
+        "This picture shows an object."
+      ]
+    },
+    {
+      "record": 5,
+      "group": "caption-ranking:f:29",
+      "answers": [
+        "A clear window is below a blue shelf near a white wall.",
+        "A clear window is below a short blue shelf near a black wall.",
+        "This picture shows an object."
+      ]
+    }
+  ],
+  "packed_losses": [
+    {
+      "replicas": 1,
+      "token_ce": [
+        0.5,
+        0.9,
+        1.3
+      ],
+      "lengths": [
+        3
+      ],
+      "metadata": [],
+      "loss": 0.8999999165534973,
+      "gradient": [
+        0.3333333432674408,
+        0.3333333432674408,
+        0.3333333432674408
+      ]
+    },
+    {
+      "replicas": 1,
+      "token_ce": [
+        0.8,
+        0.5,
+        1.7,
+        2.0,
+        1.8,
+        0.6,
+        0.9,
+        0.9
+      ],
+      "lengths": [
+        2,
+        3,
+        1,
+        2
+      ],
+      "metadata": [
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 1,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        }
+      ],
+      "loss": 0.7333332896232605,
+      "gradient": [
+        0.6666666865348816,
+        0.6666666865348816,
+        0.0,
+        0.0,
+        0.0,
+        -0.3333333432674408,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "replicas": 1,
+      "token_ce": [
+        0.6,
+        0.7,
+        0.9,
+        1.1,
+        1.3,
+        0.4,
+        0.8,
+        1.2
+      ],
+      "lengths": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "metadata": [
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 1,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "two",
+          "contrastive_label": 1,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "two",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "two",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "two",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        }
+      ],
+      "loss": 1.3166667222976685,
+      "gradient": [
+        0.6666666865348816,
+        -0.1666666716337204,
+        0.0,
+        0.0,
+        1.0,
+        -0.1666666716337204,
+        -0.1666666716337204,
+        -0.1666666716337204
+      ]
+    },
+    {
+      "replicas": 1,
+      "token_ce": [
+        0.6,
+        0.7,
+        0.9
+      ],
+      "lengths": [
+        1,
+        2
+      ],
+      "metadata": [
+        {
+          "contrastive_group_id": "orphan",
+          "contrastive_label": 1,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "orphan2",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        }
+      ],
+      "loss": 0.0,
+      "gradient": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "replicas": 1,
+      "token_ce": [
+        0.6,
+        0.7,
+        0.8,
+        1.1,
+        0.4,
+        0.9
+      ],
+      "lengths": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "metadata": [
+        {
+          "contrastive_group_id": "",
+          "contrastive_label": 1,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 1,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "orphan",
+          "contrastive_label": 1,
+          "i2t_objective": "ranking_ce"
+        }
+      ],
+      "loss": 1.5,
+      "gradient": [
+        1.0,
+        1.6666667461395264,
+        -0.3333333432674408,
+        0.0,
+        -0.3333333432674408,
+        0.0
+      ]
+    },
+    {
+      "replicas": 2,
+      "token_ce": [
+        0.5,
+        0.9,
+        1.3
+      ],
+      "lengths": [
+        3
+      ],
+      "metadata": [],
+      "loss": 0.8999999165534973,
+      "gradient": [
+        0.3333333432674408,
+        0.3333333432674408,
+        0.3333333432674408
+      ]
+    },
+    {
+      "replicas": 2,
+      "token_ce": [
+        0.8,
+        0.5,
+        1.7,
+        2.0,
+        1.8,
+        0.6,
+        0.9,
+        0.9
+      ],
+      "lengths": [
+        2,
+        3,
+        1,
+        2
+      ],
+      "metadata": [
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 1,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        }
+      ],
+      "loss": 0.7333332896232605,
+      "gradient": [
+        0.6666666865348816,
+        0.6666666865348816,
+        0.0,
+        0.0,
+        0.0,
+        -0.3333333432674408,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "replicas": 2,
+      "token_ce": [
+        0.6,
+        0.7,
+        0.9,
+        1.1,
+        1.3,
+        0.4,
+        0.8,
+        1.2
+      ],
+      "lengths": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "metadata": [
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 1,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "two",
+          "contrastive_label": 1,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "two",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "two",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "two",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        }
+      ],
+      "loss": 1.3166667222976685,
+      "gradient": [
+        0.6666666865348816,
+        -0.1666666716337204,
+        0.0,
+        0.0,
+        1.0,
+        -0.1666666716337204,
+        -0.1666666716337204,
+        -0.1666666716337204
+      ]
+    },
+    {
+      "replicas": 2,
+      "token_ce": [
+        0.6,
+        0.7,
+        0.9
+      ],
+      "lengths": [
+        1,
+        2
+      ],
+      "metadata": [
+        {
+          "contrastive_group_id": "orphan",
+          "contrastive_label": 1,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "orphan2",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        }
+      ],
+      "loss": 0.0,
+      "gradient": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "replicas": 2,
+      "token_ce": [
+        0.6,
+        0.7,
+        0.8,
+        1.1,
+        0.4,
+        0.9
+      ],
+      "lengths": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "metadata": [
+        {
+          "contrastive_group_id": "",
+          "contrastive_label": 1,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 1,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "one",
+          "contrastive_label": 0,
+          "i2t_objective": "ranking_ce"
+        },
+        {
+          "contrastive_group_id": "orphan",
+          "contrastive_label": 1,
+          "i2t_objective": "ranking_ce"
+        }
+      ],
+      "loss": 1.5,
+      "gradient": [
+        1.0,
+        1.6666667461395264,
+        -0.3333333432674408,
+        0.0,
+        -0.3333333432674408,
+        0.0
+      ]
+    }
+  ],
+  "model_sources": {
+    "third_party/bagel/inferencer.py": "297ee42e6bbcd5245c8ce2ec14c293c581ca5c608185768a67afad9f9f2857c0",
+    "third_party/bagel_training/modeling/__init__.py": "8a3e55e8015950ffa8797d17e15ca6f3d70f93db335f71d50addc7a065450e69",
+    "third_party/bagel_training/modeling/autoencoder.py": "13d428572dd78149a17eecd3ff14d00131677f9eaa65786a15a83dcbbb1ec29b",
+    "third_party/bagel_training/modeling/qwen2/configuration_qwen2.py": "9cac4050868c16a8377e9d77007586f784d8c0673efc7b508805a04797eed56f",
+    "third_party/bagel_training/modeling/qwen2/tokenization_qwen2_fast.py": "892d5416734b2b3f39f6e9f4778f5e69ae3da34bdd4cf6c46905d35309fb494e",
+    "third_party/bagel_training/modeling/qwen2/__init__.py": "c6fe07491374209d07ddce1ef54c560e98cd10a30df654daac0cb625d97988ba",
+    "third_party/bagel_training/modeling/qwen2/modeling_qwen2.py": "24437daaa8bf49fb07271a4abaed6c304a239af403d7554699f6ab5895b3e2d0",
+    "third_party/bagel_training/modeling/qwen2/tokenization_qwen2.py": "ada9638ed5200eb2ac968aa80516f002cfe2b760e33d9031cbbf7beb14b2954a",
+    "third_party/bagel_training/modeling/bagel/modeling_utils.py": "024bbd79702640e11a02c4857c09956e3d81f434cb0ad0d20bf466db8d94b985",
+    "third_party/bagel_training/modeling/bagel/bagel.py": "1fd97fd28c5826dbe54c45abfce6577009f5555492ac064af8517180565400e2",
+    "third_party/bagel_training/modeling/bagel/__init__.py": "bb92b077c6d79698c0fb6ab3ce76f43c80a2455cc1857b4e2dda3e4b6d9ae3f3",
+    "third_party/bagel_training/modeling/bagel/qwen2_navit.py": "45bbb0c5d2bc2439634d4fc00f38c9fedbb1f6b93c4dc219fe7bf18c51ebd43d",
+    "third_party/bagel_training/modeling/bagel/siglip_navit.py": "7b5bc1fbd4a596f7b3ef8d40aabb65d2f9bec52c0be45eb6d9bcac9b359cab0c",
+    "third_party/bagel_training/modeling/siglip/tokenization_siglip.py": "9e1d0a7a6fce1c75509635dae7e578f4a6acee90a8753c278cda34cf64ffef4d",
+    "third_party/bagel_training/modeling/siglip/configuration_siglip.py": "3dd78662f469bae3ddbf09409ea3630efde0992857a24bef4d3de145cd0750e1",
+    "third_party/bagel_training/modeling/siglip/image_processing_siglip.py": "86d52845c9500e8831e4ac3bdd146f8e71c74b64c016305f89adbd78ca08e50d",
+    "third_party/bagel_training/modeling/siglip/convert_siglip_to_hf.py": "f8b2dd595decc2dc443dee33836579a7ac970923d1e68b4127ce31929dbefcc4",
+    "third_party/bagel_training/modeling/siglip/__init__.py": "b5ec9175601445be8d47dc6cd9be528deb3b199daaaf88a39828d1c73f443350",
+    "third_party/bagel_training/modeling/siglip/modeling_siglip.py": "bf6ffc5b19ab6b4602a189e51251ce3d80e3a9d43c85970e0b665f544bccf52e",
+    "third_party/bagel_training/modeling/siglip/processing_siglip.py": "cde14419507028bae92f7a0533dd784833df97622e318263ba083628df31aa95",
+    "third_party/bagel/modeling/__init__.py": "8a3e55e8015950ffa8797d17e15ca6f3d70f93db335f71d50addc7a065450e69",
+    "third_party/bagel/modeling/autoencoder.py": "f2276001b926b84410ce8c0de0418606aed30cf633796add10dfd691f2c4fe2c",
+    "third_party/bagel/modeling/qwen2/configuration_qwen2.py": "9cac4050868c16a8377e9d77007586f784d8c0673efc7b508805a04797eed56f",
+    "third_party/bagel/modeling/qwen2/tokenization_qwen2_fast.py": "892d5416734b2b3f39f6e9f4778f5e69ae3da34bdd4cf6c46905d35309fb494e",
+    "third_party/bagel/modeling/qwen2/__init__.py": "c6fe07491374209d07ddce1ef54c560e98cd10a30df654daac0cb625d97988ba",
+    "third_party/bagel/modeling/qwen2/modeling_qwen2.py": "8754dc4a98d7802bae783572e30e10c8341fe09275d0152e66deeb47182d8a2f",
+    "third_party/bagel/modeling/qwen2/tokenization_qwen2.py": "ada9638ed5200eb2ac968aa80516f002cfe2b760e33d9031cbbf7beb14b2954a",
+    "third_party/bagel/modeling/bagel/modeling_utils.py": "024bbd79702640e11a02c4857c09956e3d81f434cb0ad0d20bf466db8d94b985",
+    "third_party/bagel/modeling/bagel/bagel.py": "d5570d9792f8860bc945313c33457ab3a921b7bde5ad6da7789df64945b24715",
+    "third_party/bagel/modeling/bagel/__init__.py": "bb92b077c6d79698c0fb6ab3ce76f43c80a2455cc1857b4e2dda3e4b6d9ae3f3",
+    "third_party/bagel/modeling/bagel/qwen2_navit.py": "86cf4ce08bea9f1ddf6a0debcf6e765923e359fbc5f7435e9c661ef28ff5b861",
+    "third_party/bagel/modeling/bagel/siglip_navit.py": "b9c0ff9a1bf872a10f8f124c4c0e127c066bd61a61da68ffafbad51d9e22d4a0",
+    "third_party/bagel/modeling/siglip/tokenization_siglip.py": "9e1d0a7a6fce1c75509635dae7e578f4a6acee90a8753c278cda34cf64ffef4d",
+    "third_party/bagel/modeling/siglip/configuration_siglip.py": "3dd78662f469bae3ddbf09409ea3630efde0992857a24bef4d3de145cd0750e1",
+    "third_party/bagel/modeling/siglip/image_processing_siglip.py": "86d52845c9500e8831e4ac3bdd146f8e71c74b64c016305f89adbd78ca08e50d",
+    "third_party/bagel/modeling/siglip/convert_siglip_to_hf.py": "f8b2dd595decc2dc443dee33836579a7ac970923d1e68b4127ce31929dbefcc4",
+    "third_party/bagel/modeling/siglip/__init__.py": "b5ec9175601445be8d47dc6cd9be528deb3b199daaaf88a39828d1c73f443350",
+    "third_party/bagel/modeling/siglip/modeling_siglip.py": "bf6ffc5b19ab6b4602a189e51251ce3d80e3a9d43c85970e0b665f544bccf52e",
+    "third_party/bagel/modeling/siglip/processing_siglip.py": "cde14419507028bae92f7a0533dd784833df97622e318263ba083628df31aa95",
+    "third_party/bagel/modeling/cache_utils/taylorseer.py": "d2ade50eb548ba1d1810c9ee131f8ee79faa6963c26f9cb1499ba200c5b84195"
+  },
+  "packing_functions": {
+    "set_sequence_status": "f6dbb6bf7fd60a16fe783bfef6a6c137d3ca4de32afdebc1f173111cea7b301f",
+    "to_tensor": "25ebd9a0ad40029cbbc6f5ff4d10c65ecebe03ddbe82fc4d1d7de3adf214aec2",
+    "pack_sequence": "cb1850f8ed0e05649c53ff33a6fc9573df5bad09ceabcc26d1e6f554395d31ea",
+    "__iter__": "d2ef77c719da0870b33153879f1c217047c2e846e29afda171d00410d5d4f947"
+  },
+  "released_weights": [
+    {
+      "key": "connector.fc1.bias",
+      "values": [
+        -0.0230712890625,
+        -0.0230712890625,
+        -0.0233154296875,
+        -0.0230712890625
+      ]
+    },
+    {
+      "key": "connector.fc1.bias",
+      "values": [
+        0.016845703125,
+        0.016845703125,
+        0.0167236328125,
+        0.016845703125
+      ]
+    },
+    {
+      "key": "connector.fc1.bias",
+      "values": [
+        -0.07861328125,
+        -0.07861328125,
+        -0.078125,
+        -0.07861328125
+      ]
+    },
+    {
+      "key": "connector.fc1.weight",
+      "values": [
+        0.08056640625,
+        0.08056640625,
+        0.0810546875,
+        0.08056640625
+      ]
+    },
+    {
+      "key": "connector.fc1.weight",
+      "values": [
+        0.0732421875,
+        0.0732421875,
+        0.07275390625,
+        0.0732421875
+      ]
+    },
+    {
+      "key": "connector.fc1.weight",
+      "values": [
+        -0.1435546875,
+        -0.1435546875,
+        -0.1435546875,
+        -0.1435546875
+      ]
+    },
+    {
+      "key": "time_embedder.mlp.0.bias",
+      "values": [
+        0.018310546875,
+        0.0181884765625,
+        0.018310546875,
+        0.0181884765625
+      ]
+    },
+    {
+      "key": "time_embedder.mlp.0.bias",
+      "values": [
+        -0.049072265625,
+        -0.048828125,
+        -0.049072265625,
+        -0.048828125
+      ]
+    },
+    {
+      "key": "time_embedder.mlp.0.bias",
+      "values": [
+        0.006561279296875,
+        0.006622314453125,
+        0.006561279296875,
+        0.006622314453125
+      ]
+    },
+    {
+      "key": "time_embedder.mlp.0.weight",
+      "values": [
+        0.01287841796875,
+        0.0126953125,
+        0.01287841796875,
+        0.0126953125
+      ]
+    },
+    {
+      "key": "time_embedder.mlp.0.weight",
+      "values": [
+        0.033447265625,
+        0.033447265625,
+        0.033447265625,
+        0.033447265625
+      ]
+    },
+    {
+      "key": "time_embedder.mlp.0.weight",
+      "values": [
+        0.018798828125,
+        0.0194091796875,
+        0.018798828125,
+        0.0194091796875
+      ]
+    },
+    {
+      "key": "vae2llm.bias",
+      "values": [
+        -0.09765625,
+        -0.09716796875,
+        -0.09765625,
+        -0.09716796875
+      ]
+    },
+    {
+      "key": "vae2llm.bias",
+      "values": [
+        -0.023681640625,
+        -0.0233154296875,
+        -0.023681640625,
+        -0.0233154296875
+      ]
+    },
+    {
+      "key": "vae2llm.bias",
+      "values": [
+        -0.09521484375,
+        -0.09375,
+        -0.09521484375,
+        -0.09375
+      ]
+    },
+    {
+      "key": "vae2llm.weight",
+      "values": [
+        0.0296630859375,
+        0.029296875,
+        0.0296630859375,
+        0.029296875
+      ]
+    },
+    {
+      "key": "vae2llm.weight",
+      "values": [
+        -0.08935546875,
+        -0.091796875,
+        -0.08935546875,
+        -0.091796875
+      ]
+    },
+    {
+      "key": "vae2llm.weight",
+      "values": [
+        0.00927734375,
+        0.0089111328125,
+        0.00927734375,
+        0.0089111328125
+      ]
+    },
+    {
+      "key": "llm2vae.bias",
+      "values": [
+        -0.00494384765625,
+        -0.00439453125,
+        -0.00494384765625,
+        -0.00439453125
+      ]
+    },
+    {
+      "key": "llm2vae.bias",
+      "values": [
+        -0.004852294921875,
+        -0.00457763671875,
+        -0.004852294921875,
+        -0.00457763671875
+      ]
+    },
+    {
+      "key": "llm2vae.bias",
+      "values": [
+        0.00799560546875,
+        0.007781982421875,
+        0.00799560546875,
+        0.007781982421875
+      ]
+    },
+    {
+      "key": "llm2vae.weight",
+      "values": [
+        0.0025177001953125,
+        0.00189971923828125,
+        0.0025177001953125,
+        0.00189971923828125
+      ]
+    },
+    {
+      "key": "llm2vae.weight",
+      "values": [
+        0.00016021728515625,
+        -0.000339508056640625,
+        0.00016021728515625,
+        -0.000339508056640625
+      ]
+    },
+    {
+      "key": "llm2vae.weight",
+      "values": [
+        0.00665283203125,
+        0.00567626953125,
+        0.00665283203125,
+        0.00567626953125
+      ]
+    },
+    {
+      "key": "language_model.model.layers.0.self_attn.k_norm.weight",
+      "values": [
+        3.3125,
+        3.3125,
+        3.3125,
+        3.3125
+      ]
+    },
+    {
+      "key": "language_model.model.layers.0.self_attn.k_norm.weight",
+      "values": [
+        3.796875,
+        3.796875,
+        3.796875,
+        3.796875
+      ]
+    },
+    {
+      "key": "language_model.model.layers.0.self_attn.k_norm.weight",
+      "values": [
+        0.96875,
+        0.96875,
+        0.96875,
+        0.96875
+      ]
+    },
+    {
+      "key": "language_model.model.layers.0.self_attn.k_norm_moe_gen.weight",
+      "values": [
+        1.2109375,
+        1.2109375,
+        1.2109375,
+        1.2109375
+      ]
+    },
+    {
+      "key": "language_model.model.layers.0.self_attn.k_norm_moe_gen.weight",
+      "values": [
+        1.0625,
+        1.0625,
+        1.0625,
+        1.0625
+      ]
+    },
+    {
+      "key": "language_model.model.layers.0.self_attn.k_norm_moe_gen.weight",
+      "values": [
+        1.15625,
+        1.15625,
+        1.15625,
+        1.15625
+      ]
+    },
+    {
+      "key": "language_model.model.layers.14.mlp.down_proj.weight",
+      "values": [
+        0.0311279296875,
+        0.03076171875,
+        0.0311279296875,
+        0.03076171875
+      ]
+    },
+    {
+      "key": "language_model.model.layers.14.mlp.down_proj.weight",
+      "values": [
+        0.0294189453125,
+        0.0294189453125,
+        0.0294189453125,
+        0.0294189453125
+      ]
+    },
+    {
+      "key": "language_model.model.layers.14.mlp.down_proj.weight",
+      "values": [
+        0.02294921875,
+        0.02294921875,
+        0.02294921875,
+        0.02294921875
+      ]
+    },
+    {
+      "key": "language_model.model.layers.14.mlp.gate_proj.weight",
+      "values": [
+        0.0537109375,
+        0.053955078125,
+        0.0537109375,
+        0.053955078125
+      ]
+    },
+    {
+      "key": "language_model.model.layers.14.mlp.gate_proj.weight",
+      "values": [
+        -0.05029296875,
+        -0.05029296875,
+        -0.05029296875,
+        -0.05029296875
+      ]
+    },
+    {
+      "key": "language_model.model.layers.14.mlp.gate_proj.weight",
+      "values": [
+        -0.0625,
+        -0.0625,
+        -0.0625,
+        -0.0625
+      ]
+    },
+    {
+      "key": "language_model.model.layers.27.self_attn.k_norm.weight",
+      "values": [
+        1.15625,
+        1.15625,
+        1.15625,
+        1.15625
+      ]
+    },
+    {
+      "key": "language_model.model.layers.27.self_attn.k_norm.weight",
+      "values": [
+        2.015625,
+        2.015625,
+        2.015625,
+        2.015625
+      ]
+    },
+    {
+      "key": "language_model.model.layers.27.self_attn.k_norm.weight",
+      "values": [
+        1.515625,
+        1.515625,
+        1.515625,
+        1.515625
+      ]
+    },
+    {
+      "key": "language_model.model.layers.27.self_attn.k_norm_moe_gen.weight",
+      "values": [
+        7.875,
+        7.875,
+        7.875,
+        7.875
+      ]
+    },
+    {
+      "key": "language_model.model.layers.27.self_attn.k_norm_moe_gen.weight",
+      "values": [
+        2.71875,
+        2.71875,
+        2.71875,
+        2.71875
+      ]
+    },
+    {
+      "key": "language_model.model.layers.27.self_attn.k_norm_moe_gen.weight",
+      "values": [
+        10.875,
+        10.875,
+        10.875,
+        10.875
+      ]
+    }
+  ]
+}

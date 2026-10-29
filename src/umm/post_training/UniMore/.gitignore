@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.env
+artifacts/
+checkpoints/
+datasets/
+runs/
+wandb/
+*.safetensors
+*.pt
+*.pth
+*.bin

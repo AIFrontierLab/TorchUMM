@@ -1,0 +1,32 @@
+route_manifest:
+  dataset_names:
+  - bidirectional_quality_v3_top4k_i2t_detail_wrong_random
+  dataset_info:
+    bidirectional_quality_v3_top4k_i2t_detail_wrong_random:
+      manifest_path: ${UNIMORE_DATA_ROOT}/i2t.jsonl
+  route_mode: i2t_global_ranking
+  source_filter:
+  - text_to_image
+  image_cache_dir: ${UNIMORE_WORK}/cache/images
+  question_prompt: Describe this image as a complete caption. Include the main scene,
+    visible objects, attributes, spatial layout, background context, and readable
+    text only when it is central to the image.
+  use_pseudo_grounding: false
+  require_pseudo_grounding: false
+  i2t_objective: ranking_ce
+  i2t_num_negatives: 3
+  i2t_negative_seed: 20260702
+  global_i2t_negative_sources:
+  - detail_drop
+  - wrong_detail
+  - random_caption
+  shuffle_lines: true
+  shuffle_seed: 20260702
+  vit_image_transform_args:
+    image_stride: 14
+    max_image_size: 112
+    min_image_size: 112
+  is_mandatory: false
+  num_used_data:
+  - 4000
+  weight: 1

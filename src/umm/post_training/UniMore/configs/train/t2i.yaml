@@ -1,0 +1,38 @@
+route: t2i
+num_processes: 4
+data_config: configs/data/t2i.yaml
+args:
+  model_path: ${BAGEL_MODEL_PATH}
+  wandb_project: unimore
+  wandb_name: t2i
+  wandb_offline: true
+  layer_module: Qwen2MoTDecoderLayer
+  max_latent_size: 64
+  resume_from: ${BAGEL_MODEL_PATH}
+  visual_gen: true
+  visual_und: false
+  freeze_llm: true
+  freeze_vae: true
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  log_every: 25
+  lr: 5.0e-05
+  total_steps: 1000
+  warmup_steps: 50
+  num_workers: 0
+  num_replicate: 1
+  num_shard: 4
+  sharding_strategy: FULL_SHARD
+  backward_prefetch: NO_PREFETCH
+  save_every: 100000
+  save_after: 100000
+  save_final: true
+  save_optimizer: false
+  results_dir: ${UNIMORE_WORK}/training/t2i
+  checkpoint_dir: ${UNIMORE_WORK}/training/t2i/checkpoints
+  expected_num_tokens: 256
+  max_num_tokens: 512
+  max_num_tokens_per_sample: 512
+  global_seed: 4396
+  data_seed: 42

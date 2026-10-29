@@ -1,0 +1,27 @@
+inference:
+  backbone: bagel
+  backbone_cfg:
+    bagel_root: ${UNIMORE_ROOT}/third_party/bagel
+    model_path: ${UNIMORE_MODEL}
+    max_mem_per_gpu: 78GiB
+    offload_folder: ${UNIMORE_WORK}/offload
+    seed: 42
+    generation_cfg:
+      cfg_text_scale: 4.0
+      cfg_img_scale: 1.0
+      num_timesteps: 50
+      timestep_shift: 3.0
+      image_shapes:
+      - 512
+      - 512
+    understanding_cfg:
+      max_think_token_n: 1000
+      do_sample: false
+  request:
+    task: generation
+    prompt: A red teapot beside two blue cups on a table.
+    output_path: ${UNIMORE_WORK}/sample.png
+    params:
+      image_shapes:
+      - 512
+      - 512

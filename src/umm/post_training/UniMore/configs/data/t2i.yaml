@@ -1,0 +1,23 @@
+route_manifest:
+  dataset_names:
+  - bidirectional_targeted_local_train
+  dataset_info:
+    bidirectional_targeted_local_train:
+      manifest_path: ${UNIMORE_DATA_ROOT}/t2i.jsonl
+  route_mode: t2i_implicit
+  source_filter:
+  - text_to_image
+  image_cache_dir: ${UNIMORE_WORK}/cache/images
+  use_pseudo_grounding: true
+  require_pseudo_grounding: true
+  local_t2i_prompt_template: '{phrase}'
+  shuffle_lines: true
+  shuffle_seed: 20260515
+  image_transform_args:
+    image_stride: 16
+    max_image_size: 256
+    min_image_size: 256
+  is_mandatory: false
+  num_used_data:
+  - 2460
+  weight: 1

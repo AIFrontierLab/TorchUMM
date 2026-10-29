@@ -1,0 +1,40 @@
+route: i2t
+num_processes: 2
+data_config: configs/data/i2t.yaml
+args:
+  model_path: ${BAGEL_MODEL_PATH}
+  wandb_project: unimore
+  wandb_name: i2t
+  wandb_offline: true
+  layer_module: Qwen2MoTDecoderLayer
+  max_latent_size: 64
+  resume_from: ${BAGEL_MODEL_PATH}
+  visual_gen: false
+  visual_und: true
+  freeze_llm: true
+  freeze_vit: true
+  freeze_vae: true
+  lora_r: 16
+  lora_alpha: 32
+  lora_dropout: 0.05
+  ranking_margin: 0.2
+  log_every: 25
+  lr: 1.8e-05
+  total_steps: 600
+  warmup_steps: 60
+  num_workers: 0
+  num_replicate: 1
+  num_shard: 2
+  sharding_strategy: FULL_SHARD
+  backward_prefetch: NO_PREFETCH
+  save_every: 100000
+  save_after: 100000
+  save_final: true
+  save_optimizer: false
+  results_dir: ${UNIMORE_WORK}/training/i2t
+  checkpoint_dir: ${UNIMORE_WORK}/training/i2t/checkpoints
+  expected_num_tokens: 768
+  max_num_tokens: 1536
+  max_num_tokens_per_sample: 512
+  global_seed: 4396
+  data_seed: 42
