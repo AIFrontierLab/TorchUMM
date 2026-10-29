@@ -76,7 +76,7 @@ python -m umm.post_training.UniMore infer --config "$UNIMORE/configs/inference.y
 
 The final model and both branches are available in
 [HuggingSelf/test0519](https://huggingface.co/HuggingSelf/test0519).
-[Checkpoints](docs/checkpoints.md) lists pinned revisions, paths and checksums.
+[Checkpoints](docs/checkpoints.md) lists pinned revisions and paths.
 
 ## Training
 

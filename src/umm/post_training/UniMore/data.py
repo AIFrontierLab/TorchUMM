@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import json
 from pathlib import Path
 
@@ -62,7 +61,7 @@ def prepare_data(t2i_manifest, i2t_manifest, path_map, output):
                 check_reference(row["local_crop_ref"])
             rows.append(row)
         prepared[route] = "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in rows)
-        provenance[route] = {"records": expected, "source_sha256": hashlib.sha256(data).hexdigest()}
+        provenance[route] = {"records": expected}
     if output.exists() and any(output.iterdir()):
         raise FileExistsError(f"Output must be empty: {output}")
     output.mkdir(parents=True, exist_ok=True)

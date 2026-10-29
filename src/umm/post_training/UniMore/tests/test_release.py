@@ -171,6 +171,34 @@ def test_export_and_merge_roundtrip(tmp_path):
         merge_branches(base, tmp_path / "t2i", tmp_path / "i2t", tmp_path / "merged")
 
 
+def test_prepared_metadata_contains_only_record_counts(tmp_path):
+    from umm.post_training.UniMore.data import prepare_data
+
+    image = tmp_path / "image.jpg"
+    image.touch()
+    mapping = tmp_path / "paths.json"
+    mapping.write_text("{}")
+    for route, count in (("t2i", 2460), ("i2t", 4000)):
+        records = [
+            {
+                "sample_id": f"{route}-{index}",
+                "image_ref": {"type": "local_file", "path": str(image)},
+                "local_phrase": "red cup",
+                "local_crop_ref": {"type": "local_file", "path": str(image)},
+            }
+            for index in range(count)
+        ]
+        (tmp_path / f"{route}.jsonl").write_text(
+            "".join(json.dumps(record) + "\n" for record in records)
+        )
+    output = tmp_path / "prepared"
+    prepare_data(tmp_path / "t2i.jsonl", tmp_path / "i2t.jsonl", mapping, output)
+    assert json.loads((output / "manifest.json").read_text()) == {
+        "t2i": {"records": 2460},
+        "i2t": {"records": 4000},
+    }
+
+
 def test_relocation_does_not_change_caption_or_tar_member():
     ref = {
         "type": "image_crop",
