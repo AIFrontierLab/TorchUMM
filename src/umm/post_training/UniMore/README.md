@@ -12,8 +12,11 @@ pretrained model:
 The exported branches are combined once:
 
 ```text
-W = W_base + ((W_t2i - W_base) + 0.02 * (W_i2t - W_base))
+W = W_base + ((W_t2i - W_base) + lambda * (W_i2t - W_base))
 ```
+
+Here, `lambda` is a hyperparameter controlling the understanding branch's
+contribution, while the generation branch has unit weight.
 
 The merge performs the differences, weighting, sum and residual addition in
 BF16, matching the released checkpoint. Casting intermediate calculations to
